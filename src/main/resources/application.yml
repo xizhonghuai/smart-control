@@ -1,0 +1,56 @@
+server:
+  port: ${SERVER_PORT:9981}
+
+spring:
+  application:
+    name: smart-control
+  # rdb
+  datasource:
+    ####### MySQL 数据源配置
+    url: jdbc:mysql://${DB_HOST:39.98.164.168}:${DB_PORT:3306}/treatment-db?useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: ${DB_USERNAME:xizhonghuai}
+    password: ${DB_PASSWORD:xizhonghuai028}
+
+
+#    # 使用druid数据源
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    sql-script-encoding: utf-8
+#    initialization-mode: ${DB_AUTO_INIT:never} # 初始化sql脚本策略。never：不初始化, always：每次都初始化
+#    druid:
+#      # 配置初始化大小、最小、最大
+#      initialSize: 4
+#      minIdle: 4
+#      maxActive: 201
+#      # 配置获取连接等待超时的时间
+#      maxWait: 60000
+#      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+#      timeBetweenEvictionRunsMillis: 60000
+#      # 配置一个连接在池中最小生存的时间，单位是毫秒
+#      minEvictableIdleTimeMillis: 300000
+#      testWhileIdle: true
+#      # 这里建议配置为TRUE，防止取到的连接不可用
+#      testOnBorrow: true
+#      testOnReturn: false
+#      # 打开PSCache，并且指定每个连接上PSCache的大小
+#      poolPreparedStatements: true
+#      maxOpenPreparedStatements: 20
+#      # 默认提交方式。默认true
+#      defaultAutoCommit: true
+#      # 验证连接有效与否的SQL，不同的数据配置不同
+#      validationQuery: select 2 # 无效
+#      filters: stat
+
+
+
+
+# mp 配置
+mybatis-plus:
+  # 注意该路径替换为自己工程的 xml 路径
+  mapper-locations: "classpath*:dao/**/*.xml"
+  configuration:
+    # 开启自动驼峰命名规则（camel case）映射
+    map-underscore-to-camel-case: true
+    # 配置 Mybatis 日志实现
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
