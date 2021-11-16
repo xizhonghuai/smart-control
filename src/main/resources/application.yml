@@ -1,6 +1,13 @@
 server:
   port: ${SERVER_PORT:9981}
 
+smart-control:
+  webHost: http://cs.kabanjiankang.com:8080
+  webUserHost: http://192.168.0.106:8080
+  debugPort: 8888
+  defaultServerPort: 8889
+
+
 spring:
   application:
     name: smart-control
