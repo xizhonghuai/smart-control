@@ -1,9 +1,9 @@
 server:
-  port: ${SERVER_PORT:9981}
+  port: ${SERVER_PORT:8000}
 
 smart-control:
-  webHost: http://cs.kabanjiankang.com:8080
-  webUserHost: http://192.168.0.106:8080
+  web-host: http://cs.kabanjiankang.com:8080
+  web-user-host: http://192.168.0.106:8080
   debugPort: 8888
   defaultServerPort: 8889
 
@@ -12,12 +12,18 @@ spring:
   application:
     name: smart-control
   # rdb
-  datasource:
-    ####### MySQL 数据源配置
-    url: jdbc:mysql://${DB_HOST:39.98.164.168}:${DB_PORT:3306}/treatment-db?useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
-    driver-class-name: com.mysql.jdbc.Driver
-    username: ${DB_USERNAME:xizhonghuai}
-    password: ${DB_PASSWORD:xizhonghuai028}
+#  datasource:
+#    ####### MySQL 数据源配置
+#    url: jdbc:mysql://${DB_HOST:39.98.164.168}:${DB_PORT:3306}/treatment-db?useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
+#    driver-class-name: com.mysql.jdbc.Driver
+#    username: ${DB_USERNAME:xizhonghuai}
+#    password: ${DB_PASSWORD:xizhonghuai028}
+
+#  datasource:
+#    # url: jdbc:mysql://${MASTER_MYSQL_HOST:localhost}:${MASTER_MYSQL_PORT:3306}/test?useSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai
+#    url: jdbc:sqlserver://${DB_HOST:10.60.136.165}:${DB_PORT:1433};DatabaseName=${DB_NAME:rfq_inhouse_dev}
+#    username: ${DB_USERNAME:rfq_inhouse_dev}
+#    password: ${DB_PASSWORD:Foxconn123!!}
 
 
 #    # 使用druid数据源
@@ -52,12 +58,12 @@ spring:
 
 
 # mp 配置
-mybatis-plus:
-  # 注意该路径替换为自己工程的 xml 路径
-  mapper-locations: "classpath*:dao/**/*.xml"
-  configuration:
-    # 开启自动驼峰命名规则（camel case）映射
-    map-underscore-to-camel-case: true
-    # 配置 Mybatis 日志实现
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis-plus:
+#  # 注意该路径替换为自己工程的 xml 路径
+#  mapper-locations: "classpath*:dao/**/*.xml"
+#  configuration:
+#    # 开启自动驼峰命名规则（camel case）映射
+#    map-underscore-to-camel-case: true
+#    # 配置 Mybatis 日志实现
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
