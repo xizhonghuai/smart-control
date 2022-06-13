@@ -5,7 +5,6 @@ import com.transmission.server.core.ConnectProperty;
 import com.transmission.server.core.ServerUtils;
 import com.transmission.server.core.WriteMsgUtils;
 import org.apache.mina.core.session.IoSession;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,7 +78,7 @@ public class DeviceAPI {
             Map<Long, IoSession> managedSessions = server.getManagedSessions();
             managedSessions.forEach((aLong, ioSession) -> {
                 ConnectProperty connectProperty = (ConnectProperty) ioSession.getAttribute("connectProperty");
-                if (connectProperty != null) {
+                if (connectProperty != null && connectProperty.getRegId() != null) {
                     connectPropertyList.add(connectProperty);
                 }
             });

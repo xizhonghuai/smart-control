@@ -1,6 +1,7 @@
 package com.smart.domain.message;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSON;
 import com.smart.domain.message.c2s.*;
 import com.smart.domain.message.s2c.*;
 
@@ -37,24 +38,26 @@ public class MessageUtil {
 
 
     public static Class<?> getMessageClass(String text) {
-        Map<String, Object> map = BeanUtil.beanToMap(text, false, false);
+        Map<String, Object> map = BeanUtil.beanToMap(JSON.parse(text), false, false);
+
         Object code = map.get("code");
         return code == null ? null : messageTypeMap.get(code.toString());
     }
 
     public static Message parse(Object message) {
         verify(message);
-        String jsonString = message.toString().substring(1, message.toString().length() - 1);
+        String jsonString = message.toString().substring(1, message.toString().length() - 2);
         Class<?> messageClass = getMessageClass(jsonString);
         if (messageClass == null) {
             throw new RuntimeException("Unsupported protocols");
         }
-        return (Message) BeanUtil.toBean(jsonString, messageClass);
+        Map<String, Object> map = BeanUtil.beanToMap(JSON.parse(jsonString));
+        return (Message) BeanUtil.mapToBean(map, messageClass, true, null);
     }
 
     public static void verify(Object message) {
         String toString = message.toString();
-        if (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 1) == 0x03) {
+        if (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 2) == 0x03) {
             return;
         }
         throw new RuntimeException("message error");

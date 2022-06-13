@@ -43,7 +43,7 @@ public class Initialization {
             //todo 启动服务
             BootServerParameter bootServerParameter = new BootServerParameter();
             bootServerParameter.setServerName("YX-Cloud-Iot");
-            bootServerParameter.setIdle(300);
+            bootServerParameter.setIdle(3000);
             bootServerParameter.setPort(Collections.singletonList(defaultServerPort));
             bootServerParameter.setDebug(true);
             bootServerParameter.setServiceId("smart-control");
