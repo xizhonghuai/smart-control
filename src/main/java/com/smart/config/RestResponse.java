@@ -1,4 +1,4 @@
-package com.smart.model;
+package com.smart.config;
 
 import lombok.Data;
 

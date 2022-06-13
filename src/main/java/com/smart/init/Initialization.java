@@ -1,12 +1,11 @@
 package com.smart.init;
 
-import com.smart.service.commonmanger.ServerManage;
+import com.smart.communication.ServerAPI;
 import com.toolutils.ConstantUtils;
 import com.transmission.server.core.BootServerParameter;
 import com.transmission.server.debug.DebugService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -30,13 +29,10 @@ public class Initialization {
     private String webUserHost;
     private Integer defaultServerPort;
     private Integer debugPort;
-
     public static String webUrl;
     public static String webUserUrl;
 
-    @Autowired
-    private ServerManage serverManage;
-
+    private ServerAPI serverAPI = new ServerAPI();
 
     @PostConstruct
     public void init() {
@@ -53,8 +49,8 @@ public class Initialization {
             bootServerParameter.setServiceId("smart-control");
             bootServerParameter.setServerType(ConstantUtils.TCP);
             try {
-                serverManage.createService(bootServerParameter);
-                serverManage.startServer("smart-control");
+                serverAPI.createService(bootServerParameter);
+                serverAPI.startServer("smart-control");
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error(e.toString());

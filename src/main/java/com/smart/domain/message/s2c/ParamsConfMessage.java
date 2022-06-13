@@ -1,0 +1,40 @@
+package com.smart.domain.message.s2c;
+
+import com.smart.domain.message.Message;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
+
+/**
+ * @author: xizhonghuai
+ * @description: ParamsConfMessage
+ * @create: 2022-06-10 10:32
+ **/
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ParamsConfMessage extends Message implements S2cMessage {
+    private String deviceId;
+
+    @Data
+    public static class Body {
+        private Integer workMode;
+        private Integer motorDelay;
+        private List<Time> timeList;
+
+    }
+
+    @Data
+    public static class Time {
+        private Integer id;
+        private String start;
+        private Integer delay;
+        private Integer onTime;
+        private Integer offTime;
+    }
+
+    @Override
+    public String toString() {
+        return pack();
+    }
+}

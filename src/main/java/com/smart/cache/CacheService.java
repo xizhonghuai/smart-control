@@ -1,5 +1,7 @@
 package com.smart.cache;
 
+import com.smart.config.SpringUtil;
+
 import java.util.List;
 
 /**
@@ -19,4 +21,8 @@ public interface CacheService {
     void invalid(String key);
 
     Boolean isEmpty(String key);
+
+    static CacheService getCacheService() {
+        return SpringUtil.getObject(CacheService.class);
+    }
 }

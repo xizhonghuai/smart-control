@@ -1,13 +1,12 @@
-package com.smart.service.commonmanger;
+package com.smart.communication;
 
-import com.smart.hander.InterceptHandler;
-import com.smart.hander.businesshandler.DefaultBusinessHandler;
+import com.smart.communication.hander.InterceptHandler;
+import com.smart.communication.hander.businesshandler.DefaultBusinessHandler;
 import com.toolutils.ConstantUtils;
 import com.transmission.server.TcpServer;
 import com.transmission.server.core.AbstractBootServer;
 import com.transmission.server.core.BootServerParameter;
 import com.transmission.server.core.ServerUtils;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,9 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/4/15
  * @Version V1.0
  **/
-@Component
-public class ServerManage {
-
+public class ServerAPI {
 
     public synchronized void createService(BootServerParameter bootServerParameter) throws Exception {
         /*if (!StringUtils.isEmpty(bootServerParameter.getHandlerClassName()) && !StringUtils.isEmpty(bootServerParameter.getHandlerJarFile())) {
@@ -63,7 +60,6 @@ public class ServerManage {
         }
     }
 
-
     public synchronized boolean startServer(String serviceId) {
         AbstractBootServer cloudIotServer = getCloudIotServer(serviceId);
         if (cloudIotServer != null) {
@@ -74,7 +70,6 @@ public class ServerManage {
         }
         return false;
     }
-
 
     public void stopServer(String serviceId) {
         AbstractBootServer cloudIotServer = getCloudIotServer(serviceId);
@@ -96,7 +91,6 @@ public class ServerManage {
         {
             // todo del db
         }
-
     }
     public AbstractBootServer getCloudIotServer(String serviceId) {
         return (AbstractBootServer) ServerUtils.getServer(serviceId);

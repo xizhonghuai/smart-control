@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.smart.debug;
+package com.smart.communication.debug;
 
 import org.springframework.stereotype.Component;
 

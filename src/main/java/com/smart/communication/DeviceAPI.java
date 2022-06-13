@@ -1,4 +1,4 @@
-package com.smart.debug;
+package com.smart.communication;
 
 import com.transmission.server.core.AbstractBootServer;
 import com.transmission.server.core.ConnectProperty;
@@ -20,18 +20,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/4/24
  * @Version V1.0
  **/
-@Component
-public class DeviceDebug {
+public class DeviceAPI {
+    private static final String serviceId = "smart-control";
 
 
-    public void sendCmd(String serviceId, Object cmd) {
+    public void sendCmd(Object cmd) {
         AbstractBootServer server = (AbstractBootServer) ServerUtils.getServer(serviceId);
         if (server != null) {
             WriteMsgUtils.sendMsg(server.getManagedSessions(), cmd);
         }
     }
 
-    public void sendCmd(String serviceId, String redId, Object cmd) {
+    public void sendCmd(String redId, Object cmd) {
         AbstractBootServer server = (AbstractBootServer) ServerUtils.getServer(serviceId);
         if (server != null) {
             WriteMsgUtils.sendMsg(server.getManagedSessions(), cmd, redId);
@@ -72,8 +72,7 @@ public class DeviceDebug {
 
 
     public List<ConnectProperty> getOnlineDeviceList() {
-
-        Map<String, Object> servers = (ConcurrentHashMap<String, Object>) ServerUtils.getServers();
+        ConcurrentHashMap<String, Object> servers = (ConcurrentHashMap<String, Object>) ServerUtils.getServers();
         List<ConnectProperty> connectPropertyList = new ArrayList<>();
         servers.forEach((id, o) -> {
             AbstractBootServer server = (AbstractBootServer) o;
@@ -81,9 +80,7 @@ public class DeviceDebug {
             managedSessions.forEach((aLong, ioSession) -> {
                 ConnectProperty connectProperty = (ConnectProperty) ioSession.getAttribute("connectProperty");
                 if (connectProperty != null) {
-
                     connectPropertyList.add(connectProperty);
-
                 }
             });
         });

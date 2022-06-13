@@ -7,11 +7,10 @@ package com.smart.config;
  * @Date 2020/4/24
  * @Version V1.0
  **/
-public class SystemConstantUnit {
+public class ConstantUnit {
 
     public final static String PERMISSION = "no permission";
-
-
+    public final static String API_PREFIX = "api/v1/";
 
 
 }

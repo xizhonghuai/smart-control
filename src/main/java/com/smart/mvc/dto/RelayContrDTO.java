@@ -1,4 +1,4 @@
-package com.smart.dto;
+package com.smart.mvc.dto;
 
 import lombok.Data;
 

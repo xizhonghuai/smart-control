@@ -1,7 +1,7 @@
-package com.smart.debug.push;
+package com.smart.communication.debug.push;
 
 import com.alibaba.fastjson.JSON;
-import com.smart.debug.WSService;
+import com.smart.communication.debug.WSService;
 import com.msgpush.MessagePush;
 
 
