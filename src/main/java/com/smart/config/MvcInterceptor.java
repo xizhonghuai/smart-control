@@ -37,9 +37,9 @@ public class MvcInterceptor implements HandlerInterceptor {
         } catch (TokenExpiredException e) {
             failMessage = "token已过期";
         } catch (SignatureVerificationException e) {
-            failMessage = "签名错误!";
+            failMessage = "签名错误";
         } catch (AlgorithmMismatchException e) {
-            failMessage = "加密算法不匹配!";
+            failMessage = "加密算法不匹配";
         } catch (Exception e) {
             e.printStackTrace();
             failMessage = "无效token";

@@ -21,19 +21,17 @@ public class AuthContext {
         return instance;
     }
 
-    private ThreadLocal<Object> objThreadLocal = ThreadLocal.withInitial(() -> null);
+    private final ThreadLocal<Object> objThreadLocal = ThreadLocal.withInitial(() -> null);
 
     public void setObj(Object obj) {
         this.objThreadLocal.set(obj);
     }
 
     public Object getObj() {
-
         return this.objThreadLocal.get();
     }
 
     public void clear() {
-
           this.objThreadLocal.remove();
     }
 
