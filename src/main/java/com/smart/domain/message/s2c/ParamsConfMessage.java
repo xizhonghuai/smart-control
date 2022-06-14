@@ -15,6 +15,7 @@ import java.util.List;
 @Data
 public class ParamsConfMessage extends Message implements S2cMessage {
     private String deviceId;
+    private Body params;
 
     @Data
     public static class Body {
