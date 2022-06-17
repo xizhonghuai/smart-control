@@ -1,8 +1,8 @@
-package com.smart.mvc.service.impl;
+package com.smart.mvc.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.smart.mvc.entity.Role;
 import com.smart.mvc.mapper.RoleMapper;
-import com.smart.mvc.service.IRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-06-17
  */
 @Service
-public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
+public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IService<Role> {
 
 }

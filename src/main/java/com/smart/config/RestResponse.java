@@ -9,28 +9,28 @@ import lombok.Data;
 @Data
 public class RestResponse<T> {
     private T data;
+    private Integer code;
     private String message;
-    private Boolean status;
 
     public RestResponse() {
     }
 
-    public RestResponse(T data, String message, Boolean status) {
+    public RestResponse(T data, Integer code, String message) {
         this.data = data;
+        this.code = code;
         this.message = message;
-        this.status = status;
     }
 
     public static <T> RestResponse<T> success(T t) {
-        return new RestResponse<>(t, null, true);
+        return new RestResponse<>(t, 20000, null);
     }
 
     public static RestResponse<Object> success() {
         return success(null);
     }
 
-    public static RestResponse<Object> fail(String err) {
-        return new RestResponse<>(null, err, false);
+    public static RestResponse<?> fail(String err) {
+        return new RestResponse<>(null, 40000,err);
     }
 
 }

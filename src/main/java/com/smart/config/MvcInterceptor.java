@@ -1,14 +1,11 @@
 package com.smart.config;
 
-import com.alibaba.fastjson.JSON;
-import com.auth0.jwt.exceptions.AlgorithmMismatchException;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.smart.utils.JWTUtils;
+import com.smart.communication.AuthenticationService;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 /**
  * @ClassName MvcInterceptor
@@ -20,35 +17,18 @@ import javax.servlet.http.HttpServletResponse;
 
 public class MvcInterceptor implements HandlerInterceptor {
 
+    private final AuthenticationService authenticationService = new AuthenticationService();
+
+    private static final String[] URL_WHITE_LIST = {"login", "reg"};
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url = request.getRequestURI();
+        if (Arrays.stream(URL_WHITE_LIST).anyMatch(url::contains)) {
+            return true;
+        }
         String token = request.getHeader("token");
-        //todo
-        if (token == null) {
-            return true;
-        }
-        String failMessage;
-        try {
-            JWTUtils.verify(token);
-            AuthContext.get().setObj(JWTUtils.getJWT(token).getClaims());
-            return true;
-        } catch (TokenExpiredException e) {
-            failMessage = "token已过期";
-        } catch (SignatureVerificationException e) {
-            failMessage = "签名错误";
-        } catch (AlgorithmMismatchException e) {
-            failMessage = "加密算法不匹配";
-        } catch (Exception e) {
-            e.printStackTrace();
-            failMessage = "无效token";
-        }
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(RestResponse.fail(failMessage)));
-
-        return false;
-
+        return authenticationService.authentication(token, response);
 
 //        if ("/".equals(url)) {
 //            response.sendRedirect(Initialization.webUrl + "/treaweb/webmis/login.html");

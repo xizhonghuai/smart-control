@@ -1,6 +1,11 @@
 package com.smart.utils;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.smart.config.ConstantUnit;
 
 import java.util.Date;
 import java.util.function.Supplier;
@@ -13,6 +18,26 @@ import java.util.function.Supplier;
 public class Utils {
     public static String getDate() {
         return DateUtil.format(new Date(), "yyyyMMddHHmm");
+    }
+
+    public static <T> Wrapper<T> queryWrapper(T t) {
+        return Wrappers.query(t);
+    }
+
+    public static Long createSnowflakeId() {
+        return IdUtil.getSnowflakeNextId();
+    }
+
+    public static <T> void insertBeforeAction(T t) {
+        BeanUtil.setProperty(t, "id", createSnowflakeId());
+        updateBeforeAction(t, ConstantUnit.adminId);
+    }
+
+    public static <T> void updateBeforeAction(T t, Long operationId) {
+        BeanUtil.setProperty(t, "createdBy", operationId);
+        BeanUtil.setProperty(t, "updatedBy", operationId);
+        BeanUtil.setProperty(t, "createdDate", new Date());
+        BeanUtil.setProperty(t, "updatedDate", new Date());
     }
 
     public static class SyncResult<T> {
@@ -56,32 +81,5 @@ public class Utils {
         }
 
     }
-
-    public static void main(String[] args) {
-        String[] value = {null};
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            value[0] = "hhh";
-
-        }).start();
-
-        SyncResult<String> syncResult = new SyncResult<>();
-        String s = syncResult.get(new Supplier<String>() {
-            @Override
-            public String get() {
-                return value[0];
-            }
-        });
-
-        System.out.println(s);
-
-
-    }
-
 
 }

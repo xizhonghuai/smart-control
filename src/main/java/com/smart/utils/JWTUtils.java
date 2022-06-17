@@ -1,6 +1,7 @@
 package com.smart.utils;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -28,7 +29,7 @@ public class JWTUtils {
      * @return
      */
     public static String createToken(Object obj) {
-        Map<String, Object> map = BeanUtil.beanToMap(obj);
+        String jsonString = JSON.toJSONString(obj);
         //获取日历对象
         Calendar calendar = Calendar.getInstance();
         //默认7天过期
@@ -36,11 +37,7 @@ public class JWTUtils {
         //新建一个JWT的Builder对象
         JWTCreator.Builder builder = JWT.create();
         //将map集合中的数据设置进payload
-        map.forEach((k, v) -> {
-            if (v != null) {
-                builder.withClaim(k, v.toString());
-            }
-        });
+        builder.withClaim("account", jsonString);
         //设置过期时间和签名
         return builder
                 .withExpiresAt(calendar.getTime())

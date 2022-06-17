@@ -1,8 +1,8 @@
-package com.smart.mvc.service.impl;
+package com.smart.mvc.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.smart.mvc.entity.ShareDevice;
 import com.smart.mvc.mapper.ShareDeviceMapper;
-import com.smart.mvc.service.IShareDeviceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2022-06-17
  */
 @Service
-public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, ShareDevice> implements IShareDeviceService {
+public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, ShareDevice> implements IService<ShareDevice> {
 
 }

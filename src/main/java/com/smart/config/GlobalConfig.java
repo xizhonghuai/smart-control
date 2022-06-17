@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 import javax.servlet.MultipartConfigElement;
@@ -20,9 +19,7 @@ import javax.servlet.MultipartConfigElement;
  * @Version V1.0
  **/
 @Configuration
-public class GloConfig {
-
-
+public class GlobalConfig {
 
 
     @Bean
@@ -31,12 +28,11 @@ public class GloConfig {
         FastJsonConfig fastJsonConfig = new FastJsonConfig();
         fastJsonConfig.setSerializerFeatures(SerializerFeature.PrettyFormat);
         fastConverter.setFastJsonConfig(fastJsonConfig);
-        HttpMessageConverter<?> converter = fastConverter;
-        return new HttpMessageConverters(converter);
+        return new HttpMessageConverters(fastConverter);
     }
 
     @Bean
-    public MultipartConfigElement multipartConfigElement(){
+    public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         factory.setMaxFileSize("100MB");
         factory.setMaxRequestSize("100MB");
@@ -45,10 +41,14 @@ public class GloConfig {
 
 
     @Bean
-    public ServerEndpointExporter serverEndpointExporter(){
+    public ServerEndpointExporter serverEndpointExporter() {
         return new ServerEndpointExporter();
     }
 
+    @Bean
+    public GlobalExceptionHandler globalExceptionHandler() {
+        return new GlobalExceptionHandler();
+    }
 
 
 }

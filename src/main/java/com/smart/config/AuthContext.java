@@ -1,5 +1,7 @@
 package com.smart.config;
 
+import com.smart.mvc.entity.Account;
+
 /**
  * @ClassName AuthContext
  * @Description: TODO
@@ -23,16 +25,24 @@ public class AuthContext {
 
     private final ThreadLocal<Object> objThreadLocal = ThreadLocal.withInitial(() -> null);
 
-    public void setObj(Object obj) {
+    private void setObj(Object obj) {
         this.objThreadLocal.set(obj);
     }
 
-    public Object getObj() {
+    private Object getObj() {
         return this.objThreadLocal.get();
     }
 
     public void clear() {
-          this.objThreadLocal.remove();
+        this.objThreadLocal.remove();
+    }
+
+    public void setLoginUser(Account account) {
+        setObj(account);
+    }
+
+    public Account getLoginUser() {
+        return (Account) getObj();
     }
 
 
