@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * ACCOUNT 前端控制器
+ * SHARE_DEVICE 前端控制器
  * </p>
  *
  * @author xizhonghuai
  * @since 2022-06-17
  */
 @RestController
-@RequestMapping("/account")
-public class AccountController {
+@RequestMapping("/share-device")
+public class ShareDeviceController {
 
 }

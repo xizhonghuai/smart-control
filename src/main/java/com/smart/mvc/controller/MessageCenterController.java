@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * ACCOUNT 前端控制器
+ * MESSAGE_CENTER 前端控制器
  * </p>
  *
  * @author xizhonghuai
  * @since 2022-06-17
  */
 @RestController
-@RequestMapping("/account")
-public class AccountController {
+@RequestMapping("/message-center")
+public class MessageCenterController {
 
 }

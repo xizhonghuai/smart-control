@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * ACCOUNT 前端控制器
+ * ACCOUNT_DEVICE_XREF 前端控制器
  * </p>
  *
  * @author xizhonghuai
  * @since 2022-06-17
  */
 @RestController
-@RequestMapping("/account")
-public class AccountController {
+@RequestMapping("/account-device-xref")
+public class AccountDeviceXrefController {
 
 }
