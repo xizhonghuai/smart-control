@@ -1,5 +1,6 @@
 package com.smart.mvc.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.smart.cache.CacheService;
 import com.smart.communication.DeviceAPI;
 import com.smart.domain.message.Message;
@@ -24,13 +25,16 @@ public class DeviceControlService {
     private final DeviceAPI deviceAPI = new DeviceAPI();
     @Autowired
     private CacheService cacheService;
+    @Autowired
+    private CommandPoolService commandPoolService;
 
     public List<ConnectProperty> onlineDevice() {
         return deviceAPI.getOnlineDeviceList();
     }
 
-    public Message deviceMessage(String deviceId) {
-        return (Message) cacheService.getValue(deviceId);
+    public Message deviceMessage(String deviceId, String code) {
+        String key = StrUtil.isBlank(code) ? deviceId : String.format("%s,%s", deviceId, code);
+        return (Message) cacheService.getValue(key);
     }
 
     public String deviceNetStatus(String deviceId) {
@@ -52,6 +56,7 @@ public class DeviceControlService {
         String deviceId = paramsConfMessage.getDeviceId();
         checkDevice(deviceId);
         deviceAPI.sendCmd(deviceId, paramsConfMessage);
+        commandPoolService.add(deviceId, paramsConfMessage);
         if (isSync <= 0) {
             return null;
         }
@@ -65,6 +70,7 @@ public class DeviceControlService {
         queryMessage.setDeviceId(deviceId);
         queryMessage.setCode(MessageUtil.getMessageCode(StatusQueryMessage.class));
         deviceAPI.sendCmd(deviceId, queryMessage);
+        commandPoolService.add(deviceId, queryMessage);
         if (isSync == 0) {
             return null;
         }
@@ -78,10 +84,15 @@ public class DeviceControlService {
         paramsQueryMessage.setDeviceId(deviceId);
         paramsQueryMessage.setCode(MessageUtil.getMessageCode(ParamsQueryMessage.class));
         deviceAPI.sendCmd(deviceId, paramsQueryMessage);
+        commandPoolService.add(deviceId, paramsQueryMessage);
         if (isSync == 0) {
             return null;
         }
         cacheService.invalid(deviceId);
         return new Utils.SyncResult<Message>().get(() -> (Message) cacheService.getValue(deviceId));
+    }
+
+    public List<CommandPoolService.Command> commandPoolList() {
+        return commandPoolService.getCommands();
     }
 }

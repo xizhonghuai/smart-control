@@ -12,6 +12,8 @@ public class ConstantUnit {
     public final static String PERMISSION = "no permission";
     public final static String API_PREFIX = "api/v1/";
     public final static Long adminId = 1L;
+    public final static Long adminRoleId = 1L;
+
 
 
 }

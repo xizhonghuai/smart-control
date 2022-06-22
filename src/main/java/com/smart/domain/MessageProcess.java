@@ -10,6 +10,7 @@ import com.smart.domain.message.c2s.RegisterMessage;
 import com.smart.domain.message.c2s.TimingMessage;
 import com.smart.domain.message.s2c.RegisterMessageAck;
 import com.smart.domain.message.s2c.TimingMessageAck;
+import com.smart.mvc.service.CommandPoolService;
 import com.smart.utils.Utils;
 import com.transmission.server.core.IotSession;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +23,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MessageProcess {
     private final CacheService cacheService = CacheService.getCacheService();
+    public final CommandPoolService commandPoolService = CommandPoolService.getCommandPoolService();
 
     public void accept(IotSession iotSession, Object message) {
         Message messageObject = MessageUtil.parse(message);
+        String code = messageObject.getCode();
+        cacheService.setValue(String.format("%s,%s", iotSession.getDeviceId(), code), messageObject);
         cacheService.setValue(iotSession.getDeviceId(), messageObject);
+        commandPoolService.remove(iotSession.getDeviceId(), code);
         if (messageObject instanceof RegisterMessage) {
             RegisterMessage registerMessage = (RegisterMessage) messageObject;
             String deviceId = registerMessage.getDeviceId();

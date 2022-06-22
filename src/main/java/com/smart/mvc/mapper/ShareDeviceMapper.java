@@ -2,6 +2,9 @@ package com.smart.mvc.mapper;
 
 import com.smart.mvc.entity.ShareDevice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.smart.mvc.vo.ShareDeviceVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2022-06-17
  */
 public interface ShareDeviceMapper extends BaseMapper<ShareDevice> {
-
+    List<ShareDeviceVO> shareList();
 }

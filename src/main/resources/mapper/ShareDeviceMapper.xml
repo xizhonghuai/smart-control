@@ -4,7 +4,21 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, created_by, created_date, updated_by, updated_date, from_account_id, to_account_id, device_id
+        id
+        , created_by, created_date, updated_by, updated_date, from_account_id, to_account_id, device_id
     </sql>
+    <select id="shareList" resultType="com.smart.mvc.vo.ShareDeviceVO">
+        select d.name,
+               d.id as device_table_id,
+               d.device_id,
+               sd.to_account_id,
+               a.name,
+               sd.from_account_id,
+               sd.created_by,
+               sd.id
+        from share_device sd
+                 left join device d on sd.device_id = d.id
+                 left join account a on a.id = sd.to_account_id
+    </select>
 
 </mapper>

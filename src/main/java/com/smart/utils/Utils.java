@@ -4,10 +4,13 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.smart.config.ConstantUnit;
+import com.smart.config.AuthContext;
 
 import java.util.Date;
+import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -24,16 +27,34 @@ public class Utils {
         return Wrappers.query(t);
     }
 
+    public static <T> LambdaQueryWrapper<T> lambdaQuery(Class<T> tClass) {
+        return Wrappers.lambdaQuery(tClass);
+    }
+
+    public static <T> Wrapper<T> updateWrapper(T t) {
+        return Wrappers.update(t);
+    }
+
+    public static <T> LambdaUpdateWrapper<T> lambdaUpdate(Class<T> tClass) {
+        return Wrappers.lambdaUpdate(tClass);
+    }
+
+
     public static Long createSnowflakeId() {
         return IdUtil.getSnowflakeNextId();
     }
 
     public static <T> void insertBeforeAction(T t) {
         BeanUtil.setProperty(t, "id", createSnowflakeId());
-        updateBeforeAction(t, ConstantUnit.adminId);
+        updateBeforeAction(t);
     }
 
-    public static <T> void updateBeforeAction(T t, Long operationId) {
+    public static <T> void insertBeforeAction(List<T> list) {
+        list.forEach(Utils::insertBeforeAction);
+    }
+
+    public static <T> void updateBeforeAction(T t) {
+        Long operationId = AuthContext.get().getLoginUserId();
         BeanUtil.setProperty(t, "createdBy", operationId);
         BeanUtil.setProperty(t, "updatedBy", operationId);
         BeanUtil.setProperty(t, "createdDate", new Date());

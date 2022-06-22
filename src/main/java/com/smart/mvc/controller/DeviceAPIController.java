@@ -4,6 +4,7 @@ import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
 import com.smart.domain.message.Message;
 import com.smart.domain.message.s2c.ParamsConfMessage;
+import com.smart.mvc.service.CommandPoolService;
 import com.smart.mvc.service.DeviceControlService;
 import com.transmission.server.core.ConnectProperty;
 import io.swagger.annotations.Api;
@@ -34,7 +35,14 @@ public class DeviceAPIController {
     @GetMapping("device-message")
     @ApiOperation("获取设备最新消息")
     public RestResponse<Message> deviceMessage(@RequestParam("deviceId") String deviceId) {
-        return RestResponse.success(service.deviceMessage(deviceId));
+        return RestResponse.success(service.deviceMessage(deviceId, null));
+    }
+
+    @GetMapping("device-message/{code}")
+    @ApiOperation("根据消息code获取设备最新消息")
+    public RestResponse<Message> deviceMessage(@RequestParam("deviceId") String deviceId
+            , @PathVariable("code") String code) {
+        return RestResponse.success(service.deviceMessage(deviceId, code));
     }
 
     @GetMapping("device-net-status")
@@ -77,6 +85,12 @@ public class DeviceAPIController {
     @ApiOperation("查询设备运行参数数据(同步方式)")
     public RestResponse<Message> deviceParamsSync(@RequestParam("deviceId") String deviceId) {
         return RestResponse.success(service.deviceParams(1, deviceId));
+    }
+
+    @GetMapping("command-list")
+    @ApiOperation("待发送命令")
+    public RestResponse<List<CommandPoolService.Command>> commandPoolList() {
+        return RestResponse.success(service.commandPoolList());
     }
 
 }

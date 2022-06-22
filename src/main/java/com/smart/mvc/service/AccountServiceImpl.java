@@ -38,6 +38,9 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> {
         if (!account.getPassword().equals(password)) {
             throw new RuntimeException("密码错误");
         }
+        if (account.getEnabled() == 0) {
+            throw new RuntimeException("该账号已禁用");
+        }
         return authenticationService.createToken(account.setPassword(null));
     }
 

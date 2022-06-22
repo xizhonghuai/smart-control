@@ -2,6 +2,8 @@ package com.smart.config;
 
 import com.smart.mvc.entity.Account;
 
+import java.util.Objects;
+
 /**
  * @ClassName AuthContext
  * @Description: TODO
@@ -43,6 +45,20 @@ public class AuthContext {
 
     public Account getLoginUser() {
         return (Account) getObj();
+    }
+
+    public Long getLoginUserId() {
+        Account account = (Account) getObj();
+        return account == null ? ConstantUnit.adminId : account.getId();
+    }
+
+    public Long getLoginUserRoleId() {
+        Account account = (Account) getObj();
+        return account == null ? ConstantUnit.adminRoleId : account.getRoleId();
+    }
+
+    public Boolean isAdmin() {
+      return Objects.equals(getLoginUserRoleId(),ConstantUnit.adminRoleId);
     }
 
 

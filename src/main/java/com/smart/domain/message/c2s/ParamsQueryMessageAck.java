@@ -15,11 +15,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ParamsQueryMessageAck extends MessageAck {
-    private Body data;
+    private List<Body> data;
     @Data
     public static class Body {
         //PARAMS
-        private Integer workMode;
+        private Integer channel;
         private Integer motorDelay;
         private List<ParamsConfMessage.Time> timeList;
 
