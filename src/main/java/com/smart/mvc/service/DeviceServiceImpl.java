@@ -1,8 +1,10 @@
 package com.smart.mvc.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.smart.config.AuthContext;
 import com.smart.mvc.dto.AddDeviceDTO;
 import com.smart.mvc.dto.EditDeviceDTO;
 import com.smart.mvc.dto.QueryDeviceDTO;
@@ -13,8 +15,10 @@ import com.smart.utils.Utils;
 import com.transmission.server.core.ConnectProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -32,11 +36,33 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     @Autowired
     private DeviceControlService deviceControlService;
 
+    @Transactional(rollbackFor = Exception.class)
     public Long addDevice(AddDeviceDTO addDeviceDTO) {
         Device device = BeanUtil.toBean(addDeviceDTO, Device.class);
-        Utils.insertBeforeAction(device);
-        save(device);
+        Device oldDevice = getOne(lambdaQuery().eq(Device::getDeviceId, addDeviceDTO.getDeviceId()));
+        if (oldDevice != null) {
+            device.setId(oldDevice.getId());
+        } else {
+            Utils.insertBeforeAction(device);
+        }
+        saveOrUpdate(device);
+        accountDeviceXrefService.bind(device.getId());
         return device.getId();
+    }
+
+    public void addDeviceBatch(List<String> deviceIds) {
+        if (!AuthContext.get().isAdmin()) {
+            throw new RuntimeException("此操作没有权限");
+        }
+        if (CollectionUtil.isEmpty(deviceIds)) {
+            return;
+        }
+        List<Device> devices = deviceIds.stream().distinct().map(deviceId -> new Device().setDeviceId(deviceId)
+                .setId(Utils.createSnowflakeId())
+                .setName("未命名")
+                .setCreatedBy(AuthContext.get().getLoginUserId())
+                .setUpdatedBy(AuthContext.get().getLoginUserId())).collect(Collectors.toList());
+        saveBatch(devices);
     }
 
     public Boolean editDevice(EditDeviceDTO editDeviceDTO) {
@@ -49,7 +75,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
     public Boolean deleteDevice(Long id) {
         accountDeviceXrefService.deviceAuthVerify(id);
-        return removeById(id);
+//        removeById(id);
+        accountDeviceXrefService.unBind(id);
+        return true;
     }
 
 

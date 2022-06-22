@@ -30,6 +30,13 @@ public class DeviceController {
     @Autowired
     private DeviceServiceImpl deviceService;
 
+    @PostMapping("add-batch")
+    @ApiOperation("批量添加")
+    public RestResponse<Boolean> addDevice(@RequestBody List<String> deviceIds) {
+        deviceService.addDeviceBatch(deviceIds);
+        return RestResponse.success(true);
+    }
+
     @PostMapping("add")
     @ApiOperation("添加")
     public RestResponse<Long> addDevice(@RequestBody AddDeviceDTO addDeviceDTO) {
@@ -42,7 +49,7 @@ public class DeviceController {
         return RestResponse.success(deviceService.editDevice(editDeviceDTO));
     }
 
-    @PutMapping("delete/{id}")
+    @DeleteMapping("delete/{id}")
     @ApiOperation("删除")
     public RestResponse<Boolean> deleteDevice(@PathVariable("id") Long id) {
         return RestResponse.success(deviceService.deleteDevice(id));

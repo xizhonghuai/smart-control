@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.config.AuthContext;
-import com.smart.config.ConstantUnit;
 import com.smart.mvc.entity.AccountDeviceXref;
 import com.smart.mvc.entity.Device;
 import com.smart.mvc.mapper.AccountDeviceXrefMapper;
@@ -49,20 +48,6 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
         throw new RuntimeException("没有权限操作此设备");
     }
 
-    public void deviceAuthVerify(List<Long> deviceIds) {
-        Long loginUserId = AuthContext.get().getLoginUserId();
-        if (AuthContext.get().isAdmin()) {
-            return;
-        }
-        List<AccountDeviceXref> list = list(Utils.queryWrapper(new AccountDeviceXref().setAccountId(loginUserId)));
-        List<Long> collect = list.stream().map(AccountDeviceXref::getId).collect(Collectors.toList());
-        deviceIds.forEach(v -> {
-            if (!collect.contains(v)) {
-                throw new RuntimeException("没有权限操作" + v + "设备");
-            }
-        });
-    }
-
     public List<Device> authFilter(List<Device> src, boolean containsShared) {
         Long loginUserId = AuthContext.get().getLoginUserId();
         if (CollectionUtil.isEmpty(src) || AuthContext.get().isAdmin()) {
@@ -83,5 +68,32 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
 
     public List<Long> shareToMe() {
         return shareDeviceService.shareToMe();
+    }
+
+    public Boolean isBind(Long deviceId) {
+        List<AccountDeviceXref> list = list(lambdaQuery().eq(AccountDeviceXref::getDeviceId, deviceId));
+        return list.size() == 2;
+    }
+
+    public void bind(Long deviceId) {
+        if (AuthContext.get().isAdmin()) {
+            return;
+        }
+        if (isBind(deviceId)) {
+            throw new RuntimeException("已绑定其他账户，请先解绑");
+        }
+        AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
+        Utils.insertBeforeAction(accountDeviceXref);
+        save(accountDeviceXref);
+    }
+
+    public void unBind(Long deviceId) {
+        if (AuthContext.get().isAdmin()) {
+            return;
+        }
+        List<AccountDeviceXref> list = list(lambdaQuery().eq(AccountDeviceXref::getDeviceId, deviceId).eq(AccountDeviceXref::getAccountId, AuthContext.get().getLoginUserId()));
+        if (!list.isEmpty()) {
+            removeByIds(list.stream().map(AccountDeviceXref::getId).collect(Collectors.toList()));
+        }
     }
 }

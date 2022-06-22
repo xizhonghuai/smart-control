@@ -84,7 +84,6 @@ public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, Share
         if (CollectionUtil.isEmpty(deviceIds)) {
             throw new RuntimeException("空列表");
         }
-        accountDeviceXrefService.deviceAuthVerify(deviceIds);
         List<ShareDevice> list = list(Utils.lambdaQuery(ShareDevice.class).eq(ShareDevice::getFromAccountId, AuthContext.get().getLoginUserId())
                 .eq(ShareDevice::getToAccountId, deleteShareDTO.getToAccountId())
                 .in(ShareDevice::getDeviceId, deviceIds));
