@@ -11,6 +11,7 @@ import com.smart.domain.message.c2s.TimingMessage;
 import com.smart.domain.message.s2c.RegisterMessageAck;
 import com.smart.domain.message.s2c.TimingMessageAck;
 import com.smart.mvc.service.CommandPoolService;
+import com.smart.mvc.service.DeviceServiceImpl;
 import com.smart.utils.Utils;
 import com.transmission.server.core.IotSession;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MessageProcess {
     private final CacheService cacheService = CacheService.getCacheService();
-    public final CommandPoolService commandPoolService = CommandPoolService.getCommandPoolService();
+    private final CommandPoolService commandPoolService = CommandPoolService.getCommandPoolService();
+    private final DeviceServiceImpl deviceService = DeviceServiceImpl.get();
 
     public void accept(IotSession iotSession, Object message) {
         Message messageObject = MessageUtil.parse(message);
@@ -35,6 +37,7 @@ public class MessageProcess {
             RegisterMessage registerMessage = (RegisterMessage) messageObject;
             String deviceId = registerMessage.getDeviceId();
             iotSession.setDeviceId(deviceId);
+            deviceService.addDevice(deviceId);
             //ack
             RegisterMessageAck registerMessageAck = new RegisterMessageAck();
             registerMessageAck.setCode(MessageUtil.getMessageCode(RegisterMessageAck.class));

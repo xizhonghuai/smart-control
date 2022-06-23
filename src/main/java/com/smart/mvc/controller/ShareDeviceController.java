@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(ConstantUnit.API_PREFIX + "/share-device")
-@Api("共享设备")
+@Api(tags = "共享设备")
 public class ShareDeviceController {
     @Autowired
     private ShareDeviceServiceImpl shareDeviceService;

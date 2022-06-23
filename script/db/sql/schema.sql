@@ -96,8 +96,23 @@ CREATE TABLE MESSAGE_CENTER
     created_date DATETIME DEFAULT now() COMMENT '创建时间',
     updated_by   bigint COMMENT '更新人',
     updated_date DATETIME DEFAULT now() COMMENT '更新时间',
-    account_id   VARCHAR(255)  NOT NULL COMMENT '',
+    to_account_id  bigint  NOT NULL COMMENT '',
+    from_account_id  bigint  NOT NULL COMMENT '',
     message      VARCHAR(1024) NOT NULL COMMENT '',
-    unread       INT      DEFAULT 1 COMMENT '未读标记',
+    read_flag       INT      DEFAULT 0 COMMENT '读取标记',
     PRIMARY KEY (id)
 ) COMMENT = 'MESSAGE_CENTER';
+
+DROP TABLE IF EXISTS CUSTOM_DEVICE_CONFIG;
+CREATE TABLE CUSTOM_DEVICE_CONFIG
+(
+    id           bigint        NOT NULL COMMENT 'id',
+    created_by   bigint COMMENT '创建人',
+    created_date DATETIME DEFAULT now() COMMENT '创建时间',
+    updated_by   bigint COMMENT '更新人',
+    updated_date DATETIME DEFAULT now() COMMENT '更新时间',
+    account_id  bigint  NOT NULL COMMENT '',
+    config_name     VARCHAR(1024) NOT NULL COMMENT '',
+    config_cmd      VARCHAR(1024) NOT NULL COMMENT '',
+    PRIMARY KEY (id)
+) COMMENT = 'CUSTOM_DEVICE_CONFIG';

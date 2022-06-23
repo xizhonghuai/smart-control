@@ -60,6 +60,12 @@ public class AuthContext {
     public Boolean isAdmin() {
       return Objects.equals(getLoginUserRoleId(),ConstantUnit.adminRoleId);
     }
+    public Boolean isAgent() {
+        return Objects.equals(getLoginUserRoleId(),ConstantUnit.agentRoleId);
+    }
+    public Boolean isUser() {
+        return Objects.equals(getLoginUserRoleId(),ConstantUnit.userRoleId);
+    }
 
 
 }

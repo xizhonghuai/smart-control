@@ -12,5 +12,5 @@ public class QueryDeviceDTO {
     private String deviceId;
     private String name;
     private String imei;
-    private int netStatus;
+    private Integer netStatus;
 }

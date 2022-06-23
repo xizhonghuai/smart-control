@@ -13,6 +13,8 @@ public class ConstantUnit {
     public final static String API_PREFIX = "api/v1/";
     public final static Long adminId = 1L;
     public final static Long adminRoleId = 1L;
+    public final static Long agentRoleId = 2L;
+    public final static Long userRoleId = 3L;
 
 
 

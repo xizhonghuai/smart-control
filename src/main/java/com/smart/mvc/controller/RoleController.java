@@ -1,8 +1,9 @@
 package com.smart.mvc.controller;
 
 
+import com.smart.config.ConstantUnit;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2022-06-17
  */
 @RestController
-@RequestMapping("/role")
+@RequestMapping(ConstantUnit.API_PREFIX + "/role")
+@Api(tags = "账户角色控制")
 public class RoleController {
+
 
 }

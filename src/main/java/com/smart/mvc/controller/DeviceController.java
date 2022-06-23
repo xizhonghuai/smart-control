@@ -4,9 +4,12 @@ package com.smart.mvc.controller;
 import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
 import com.smart.mvc.dto.AddDeviceDTO;
+import com.smart.mvc.dto.DeviceBaseInfoDTO;
 import com.smart.mvc.dto.EditDeviceDTO;
 import com.smart.mvc.dto.QueryDeviceDTO;
+import com.smart.mvc.entity.Device;
 import com.smart.mvc.service.DeviceServiceImpl;
+import com.smart.mvc.vo.DeviceBaseInfoVO;
 import com.smart.mvc.vo.DeviceVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,17 +28,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(ConstantUnit.API_PREFIX + "/device")
-@Api("设备操作")
+@Api(tags = "设备操作")
 public class DeviceController {
     @Autowired
     private DeviceServiceImpl deviceService;
-
-    @PostMapping("add-batch")
-    @ApiOperation("批量添加")
-    public RestResponse<Boolean> addDevice(@RequestBody List<String> deviceIds) {
-        deviceService.addDeviceBatch(deviceIds);
-        return RestResponse.success(true);
-    }
 
     @PostMapping("add")
     @ApiOperation("添加")
@@ -59,5 +55,17 @@ public class DeviceController {
     @ApiOperation("列表")
     public RestResponse<List<DeviceVO>> list(QueryDeviceDTO queryDeviceDTO) {
         return RestResponse.success(deviceService.list(queryDeviceDTO));
+    }
+
+    @GetMapping("list-not-bind")
+    @ApiOperation("未绑定的Device")
+    public RestResponse<List<Device>> listNotBind() {
+        return RestResponse.success(deviceService.listNotBind());
+    }
+
+    @GetMapping("list-device-base-info")
+    @ApiOperation("基础信息")
+    public RestResponse<List<DeviceBaseInfoVO>> listDeviceBaseInfo(DeviceBaseInfoDTO dto) {
+        return RestResponse.success(deviceService.listDeviceBaseInfo(dto));
     }
 }

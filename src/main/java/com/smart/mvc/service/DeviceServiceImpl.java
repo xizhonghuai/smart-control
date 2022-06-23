@@ -1,15 +1,22 @@
 package com.smart.mvc.service;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.config.AuthContext;
+import com.smart.config.ConstantUnit;
+import com.smart.config.SpringUtil;
 import com.smart.mvc.dto.AddDeviceDTO;
+import com.smart.mvc.dto.DeviceBaseInfoDTO;
 import com.smart.mvc.dto.EditDeviceDTO;
 import com.smart.mvc.dto.QueryDeviceDTO;
+import com.smart.mvc.entity.Account;
+import com.smart.mvc.entity.AccountDeviceXref;
 import com.smart.mvc.entity.Device;
+import com.smart.mvc.entity.ShareDevice;
 import com.smart.mvc.mapper.DeviceMapper;
+import com.smart.mvc.vo.DeviceBaseInfoVO;
 import com.smart.mvc.vo.DeviceVO;
 import com.smart.utils.Utils;
 import com.transmission.server.core.ConnectProperty;
@@ -17,8 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -35,34 +44,35 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     private AccountDeviceXrefServiceImpl accountDeviceXrefService;
     @Autowired
     private DeviceControlService deviceControlService;
+    @Autowired
+    private ShareDeviceServiceImpl shareDeviceService;
+    @Autowired
+    private AccountServiceImpl accountService;
+
+    public static DeviceServiceImpl get() {
+        return SpringUtil.getObject(DeviceServiceImpl.class);
+    }
 
     @Transactional(rollbackFor = Exception.class)
     public Long addDevice(AddDeviceDTO addDeviceDTO) {
         Device device = BeanUtil.toBean(addDeviceDTO, Device.class);
-        Device oldDevice = getOne(lambdaQuery().eq(Device::getDeviceId, addDeviceDTO.getDeviceId()));
-        if (oldDevice != null) {
-            device.setId(oldDevice.getId());
-        } else {
-            Utils.insertBeforeAction(device);
+        List<Device> oldList = list(Utils.lambdaQuery(Device.class).eq(Device::getDeviceId, addDeviceDTO.getDeviceId()));
+        if (oldList.isEmpty()) {
+            throw new RuntimeException("该设备未注册");
         }
-        saveOrUpdate(device);
+        device.setId(oldList.get(0).getId());
+        updateById(device);
         accountDeviceXrefService.bind(device.getId());
         return device.getId();
     }
 
-    public void addDeviceBatch(List<String> deviceIds) {
-        if (!AuthContext.get().isAdmin()) {
-            throw new RuntimeException("此操作没有权限");
-        }
-        if (CollectionUtil.isEmpty(deviceIds)) {
-            return;
-        }
-        List<Device> devices = deviceIds.stream().distinct().map(deviceId -> new Device().setDeviceId(deviceId)
-                .setId(Utils.createSnowflakeId())
-                .setName("未命名")
-                .setCreatedBy(AuthContext.get().getLoginUserId())
-                .setUpdatedBy(AuthContext.get().getLoginUserId())).collect(Collectors.toList());
-        saveBatch(devices);
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteDevice(Long id) {
+        accountDeviceXrefService.deviceAuthVerify(id);
+        accountDeviceXrefService.unBind(id);
+        removeDevice(id);
+        return true;
     }
 
     public Boolean editDevice(EditDeviceDTO editDeviceDTO) {
@@ -70,14 +80,16 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         accountDeviceXrefService.deviceAuthVerify(id);
         Device device = BeanUtil.toBean(editDeviceDTO, Device.class);
         Utils.updateBeforeAction(device);
-        return update(Utils.updateWrapper(device));
+        return updateById(device);
     }
 
-    public Boolean deleteDevice(Long id) {
-        accountDeviceXrefService.deviceAuthVerify(id);
-//        removeById(id);
-        accountDeviceXrefService.unBind(id);
-        return true;
+    @Transactional(rollbackFor = Exception.class)
+    public void removeDevice(Long id) {
+        if (AuthContext.get().isAdmin()) {
+            removeById(id);
+            accountDeviceXrefService.remove(Utils.queryWrapper(new AccountDeviceXref().setDeviceId(id)));
+            shareDeviceService.remove(Utils.queryWrapper(new ShareDevice().setDeviceId(id)));
+        }
     }
 
 
@@ -91,6 +103,87 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return deviceVOS.stream().peek(deviceVO -> {
             deviceVO.setNetStatus(olineRegIds.contains(deviceVO.getDeviceId()) ? 1 : 0);
             deviceVO.setIsShare(shareIds.contains(deviceVO.getId()) ? 1 : 0);
+        }).collect(Collectors.toList());
+    }
+
+
+    public void addDevice(String deviceId) {
+        List<Device> oldList = list(Utils.lambdaQuery(Device.class).in(Device::getDeviceId, deviceId));
+        if (!oldList.isEmpty()) {
+            return;
+        }
+        Device device = new Device().setDeviceId(deviceId).setId(Utils.createSnowflakeId()).setName("未命名的设备").setCreatedBy(AuthContext.get().getLoginUserId()).setUpdatedBy(AuthContext.get().getLoginUserId());
+        save(device);
+    }
+
+    public void bindBatch(Long accountId, List<Long> deviceIds) {
+        accountDeviceXrefService.bindBatch(accountId, deviceIds);
+    }
+
+    public List<Device> listNotBind() {
+        if (!AuthContext.get().isAdmin()) {
+            return Collections.emptyList();
+        }
+        List<Device> list = list();
+        List<AccountDeviceXref> deviceXrefs = accountDeviceXrefService.list();
+        List<Long> bindDeviceIds = deviceXrefs.stream().map(AccountDeviceXref::getDeviceId).collect(Collectors.toList());
+        return list.stream().filter(v -> !bindDeviceIds.contains(v.getId())).collect(Collectors.toList());
+    }
+
+    public List<DeviceBaseInfoVO> listDeviceBaseInfo() {
+        return listDeviceBaseInfo(new DeviceBaseInfoDTO());
+    }
+
+    public List<DeviceBaseInfoVO> listDeviceBaseInfo(DeviceBaseInfoDTO dto) {
+        if (!AuthContext.get().isAdmin()) {
+            return Collections.emptyList();
+        }
+        List<Device> deviceList = list();
+        List<Account> accountList = accountService.list();
+        Map<Long, Account> accountMap = accountList.stream().collect(Collectors.toMap(Account::getId, v -> v));
+        List<AccountDeviceXref> accountDeviceXrefs = accountDeviceXrefService.list();
+        Map<Long, List<AccountDeviceXref>> deviceAccountMap = accountDeviceXrefs.stream().collect(Collectors.groupingBy(AccountDeviceXref::getDeviceId));
+        List<ConnectProperty> connectProperties = deviceControlService.onlineDevice();
+        List<String> olineRegIds = connectProperties.stream().map(ConnectProperty::getRegId).collect(Collectors.toList());
+        return deviceList.stream().map(device -> {
+            DeviceBaseInfoVO infoVO = BeanUtil.toBean(device, DeviceBaseInfoVO.class);
+            List<AccountDeviceXref> deviceXrefs = deviceAccountMap.get(device.getId());
+            if (deviceXrefs != null) {
+                List<Account> accounts = deviceXrefs.stream().map(v -> accountMap.get(v.getAccountId())).collect(Collectors.toList());
+                accounts.forEach(v -> {
+                    if (Objects.equals(v.getRoleId(), ConstantUnit.agentRoleId)) {
+                        infoVO.setAgentId(v.getId());
+                        infoVO.setAgentName(v.getName());
+                    }
+                    if (Objects.equals(v.getRoleId(), ConstantUnit.userRoleId)) {
+                        infoVO.setOwnerId(v.getId());
+                        infoVO.setOwnerName(v.getName());
+                    }
+                });
+            }
+            infoVO.setNetStatus(olineRegIds.contains(device.getDeviceId()) ? 1 : 0);
+            return infoVO;
+        }).filter(v -> {
+            boolean result = true;
+            if (StrUtil.isBlank(dto.getDeviceName())) {
+                result = v.getDeviceName().contains(dto.getDeviceName());
+            }
+            if (StrUtil.isBlank(dto.getDeviceId())) {
+                result = result && v.getDeviceId().contains(dto.getDeviceId());
+            }
+            if (Objects.equals(dto.getIsBind(), 0)) {
+                result = result && (v.getAgentId() == null && v.getOwnerId() == null);
+            }
+            if (StrUtil.isBlank(dto.getAgentName())) {
+                result = result && v.getAgentName().contains(dto.getAgentName());
+            }
+            if (StrUtil.isBlank(dto.getOwnerName())) {
+                result = result && v.getOwnerName().contains(dto.getOwnerName());
+            }
+            if (dto.getNetStatus() != null) {
+                result = result && v.getNetStatus() == dto.getNetStatus();
+            }
+            return result;
         }).collect(Collectors.toList());
     }
 

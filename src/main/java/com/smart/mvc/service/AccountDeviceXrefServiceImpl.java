@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.config.AuthContext;
+import com.smart.config.ConstantUnit;
+import com.smart.mvc.entity.Account;
 import com.smart.mvc.entity.AccountDeviceXref;
 import com.smart.mvc.entity.Device;
 import com.smart.mvc.mapper.AccountDeviceXrefMapper;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,8 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
 
     @Autowired
     private ShareDeviceServiceImpl shareDeviceService;
+    @Autowired
+    private AccountServiceImpl accountService;
 
     public void deviceAuthVerify(Long deviceId, boolean containsShared) {
         if (containsShared) {
@@ -71,8 +76,10 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
     }
 
     public Boolean isBind(Long deviceId) {
-        List<AccountDeviceXref> list = list(lambdaQuery().eq(AccountDeviceXref::getDeviceId, deviceId));
-        return list.size() == 2;
+        List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class).eq(AccountDeviceXref::getDeviceId, deviceId));
+        List<Long> accountIds = list.stream().map(AccountDeviceXref::getAccountId).distinct().collect(Collectors.toList());
+        List<Account> accounts = accountService.listByIds(accountIds);
+        return accounts.stream().anyMatch(v -> Objects.equals(v.getRoleId(), ConstantUnit.userRoleId));
     }
 
     public void bind(Long deviceId) {
@@ -82,18 +89,59 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
         if (isBind(deviceId)) {
             throw new RuntimeException("已绑定其他账户，请先解绑");
         }
-        AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
-        Utils.insertBeforeAction(accountDeviceXref);
-        save(accountDeviceXref);
+        List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class).eq(AccountDeviceXref::getDeviceId, deviceId));
+        if (list.stream().anyMatch(v -> Objects.equals(v.getAccountId(), AuthContext.get().getLoginUserId()))) {
+            return;
+        }
+        if (list.size() == 0 && AuthContext.get().isAgent()) {
+            AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
+            Utils.insertBeforeAction(accountDeviceXref);
+            save(accountDeviceXref);
+            return;
+        }
+        if (list.size() == 1 && AuthContext.get().isUser()) {
+            AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
+            Utils.insertBeforeAction(accountDeviceXref);
+            save(accountDeviceXref);
+            return;
+        }
+        throw new RuntimeException("非法绑定");
     }
 
     public void unBind(Long deviceId) {
         if (AuthContext.get().isAdmin()) {
             return;
         }
-        List<AccountDeviceXref> list = list(lambdaQuery().eq(AccountDeviceXref::getDeviceId, deviceId).eq(AccountDeviceXref::getAccountId, AuthContext.get().getLoginUserId()));
+        List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class).eq(AccountDeviceXref::getDeviceId, deviceId).eq(AccountDeviceXref::getAccountId, AuthContext.get().getLoginUserId()));
         if (!list.isEmpty()) {
             removeByIds(list.stream().map(AccountDeviceXref::getId).collect(Collectors.toList()));
         }
+    }
+
+    public void bindBatch(Long accountId, List<Long> deviceIds) {
+        Account account = accountService.getById(accountId);
+        if (!Objects.equals(account.getRoleId(), ConstantUnit.agentRoleId)) {
+            throw new RuntimeException("仅代理商账号使用");
+        }
+        List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class).in(AccountDeviceXref::getDeviceId, deviceIds).eq(AccountDeviceXref::getAccountId, accountId));
+        if (!list.isEmpty()) {
+            removeByIds(list.stream().map(AccountDeviceXref::getId).collect(Collectors.toList()));
+        }
+        List<AccountDeviceXref> collect = deviceIds.stream().distinct().map(deviceId -> new AccountDeviceXref().setAccountId(accountId).setDeviceId(deviceId)).collect(Collectors.toList());
+        Utils.insertBeforeAction(collect);
+        saveBatch(collect);
+    }
+
+    public List<Account> listAgentByDeviceId(List<Long> deviceIds) {
+        List<Account> accounts = accountService.list(Utils.queryWrapper(new Account().setRoleId(ConstantUnit.agentRoleId)));
+        Map<Long, Account> accountMap = accounts.stream().collect(Collectors.toMap(Account::getId, v -> v));
+        List<AccountDeviceXref> xrefs = list(Utils.lambdaQuery(AccountDeviceXref.class).in(AccountDeviceXref::getDeviceId, deviceIds));
+        return xrefs.stream().map(AccountDeviceXref::getAccountId).distinct().map(accountMap::get).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public List<Account> listAgentByAccountId(Long accountId) {
+        List<AccountDeviceXref> accountDeviceXrefs = list(Utils.queryWrapper(new AccountDeviceXref().setAccountId(accountId)));
+        List<Long> deviceIds = accountDeviceXrefs.stream().map(AccountDeviceXref::getDeviceId).collect(Collectors.toList());
+        return listAgentByDeviceId(deviceIds);
     }
 }

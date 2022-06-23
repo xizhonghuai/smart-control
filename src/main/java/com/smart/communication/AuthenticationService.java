@@ -21,9 +21,9 @@ import java.util.Map;
  **/
 public class AuthenticationService {
     public boolean authentication(String token, HttpServletResponse response) throws IOException {
-        if (token == null) {
+     /*   if (token == null) {
             return true;
-        }
+        }*/
         String failMessage;
         try {
             JWTUtils.verify(token);
