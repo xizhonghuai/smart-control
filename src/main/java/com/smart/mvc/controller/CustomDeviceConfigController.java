@@ -36,19 +36,19 @@ public class CustomDeviceConfigController {
     }
 
     @PostMapping("add")
-    @ApiOperation("新增")
+    @ApiOperation("新增场景")
     public RestResponse<Boolean> add(@RequestBody CustomDeviceConfigDTO dto) {
         return RestResponse.success(customDeviceConfigService.add(dto));
     }
 
     @DeleteMapping("delete/{id}")
-    @ApiOperation("删除")
+    @ApiOperation("删除场景")
     public RestResponse<Boolean> delete(@PathVariable("id") Long id) {
         return RestResponse.success(customDeviceConfigService.delete(id));
     }
 
     @PostMapping("send-custom-device-config")
-    @ApiOperation("发送配置到设备")
+    @ApiOperation("发送场景配置到设备")
     public RestResponse<Boolean> sendCustomDeviceConfig(@RequestBody SendCustomDeviceConfigDTO dto) {
         return RestResponse.success(customDeviceConfigService.sendCustomDeviceConfig(dto));
     }

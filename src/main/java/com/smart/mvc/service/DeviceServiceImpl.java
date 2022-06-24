@@ -121,7 +121,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     public List<Device> listNotBind() {
-        if (!AuthContext.get().isAdmin()) {
+        if (Boolean.FALSE.equals(AuthContext.get().isAdmin())) {
             return Collections.emptyList();
         }
         List<Device> list = list();
@@ -135,7 +135,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     public List<DeviceBaseInfoVO> listDeviceBaseInfo(DeviceBaseInfoDTO dto) {
-        if (!AuthContext.get().isAdmin()) {
+        if (Boolean.FALSE.equals(AuthContext.get().isAdmin())) {
             return Collections.emptyList();
         }
         List<Device> deviceList = list();

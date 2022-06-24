@@ -52,7 +52,7 @@ public class DeviceController {
     }
 
     @GetMapping("list")
-    @ApiOperation("列表")
+    @ApiOperation("我的设备列表")
     public RestResponse<List<DeviceVO>> list(QueryDeviceDTO queryDeviceDTO) {
         return RestResponse.success(deviceService.list(queryDeviceDTO));
     }

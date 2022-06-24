@@ -48,7 +48,7 @@ public class MessageCenterController {
     }
 
     @PutMapping("update-read-flag/{id}")
-    @ApiOperation("消息反馈")
+    @ApiOperation("标记为已读")
     public RestResponse<Boolean> updateReadFlag(@PathVariable("id")Long id) {
         return RestResponse.success(messageCenterService.updateReadFlag(id));
     }
