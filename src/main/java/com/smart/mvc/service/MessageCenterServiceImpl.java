@@ -1,5 +1,6 @@
 package com.smart.mvc.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.config.AuthContext;
@@ -36,7 +37,8 @@ public class MessageCenterServiceImpl extends ServiceImpl<MessageCenterMapper, M
 
     public List<MessageCenter> myMessage(String message) {
         Long loginUserId = AuthContext.get().getLoginUserId();
-        return list(Utils.lambdaQuery(MessageCenter.class)
+        return StrUtil.isBlank(message) ? list(Utils.lambdaQuery(MessageCenter.class)
+                .eq(MessageCenter::getToAccountId, loginUserId)) : list(Utils.lambdaQuery(MessageCenter.class)
                 .eq(MessageCenter::getToAccountId, loginUserId)
                 .like(MessageCenter::getMessage, message));
     }

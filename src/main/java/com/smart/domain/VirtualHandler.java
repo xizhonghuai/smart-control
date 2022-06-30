@@ -12,6 +12,8 @@ import com.smart.utils.Utils;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,10 +22,38 @@ import java.util.Objects;
  * @create: 2022-06-30 09:58
  **/
 public class VirtualHandler extends IoHandlerAdapter {
+
+    private static ParamsConfMessage defaultConfig = new ParamsConfMessage();
+
+    static {
+        defaultConfig.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
+        List<ParamsConfMessage.Body> bodies = new ArrayList<>();
+        bodies.add(new ParamsConfMessage.Body().setChannel(1)
+                .setMotorDelay(20)
+                .setTimeList(new ArrayList<ParamsConfMessage.Time>() {{
+                    add(new ParamsConfMessage.Time().setId(1)
+                            .setOnTime(20)
+                            .setOffTime(30)
+                            .setDelay(20)
+                            .setStart(Utils.getDate()));
+                }}));
+        bodies.add(new ParamsConfMessage.Body().setChannel(2)
+                .setMotorDelay(10)
+                .setTimeList(new ArrayList<ParamsConfMessage.Time>() {{
+                    add(new ParamsConfMessage.Time().setId(1)
+                            .setOnTime(20)
+                            .setOffTime(30)
+                            .setDelay(20)
+                            .setStart(Utils.getDate()));
+                }}));
+        defaultConfig.setParams(bodies);
+    }
+
     //会话创建时触发
     @Override
     public void sessionCreated(IoSession session) throws Exception {
         System.out.println("session  Created");
+        session.setAttribute("paramsConfig", defaultConfig);
     }
 
     @Override
@@ -63,7 +93,7 @@ public class VirtualHandler extends IoHandlerAdapter {
             ack.setResult(1);
             ack.setDateTime(Utils.getDate());
             ack.setDragAmount("30");
-            ack.setWaterLevel("正常");
+            ack.setWaterLevel("normal");
             ack.setRunningTime(9);
             session.write(VirtualDevice.toPack(ack));
         }

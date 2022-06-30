@@ -11,10 +11,11 @@ import java.util.Map;
  * @create: 2022-06-10 14:07
  **/
 public interface S2cMessage {
+    byte[] s1 = {0x02};
+    byte[] s2 = {0x03};
+
     default String pack() {
         Map<String, Object> map = BeanUtil.beanToMap(this, true, true);
-        byte[] s1 = {0x02};
-        byte[] s2 = {0x03};
         return new String(s1) + JSON.toJSONString(map) + new String(s2);
     }
 }

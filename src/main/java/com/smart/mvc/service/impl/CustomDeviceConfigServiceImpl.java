@@ -36,7 +36,7 @@ public class CustomDeviceConfigServiceImpl extends ServiceImpl<CustomDeviceConfi
     public Boolean add(CustomDeviceConfigDTO dto) {
         CustomDeviceConfig customDeviceConfig = new CustomDeviceConfig();
         customDeviceConfig.setConfigName(dto.getConfigName());
-        customDeviceConfig.setConfigCmd(dto.getConfigCmd().toString());
+        customDeviceConfig.setConfigCmd(JSON.toJSONString(dto.getConfigCmd()));
         customDeviceConfig.setAccountId(AuthContext.get().getLoginUserId());
         Utils.insertBeforeAction(customDeviceConfig);
         return save(customDeviceConfig);

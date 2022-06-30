@@ -35,6 +35,7 @@ public class VirtualDevice implements SchedulingConfigurer {
     private IoSession ioSession;
     public IoConnector ioConnector;
 
+
     public void connect() {
         // 创建一个非阻塞的客户端
         IoConnector ioConnector = new NioSocketConnector();
@@ -71,20 +72,20 @@ public class VirtualDevice implements SchedulingConfigurer {
     }
 
 
-    public void timing() {
+    public void status() {
         StatusQueryMessageAck ack = new StatusQueryMessageAck();
         ack.setCode(MessageUtil.getMessageCode(StatusQueryMessageAck.class));
         ack.setResult(1);
         ack.setDateTime(Utils.getDate());
         ack.setDragAmount("30");
-        ack.setWaterLevel("正常");
+        ack.setWaterLevel("normal");
         ack.setRunningTime(9);
         ioSession.write(VirtualDevice.toPack(ack));
     }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
-        scheduledTaskRegistrar.addTriggerTask(this::timing, triggerContext -> {
+        scheduledTaskRegistrar.addTriggerTask(this::status, triggerContext -> {
             CronTrigger cronTrigger = new CronTrigger(CRON);
             return cronTrigger.nextExecutionTime(triggerContext);
         });

@@ -3,6 +3,7 @@ package com.smart.domain.message.s2c;
 import com.smart.domain.message.Message;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class ParamsConfMessage extends Message implements S2cMessage {
     private List<Body> params;
 
     @Data
+    @Accessors(chain = true)
     public static class Body {
         private Integer channel;
         private Integer motorDelay;
@@ -26,6 +28,7 @@ public class ParamsConfMessage extends Message implements S2cMessage {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Time {
         private Integer id;
         private String start;

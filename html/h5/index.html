@@ -91,7 +91,7 @@
         let password = $("#js_input2").val();
         let ret = httpGet("api/v1/account/login?username=" + name + "&password=" + password);
         if (ret.code === 20000) {
-            localStorage.setItem("token", ret.data);
+            localStorage.setItem("access_token", ret.data);
             if (redirect_uri != null) {
                 window.open(redirect_uri, "_self");
             }

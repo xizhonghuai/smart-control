@@ -46,7 +46,7 @@ const API_URL = "http://8.131.57.109:8000/"
 // const API_URL = "http://127.0.0.1:8000/"
 
 function getLocalToken() {
-    return localStorage.getItem("token");
+    return localStorage.getItem("access_token");
 }
 
 function httpGet(api) {

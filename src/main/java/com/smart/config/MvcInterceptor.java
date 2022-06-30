@@ -1,6 +1,7 @@
 package com.smart.config;
 
 import com.smart.communication.AuthenticationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ import java.util.Arrays;
  * @Date 2020/4/15
  * @Version V1.0
  **/
-
+@Slf4j
 public class MvcInterceptor implements HandlerInterceptor {
 
     private final AuthenticationService authenticationService = new AuthenticationService();
@@ -24,6 +25,7 @@ public class MvcInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url = request.getRequestURI();
+        log.info("url:" + url);
         if (Arrays.stream(URL_WHITE_LIST).anyMatch(url::contains)) {
             return true;
         }
@@ -32,6 +34,7 @@ public class MvcInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("token");
+        log.info("token:" + token);
         return authenticationService.authentication(token, response);
 
 //        if ("/".equals(url)) {

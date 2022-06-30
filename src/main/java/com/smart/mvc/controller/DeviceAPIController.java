@@ -75,6 +75,7 @@ public class DeviceAPIController {
     @GetMapping("device-status-v2")
     @ApiOperation("查询设备状态数据v2")
     public RestResponse<StatusQueryMessageAck> deviceStatusV2(@RequestParam("deviceId") String deviceId) {
+        service.deviceStatus(0, deviceId);
         StatusQueryMessageAck message = (StatusQueryMessageAck) service.deviceMessage(deviceId, MessageUtil.getMessageCode(StatusQueryMessageAck.class));
         return RestResponse.success(message);
     }
@@ -94,6 +95,7 @@ public class DeviceAPIController {
     @GetMapping("device-params-v2")
     @ApiOperation("查询设备运行参数数据v2")
     public RestResponse<ParamsQueryMessageAck> deviceParamsV2(@RequestParam("deviceId") String deviceId) {
+        service.deviceParams(0, deviceId);
         ParamsQueryMessageAck message = (ParamsQueryMessageAck) service.deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class));
         return RestResponse.success(message);
     }
