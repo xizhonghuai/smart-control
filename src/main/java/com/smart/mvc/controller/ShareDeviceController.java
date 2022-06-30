@@ -3,9 +3,10 @@ package com.smart.mvc.controller;
 
 import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
-import com.smart.mvc.dto.ShareDTO;
+import com.smart.mvc.dto.AddShareDTO;
+import com.smart.mvc.dto.DeleteShareDTO;
 import com.smart.mvc.service.ShareDeviceServiceImpl;
-import com.smart.mvc.vo.ShareDeviceVO;
+import com.smart.mvc.vo.AccountVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,22 +29,24 @@ public class ShareDeviceController {
     @Autowired
     private ShareDeviceServiceImpl shareDeviceService;
 
-    @GetMapping("my-share-list")
-    @ApiOperation("我的共享")
-    public RestResponse<List<ShareDeviceVO>> myShareList() {
-        return RestResponse.success(shareDeviceService.myShareList());
+    @GetMapping("share-user-list")
+    @ApiOperation("当前设备共享的用户")
+    public RestResponse<List<AccountVO>> shareUserList(@RequestParam("deviceId") Long deviceId) {
+        return RestResponse.success(shareDeviceService.shareUserList(deviceId));
     }
 
     @PostMapping("add-share")
     @ApiOperation("新增共享")
-    public RestResponse<Boolean> addShare(@RequestBody ShareDTO addShareDTO) {
+    public RestResponse<Boolean> addShare(@RequestBody AddShareDTO addShareDTO) {
         return RestResponse.success(shareDeviceService.addShare(addShareDTO));
     }
 
     @DeleteMapping("delete-share")
     @ApiOperation("删除共享")
-    public RestResponse<Boolean> deleteShare(@RequestBody ShareDTO deleteShareDTO) {
-        return RestResponse.success(shareDeviceService.deleteShare(deleteShareDTO));
+    public RestResponse<Boolean> deleteShare(@RequestBody DeleteShareDTO deleteAddShareDTO) {
+        return RestResponse.success(shareDeviceService.deleteShare(deleteAddShareDTO));
     }
+
+
 
 }

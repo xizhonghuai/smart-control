@@ -9,6 +9,7 @@ import com.smart.config.AuthContext;
 import com.smart.config.RestResponse;
 import com.smart.mvc.entity.Account;
 import com.smart.utils.JWTUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -19,11 +20,9 @@ import java.util.Map;
  * @description: AuthenticationService
  * @create: 2022-06-17 10:01
  **/
+@Slf4j
 public class AuthenticationService {
     public boolean authentication(String token, HttpServletResponse response) throws IOException {
-     /*   if (token == null) {
-            return true;
-        }*/
         String failMessage;
         try {
             JWTUtils.verify(token);
@@ -39,14 +38,17 @@ public class AuthenticationService {
             e.printStackTrace();
             failMessage = "无效token";
         }
+        log.error(failMessage);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(RestResponse.fail(failMessage)));
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.getWriter().write(JSON.toJSONString(RestResponse.fail(failMessage,40001)));
         return false;
     }
 
     public String createToken(Account account) {
         return JWTUtils.createToken(account);
     }
+
     public Account deCodeToken(String token) {
         Map<String, Claim> claims = JWTUtils.getJWT(token).getClaims();
         Claim claim = claims.get("account");

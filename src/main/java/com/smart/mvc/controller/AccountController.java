@@ -29,6 +29,12 @@ public class AccountController {
     @Autowired
     private AccountServiceImpl accountService;
 
+    @GetMapping("verify")
+    @ApiOperation("验证")
+    public RestResponse<Boolean> verify() {
+        return RestResponse.success(Boolean.TRUE);
+    }
+
     @GetMapping("login")
     @ApiOperation("登录")
     public RestResponse<String> login(@RequestParam("username") String username

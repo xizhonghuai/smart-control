@@ -3,6 +3,9 @@ package com.smart.mvc.controller;
 import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
 import com.smart.domain.message.Message;
+import com.smart.domain.message.MessageUtil;
+import com.smart.domain.message.c2s.ParamsQueryMessageAck;
+import com.smart.domain.message.c2s.StatusQueryMessageAck;
 import com.smart.domain.message.s2c.ParamsConfMessage;
 import com.smart.mvc.service.CommandPoolService;
 import com.smart.mvc.service.DeviceControlService;
@@ -69,6 +72,13 @@ public class DeviceAPIController {
         return RestResponse.success(service.deviceStatus(0, deviceId));
     }
 
+    @GetMapping("device-status-v2")
+    @ApiOperation("查询设备状态数据v2")
+    public RestResponse<StatusQueryMessageAck> deviceStatusV2(@RequestParam("deviceId") String deviceId) {
+        StatusQueryMessageAck message = (StatusQueryMessageAck) service.deviceMessage(deviceId, MessageUtil.getMessageCode(StatusQueryMessageAck.class));
+        return RestResponse.success(message);
+    }
+
     @GetMapping("device-status/sync")
     @ApiOperation("查询设备状态数据(同步方式)")
     public RestResponse<Message> deviceStatusSync(@RequestParam("deviceId") String deviceId) {
@@ -79,6 +89,13 @@ public class DeviceAPIController {
     @ApiOperation("查询设备运行参数数据")
     public RestResponse<Message> deviceParams(@RequestParam("deviceId") String deviceId) {
         return RestResponse.success(service.deviceParams(0, deviceId));
+    }
+
+    @GetMapping("device-params-v2")
+    @ApiOperation("查询设备运行参数数据v2")
+    public RestResponse<ParamsQueryMessageAck> deviceParamsV2(@RequestParam("deviceId") String deviceId) {
+        ParamsQueryMessageAck message = (ParamsQueryMessageAck) service.deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class));
+        return RestResponse.success(message);
     }
 
     @GetMapping("device-params/sync")

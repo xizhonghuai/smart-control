@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绑定</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+
+</head>
+<body>
+<div class="page form_vcode js_show" tabindex="-1">
+    <div class="weui-form">
+        <div class="weui-form__text-area">
+            <h2 class="weui-form__title">绑定设备</h2>
+            <!--     <div class="weui-form__desc">验证手机号样式</div>-->
+        </div>
+        <div class="weui-form__control-area">
+            <div class="weui-cells__group weui-cells__group_form">
+                <div class="weui-cells">
+                    <div id="js_input2" class="weui-cell weui-cell_active weui-cell_vcode weui-cell_wrap"
+                         wah-hotarea="click">
+                        <div class="weui-cell__hd"><label for="js_input2" class="weui-label">设备ID</label></div>
+                        <div class="weui-cell__bd weui-flex">
+                            <input id="deviceId" class="weui-input weui-cell__control weui-cell__control_flex"
+                                   type="text" pattern="[0-9]*" placeholder="输入设备标签上的数字" maxlength="6">
+                            <!--     <button id="deviceIdClear" class="weui-btn_reset weui-btn_icon weui-btn_input-clear"
+                                         wah-hotarea="click">
+                                     <i class="weui-icon-clear"></i>
+                                 </button>-->
+                            <button id="scan" role="button"
+                                    class="js_target weui-cell__control weui-btn weui-btn_default weui-vcode-btn">
+                                扫一扫
+                            </button>
+                        </div>
+                    </div>
+                    <!-- </div>
+                     <div class="weui-cells__tips"><a class="weui-link weui-wa-hotarea" href="javascript:">收不到验证码</a>
+                     </div>-->
+
+                    <div class="weui-cell weui-cell_active" wah-hotarea="click">
+                        <div class="weui-cell__hd"><label for="deviceName" class="weui-label">名称</label></div>
+                        <div class="weui-cell__bd">
+                            <input id="deviceName" class="weui-input" type="text" placeholder="为设备命名">
+                        </div>
+                        <div class="weui-cell__ft">
+                            <button type="button" id="showIOSDialog1" class="weui-btn_reset weui-btn_icon"
+                                    wah-hotarea="click" tabindex="-1">
+                                <i role="img" alt="帮助" class="js_target weui-icon-info-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="weui-cell weui-cell_active" wah-hotarea="click">
+                        <div class="weui-cell__hd"><label for="imei" class="weui-label">IMEI</label></div>
+                        <div class="weui-cell__bd">
+                            <input id="imei" class="weui-input" type="text" placeholder="IMEI">
+                        </div>
+                    </div>
+
+                    <div class="weui-cell weui-cell_active" wah-hotarea="click">
+                        <div class="weui-cell__hd"><label for="desc" class="weui-label">描述</label></div>
+                        <div class="weui-cell__bd">
+                            <input id="desc" class="weui-input" type="text" placeholder="描述">
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="weui-form__tips-area">
+                <!--   <label id="weuiAgree" for="weuiAgreeCheckbox" class="weui-agree weui-wa-hotarea">
+                       <input id="weuiAgreeCheckbox" type="checkbox" class="weui-agree__checkbox"><span
+                           class="weui-agree__text">阅读并同意<a href="/example/" target="_blank">《相关条款》</a>
+                    </span>
+                   </label>-->
+            </div>
+            <div class="weui-form__opr-area">
+                <button class="weui-btn weui-btn_primary" type="button" id="add" wah-hotarea="click">绑定
+                </button>
+            </div>
+        </div>
+
+        <div role="alert" id="warnToast" style="display: none;">
+            <div class="weui-mask_transparent"></div>
+            <div class="weui-toast">
+                <i class="weui-icon-warn weui-icon_toast"></i>
+                <p class="weui-toast__content">绑定失败，请检查参数</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    verifyJump("add_device.html");
+    /*
+    qrCode
+   http://8.131.57.109/wechat/add_device.html?ver%3D1%26device_id%3D10012%26imei%3D11012389765
+    * */
+    var device_id = getSearchString("device_id");
+    var qr_result = getSearchString("qrresult");
+    if (qr_result != null) {
+        let deviceId = getSearchStringV2("device_id", qr_result);
+        let imei = getSearchStringV2("imei", qr_result);
+        $("#deviceId").val(deviceId);
+        $("#imei").val(imei);
+    } else if (device_id != null) {
+        $("#deviceId").val(device_id);
+        let imei = getSearchString("imei");
+        $("#imei").val(imei);
+    }
+    $('#scan').on('click', function () {
+        window.location.href = "//996315.com/api/scan/";
+    });
+    $('#add').on('click', function () {
+        if ($("#deviceId").val().length <= 0) {
+            toast("warnToast");
+            return;
+        }
+        let params = {
+            deviceId: $("#deviceId").val(),
+            name: $("#deviceName").val(),
+            imei: $("#imei").val(),
+            description: $("#desc").val()
+        };
+        let res = httpRequest("api/v1/device/add", "POST", params);
+        if (res.code === 20000) {
+            window.location.href = "add_device_success.html";
+        } else {
+            toast("warnToast");
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

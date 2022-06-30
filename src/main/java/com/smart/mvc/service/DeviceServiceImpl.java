@@ -69,7 +69,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteDevice(Long id) {
-        accountDeviceXrefService.deviceAuthVerify(id);
+        accountDeviceXrefService.deviceAuthVerify(id, true);
         accountDeviceXrefService.unBind(id);
         removeDevice(id);
         return true;
@@ -77,7 +77,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
     public Boolean editDevice(EditDeviceDTO editDeviceDTO) {
         Long id = editDeviceDTO.getId();
-        accountDeviceXrefService.deviceAuthVerify(id);
+        accountDeviceXrefService.deviceAuthVerify(id, true);
         Device device = BeanUtil.toBean(editDeviceDTO, Device.class);
         Utils.updateBeforeAction(device);
         return updateById(device);

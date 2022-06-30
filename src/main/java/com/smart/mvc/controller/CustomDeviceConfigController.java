@@ -31,7 +31,7 @@ public class CustomDeviceConfigController {
 
     @GetMapping("list")
     @ApiOperation("场景模式列表")
-    public RestResponse<List<CustomDeviceConfig>> list(@RequestParam("name") String name) {
+    public RestResponse<List<CustomDeviceConfig>> list(@RequestParam(value = "name", required = false) String name) {
         return RestResponse.success(customDeviceConfigService.list(name));
     }
 

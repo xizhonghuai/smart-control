@@ -19,14 +19,17 @@ public class MvcInterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(new MvcInterceptor());
     }
 
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // 拦截所有的请求
-                .allowedOrigins("*")  // 可跨域的域名，可以为 *
-                .allowCredentials(true)
-                .allowedMethods("*")   // 允许跨域的方法，可以单独配置
-                .allowedHeaders("*");  // 允许跨域的请求头，可以单独配置
+        registry.addMapping("/**")  // 匹配所有的路径
+                .allowCredentials(true) // 设置允许凭证
+                .allowedHeaders("*")   // 设置请求头
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 设置允许的方式
+                .allowedOrigins("*");
     }
+
+
 
 
 }

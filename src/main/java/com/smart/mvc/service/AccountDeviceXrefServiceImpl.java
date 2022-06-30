@@ -75,37 +75,49 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
         return shareDeviceService.shareToMe();
     }
 
-    public Boolean isBind(Long deviceId) {
+    public Boolean isBind(Long deviceId, Long currentRoleId) {
         List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class).eq(AccountDeviceXref::getDeviceId, deviceId));
         List<Long> accountIds = list.stream().map(AccountDeviceXref::getAccountId).distinct().collect(Collectors.toList());
+        if (accountIds.isEmpty()) {
+            return false;
+        }
         List<Account> accounts = accountService.listByIds(accountIds);
-        return accounts.stream().anyMatch(v -> Objects.equals(v.getRoleId(), ConstantUnit.userRoleId));
+        if (Objects.equals(currentRoleId, ConstantUnit.userRoleId)) {
+            return accounts.stream().anyMatch(v -> Objects.equals(v.getRoleId(), ConstantUnit.userRoleId));
+        }
+        if (Objects.equals(currentRoleId, ConstantUnit.agentRoleId)) {
+            return accounts.stream().anyMatch(v -> Objects.equals(v.getRoleId(), ConstantUnit.agentRoleId));
+        }
+        throw new RuntimeException("currentRoleId 参数错误");
     }
 
     public void bind(Long deviceId) {
         if (AuthContext.get().isAdmin()) {
             return;
         }
-        if (isBind(deviceId)) {
-            throw new RuntimeException("已绑定其他账户，请先解绑");
-        }
         List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class).eq(AccountDeviceXref::getDeviceId, deviceId));
         if (list.stream().anyMatch(v -> Objects.equals(v.getAccountId(), AuthContext.get().getLoginUserId()))) {
             return;
         }
-        if (list.size() == 0 && AuthContext.get().isAgent()) {
+        if (isBind(deviceId, AuthContext.get().getLoginUserRoleId())) {
+            throw new RuntimeException("已绑定其他账户，请先解绑");
+        }
+        AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
+        Utils.insertBeforeAction(accountDeviceXref);
+        save(accountDeviceXref);
+       /* if (list.size() == 0 && AuthContext.get().isAgent()) {
             AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
             Utils.insertBeforeAction(accountDeviceXref);
             save(accountDeviceXref);
             return;
         }
-        if (list.size() == 1 && AuthContext.get().isUser()) {
+        if (list.size() ==1 && AuthContext.get().isUser()) {
             AccountDeviceXref accountDeviceXref = new AccountDeviceXref().setDeviceId(deviceId).setAccountId(AuthContext.get().getLoginUserId());
             Utils.insertBeforeAction(accountDeviceXref);
             save(accountDeviceXref);
             return;
         }
-        throw new RuntimeException("非法绑定");
+        throw new RuntimeException("非法绑定");*/
     }
 
     public void unBind(Long deviceId) {
@@ -119,6 +131,9 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
     }
 
     public void bindBatch(Long accountId, List<Long> deviceIds) {
+        if (!AuthContext.get().isAdmin()){
+            throw new RuntimeException("没有权限");
+        }
         Account account = accountService.getById(accountId);
         if (!Objects.equals(account.getRoleId(), ConstantUnit.agentRoleId)) {
             throw new RuntimeException("仅代理商账号使用");

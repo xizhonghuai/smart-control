@@ -50,6 +50,9 @@ public class JWTUtils {
      * @param token 令牌
      */
     public static void verify(String token) {
+        if (token == null) {
+            throw new RuntimeException("身份拒绝，请重新登录");
+        }
         getJWT(token);
     }
 

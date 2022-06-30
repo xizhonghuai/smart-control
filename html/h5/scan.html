@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scan</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+</head>
+<body>
+<div class="weui-msg__text-area">
+    <h2 class="weui-msg__title">扫码成功</h2>
+    <p class="weui-msg__desc">正在验证身份...<a class="weui-wa-hotarea weui-link" href="javascript:"></a></p>
+</div>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    /*
+    扫一扫 链接
+    http://996315.com/api/scan/?redirect_uri=http://8.131.57.109/wechat/scan.html
+    * */
+    verifyJump("scan.html");
+    let uri = GetQueryString("qrresult");
+    if (uri.includes("wechat/add_device.html?ver")){
+        window.location.href = uri;
+    }else {
+        window.location.href = "scan_error.html";
+    }
+</script>
+
+</body>
+</html>

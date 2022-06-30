@@ -55,6 +55,7 @@ public class DeviceControlService {
     public Message deviceParamsConf(int isSync, ParamsConfMessage paramsConfMessage) {
         String deviceId = paramsConfMessage.getDeviceId();
         checkDevice(deviceId);
+        paramsConfMessage.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
         deviceAPI.sendCmd(deviceId, paramsConfMessage);
         commandPoolService.add(deviceId, paramsConfMessage);
         if (isSync <= 0) {

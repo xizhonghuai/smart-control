@@ -27,17 +27,21 @@ public class MvcInterceptor implements HandlerInterceptor {
         if (Arrays.stream(URL_WHITE_LIST).anyMatch(url::contains)) {
             return true;
         }
+        if (request.getMethod().equals("OPTIONS")) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        }
         String token = request.getHeader("token");
         return authenticationService.authentication(token, response);
 
 //        if ("/".equals(url)) {
-//            response.sendRedirect(Initialization.webUrl + "/treaweb/webmis/login.html");
+//            response.sendRedirect(Initialization.webUrl + "/treaweb/webmis/index.html");
 //            return false;
 //        }
 //        if (url.indexOf("api/account/reg") > 0) {
 //            return true;
 //        }
-//       response.sendRedirect(Initialization.webUserUrl + "/webuser/login.html?code=1001");
+//       response.sendRedirect(Initialization.webUserUrl + "/webuser/index.html?code=1001");
     }
 
 

@@ -16,19 +16,18 @@ import java.util.List;
 @Data
 public class ParamsQueryMessageAck extends MessageAck {
     private List<Body> data;
+    //STATUS
+    private String waterLevel;
+    private String dragAmount;
+    private Integer runningTime;
+    private Integer normallyClosedDuration;
+    private Integer normallyOpenDuration;
+    private String dateTime;
     @Data
     public static class Body {
         //PARAMS
         private Integer channel;
         private Integer motorDelay;
         private List<ParamsConfMessage.Time> timeList;
-
-        //STATUS
-        private Integer waterLevel;
-        private String dragAmount;
-        private Integer runningTime;
-        private Integer normallyClosedDuration;
-        private Integer normallyOpenDuration;
-        private String dateTime;
     }
 }

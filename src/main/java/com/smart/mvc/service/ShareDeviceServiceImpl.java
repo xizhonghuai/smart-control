@@ -1,13 +1,16 @@
 package com.smart.mvc.service;
 
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.config.AuthContext;
 import com.smart.config.ConstantUnit;
-import com.smart.mvc.dto.ShareDTO;
+import com.smart.mvc.dto.AddShareDTO;
+import com.smart.mvc.dto.DeleteShareDTO;
+import com.smart.mvc.entity.Account;
 import com.smart.mvc.entity.ShareDevice;
 import com.smart.mvc.mapper.ShareDeviceMapper;
+import com.smart.mvc.vo.AccountVO;
 import com.smart.mvc.vo.ShareDeviceVO;
 import com.smart.utils.Utils;
 import com.transmission.server.core.ConnectProperty;
@@ -33,17 +36,8 @@ public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, Share
     @Autowired
     private DeviceControlService deviceControlService;
     @Autowired
-    private AccountDeviceXrefServiceImpl accountDeviceXrefService;
+    private AccountServiceImpl accountService;
 
-    public List<ShareDeviceVO> myShareList() {
-        Long accountId = AuthContext.get().getLoginUserId();
-        List<ShareDeviceVO> shareDeviceVOS = getBaseMapper().shareList();
-        List<ShareDeviceVO> vos = AuthContext.get().isAdmin() ? shareDeviceVOS :
-                shareDeviceVOS.stream().filter(v -> Objects.equals(accountId, v.getFromAccountId())).collect(Collectors.toList());
-        List<ConnectProperty> connectProperties = deviceControlService.onlineDevice();
-        List<String> olineRegIds = connectProperties.stream().map(ConnectProperty::getRegId).collect(Collectors.toList());
-        return vos.stream().peek(vo -> vo.setNetStatus(olineRegIds.contains(vo.getDeviceId()) ? 1 : 0)).collect(Collectors.toList());
-    }
 
     public List<ShareDeviceVO> shareListToMe() {
         Long accountId = AuthContext.get().getLoginUserId();
@@ -61,47 +55,72 @@ public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, Share
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Boolean addShare(ShareDTO addShareDTO) {
-        List<Long> deviceIds = addShareDTO.getDeviceIds();
-        if (Objects.equals(addShareDTO.getToAccountId(), AuthContext.get().getLoginUserId())) {
+    public Boolean addShare(AddShareDTO addShareDTO) {
+        String accountName = addShareDTO.getAccountName();
+        if (StrUtil.isBlank(accountName) || addShareDTO.getDeviceId() == null) {
+            throw new RuntimeException("参数错误");
+        }
+        if (Objects.equals(accountName, AuthContext.get().getLoginUser().getName())) {
             throw new RuntimeException("不能共享给自己");
+        }
+        List<Account> accounts = accountService.list(Utils.queryWrapper(new Account().setName(accountName)));
+        if (accounts.isEmpty()) {
+            throw new RuntimeException("用户不存在");
         }
         if (AuthContext.get().isAdmin()) {
             return true;
         }
-        deleteShare(addShareDTO);
-        Long loginUserId = AuthContext.get().getLoginUserId();
-        List<ShareDevice> shareDeviceList = deviceIds.stream().distinct().map(deviceId -> new ShareDevice().setDeviceId(deviceId)
-                .setFromAccountId(loginUserId)
-                .setToAccountId(addShareDTO.getToAccountId())).collect(Collectors.toList());
-        Utils.insertBeforeAction(shareDeviceList);
-        saveBatch(shareDeviceList);
+        shareVerify(addShareDTO.getDeviceId());
+        Account account = accounts.get(0);
+        if (!Objects.equals(account.getRoleId(), ConstantUnit.userRoleId)) {
+            throw new RuntimeException("不能共享给该类账户");
+        }
+        Long toAccountId = account.getId();
+        List<ShareDevice> list = list(Utils.lambdaQuery(ShareDevice.class).eq(ShareDevice::getFromAccountId, AuthContext.get().getLoginUserId())
+                .eq(ShareDevice::getToAccountId, toAccountId)
+                .in(ShareDevice::getDeviceId, addShareDTO.getDeviceId()));
+        if (list.isEmpty()) {
+            ShareDevice shareDevice = new ShareDevice().setDeviceId(addShareDTO.getDeviceId())
+                    .setToAccountId(toAccountId)
+                    .setFromAccountId(AuthContext.get().getLoginUserId());
+            Utils.insertBeforeAction(shareDevice);
+            save(shareDevice);
+        }
         return true;
     }
 
-    public Boolean deleteShare(ShareDTO deleteShareDTO) {
-        List<Long> deviceIds = deleteShareDTO.getDeviceIds();
-        if (CollectionUtil.isEmpty(deviceIds)) {
-            throw new RuntimeException("空列表");
+    public Boolean deleteShare(DeleteShareDTO deleteAddShareDTO) {
+        if (deleteAddShareDTO.getDeviceId() == null || deleteAddShareDTO.getAccountId() == null) {
+            throw new RuntimeException("参数错误");
         }
         List<ShareDevice> list = list(Utils.lambdaQuery(ShareDevice.class).eq(ShareDevice::getFromAccountId, AuthContext.get().getLoginUserId())
-                .eq(ShareDevice::getToAccountId, deleteShareDTO.getToAccountId())
-                .in(ShareDevice::getDeviceId, deviceIds));
+                .eq(ShareDevice::getToAccountId, deleteAddShareDTO.getAccountId())
+                .in(ShareDevice::getDeviceId, deleteAddShareDTO.getDeviceId()));
         if (!list.isEmpty()) {
             removeByIds(list.stream().map(ShareDevice::getId).collect(Collectors.toList()));
         }
         return true;
     }
 
-    public void shareVerify(Long deviceId){
+    public void shareVerify(Long deviceId) {
         List<Long> ids = shareToMe();
-        if (!ids.contains(deviceId)){
+        if (ids.isEmpty()) {
+            return;
+        }
+        if (!ids.contains(deviceId)) {
             throw new RuntimeException("没有权限操作共享设备");
         }
-
-
-
     }
 
 
+    public List<AccountVO> shareUserList(Long deviceId) {
+        Long accountId = AuthContext.get().getLoginUserId();
+        List<ShareDeviceVO> shareDeviceVOS = getBaseMapper().shareList();
+        List<ShareDeviceVO> vos = AuthContext.get().isAdmin() ? shareDeviceVOS :
+                shareDeviceVOS.stream().filter(v -> Objects.equals(deviceId, v.getDeviceTableId())).collect(Collectors.toList());
+        return vos.stream().filter(v -> Objects.equals(accountId, v.getFromAccountId()))
+                .map(shareDeviceVO -> new AccountVO().setId(shareDeviceVO.getToAccountId())
+                        .setName(shareDeviceVO.getToAccountName()))
+                .collect(Collectors.toList());
+    }
 }

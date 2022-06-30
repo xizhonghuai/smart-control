@@ -43,7 +43,7 @@ public class MessageCenterController {
 
     @PostMapping("feedback")
     @ApiOperation("消息反馈")
-    public RestResponse<Boolean> feedback(MessageCenterDTO dto) {
+    public RestResponse<Boolean> feedback(@RequestBody MessageCenterDTO dto) {
         return RestResponse.success(messageCenterService.feedback(dto));
     }
 
