@@ -33,7 +33,7 @@ public class DefaultBusinessHandler implements BusinessHandler {
             messageProcess.accept(iotSession, message);
         } catch (RuntimeException e) {
             log.info(e.getMessage());
-            iotSession.sendMsg(e.getMessage());
+       /*     iotSession.sendMsg(e.getMessage());*/
         }
     }
 

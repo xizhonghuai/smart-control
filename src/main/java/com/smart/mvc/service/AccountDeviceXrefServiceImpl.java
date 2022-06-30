@@ -91,6 +91,13 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
         throw new RuntimeException("currentRoleId 参数错误");
     }
 
+    public Boolean isAccountDeviceExist(Long deviceId, Long accountId) {
+        List<AccountDeviceXref> list = list(Utils.lambdaQuery(AccountDeviceXref.class)
+                .eq(AccountDeviceXref::getAccountId, accountId)
+                .eq(AccountDeviceXref::getDeviceId, deviceId));
+        return list.size() > 0;
+    }
+
     public void bind(Long deviceId) {
         if (AuthContext.get().isAdmin()) {
             return;
@@ -131,7 +138,7 @@ public class AccountDeviceXrefServiceImpl extends ServiceImpl<AccountDeviceXrefM
     }
 
     public void bindBatch(Long accountId, List<Long> deviceIds) {
-        if (!AuthContext.get().isAdmin()){
+        if (!AuthContext.get().isAdmin()) {
             throw new RuntimeException("没有权限");
         }
         Account account = accountService.getById(accountId);

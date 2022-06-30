@@ -3,6 +3,7 @@ package com.smart.domain.message.c2s;
 import com.smart.domain.message.Message;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author: xizhonghuai
@@ -15,6 +16,7 @@ public class RegisterMessage extends Message {
     private String deviceId;
     private Body params;
     @Data
+    @Accessors(chain = true)
     public static class Body {
         String iccid;
         String ver;

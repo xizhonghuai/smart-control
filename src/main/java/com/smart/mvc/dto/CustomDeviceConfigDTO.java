@@ -11,5 +11,5 @@ import lombok.Data;
 @Data
 public class CustomDeviceConfigDTO {
     private String configName;
-    private ParamsConfMessage confingCmd;
+    private ParamsConfMessage configCmd;
 }

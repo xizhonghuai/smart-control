@@ -46,7 +46,7 @@ public class MessageUtil {
 
     public static Message parse(Object message) {
         verify(message);
-        String jsonString = message.toString().substring(1, message.toString().length() - 2);
+        String jsonString = message.toString().substring(1, message.toString().length() - 1);
         Class<?> messageClass = getMessageClass(jsonString);
         if (messageClass == null) {
             throw new RuntimeException("Unsupported protocols");
@@ -57,7 +57,7 @@ public class MessageUtil {
 
     public static void verify(Object message) {
         String toString = message.toString();
-        if (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 2) == 0x03) {
+        if (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 1) == 0x03) {
             return;
         }
         throw new RuntimeException("message error");

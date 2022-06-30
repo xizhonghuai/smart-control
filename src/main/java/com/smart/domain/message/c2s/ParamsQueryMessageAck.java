@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ParamsQueryMessageAck extends MessageAck {
-    private List<Body> data;
+    private List<ParamsConfMessage.Body> data;
     //STATUS
     private String waterLevel;
     private String dragAmount;
@@ -23,11 +23,11 @@ public class ParamsQueryMessageAck extends MessageAck {
     private Integer normallyClosedDuration;
     private Integer normallyOpenDuration;
     private String dateTime;
-    @Data
+   /* @Data
     public static class Body {
         //PARAMS
         private Integer channel;
         private Integer motorDelay;
         private List<ParamsConfMessage.Time> timeList;
-    }
+    }*/
 }

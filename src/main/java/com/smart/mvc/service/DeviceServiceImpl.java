@@ -188,4 +188,15 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
 
+    public Boolean isAccountDeviceExist(String deviceId) {
+        if (StrUtil.isBlank(deviceId)) {
+            return false;
+        }
+        List<Device> list = list(Utils.queryWrapper(new Device().setDeviceId(deviceId)));
+        if (list.size() > 0) {
+            Long id = list.get(0).getId();
+            return accountDeviceXrefService.isAccountDeviceExist(id, AuthContext.get().getLoginUserId());
+        }
+        return false;
+    }
 }

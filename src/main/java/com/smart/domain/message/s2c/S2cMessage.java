@@ -13,6 +13,8 @@ import java.util.Map;
 public interface S2cMessage {
     default String pack() {
         Map<String, Object> map = BeanUtil.beanToMap(this, true, true);
-        return JSON.toJSONString(map);
+        byte[] s1 = {0x02};
+        byte[] s2 = {0x03};
+        return new String(s1) + JSON.toJSONString(map) + new String(s2);
     }
 }

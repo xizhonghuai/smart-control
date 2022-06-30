@@ -1,6 +1,8 @@
 package com.smart.init;
 
 import com.smart.communication.ServerAPI;
+import com.smart.config.SpringUtil;
+import com.smart.domain.VirtualDevice;
 import com.toolutils.ConstantUtils;
 import com.transmission.server.core.BootServerParameter;
 import com.transmission.server.debug.DebugService;
@@ -51,6 +53,9 @@ public class Initialization {
             try {
                 serverAPI.createService(bootServerParameter);
                 serverAPI.startServer("smart-control");
+
+                VirtualDevice virtualDevice = SpringUtil.getObject(VirtualDevice.class);
+                virtualDevice.connect();
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error(e.toString());

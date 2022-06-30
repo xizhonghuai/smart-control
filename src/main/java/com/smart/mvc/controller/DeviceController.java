@@ -57,6 +57,12 @@ public class DeviceController {
         return RestResponse.success(deviceService.list(queryDeviceDTO));
     }
 
+    @GetMapping("account-device-exist")
+    @ApiOperation("查询设备是否已经绑定")
+    public RestResponse<Boolean> isAccountDeviceExist(@RequestParam("deviceId") String deviceId) {
+        return RestResponse.success(deviceService.isAccountDeviceExist(deviceId));
+    }
+
     @GetMapping("list-not-bind")
     @ApiOperation("未绑定的Device")
     public RestResponse<List<Device>> listNotBind() {
