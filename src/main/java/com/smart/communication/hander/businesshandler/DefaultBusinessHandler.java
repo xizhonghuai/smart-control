@@ -2,6 +2,7 @@ package com.smart.communication.hander.businesshandler;
 
 
 import com.smart.domain.MessageProcess;
+import com.smart.domain.message.MessageUtil;
 import com.transmission.business.BusinessHandler;
 import com.transmission.server.core.IotSession;
 import lombok.extern.slf4j.Slf4j;
@@ -28,12 +29,18 @@ public class DefaultBusinessHandler implements BusinessHandler {
 
     @Override
     public void messageReceived(IotSession iotSession, Object message) {
-        MessageProcess messageProcess = new MessageProcess();
+        log.info("收到数据:" + message);
+        PackProcess packProcess = PackProcess.getPackProcess(iotSession, MessageUtil::isHeader, MessageUtil::isIntact);
+        if (!packProcess.buildPackage(message)) {
+            return;
+        }
         try {
-            messageProcess.accept(iotSession, message);
+            MessageProcess messageProcess = new MessageProcess();
+            messageProcess.accept(iotSession, packProcess.getPack());
+            iotSession.updateActivityTime();
         } catch (RuntimeException e) {
             log.info(e.getMessage());
-       /*     iotSession.sendMsg(e.getMessage());*/
+            /*     iotSession.sendMsg(e.getMessage());*/
         }
     }
 
@@ -45,7 +52,6 @@ public class DefaultBusinessHandler implements BusinessHandler {
     @Override
     public void sessionClosed(IotSession iotSession) {
         iotSession.close();
-
     }
 
     @Override

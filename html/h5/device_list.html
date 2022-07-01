@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>list</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+</head>
+<body>
+<div class="page__bd">
+
+    <!--<div class="weui-cells__title">带图标、说明、跳转的列表项</div>-->
+    <div id="device_list" class="weui-cells">
+        <!-- <a aria-labelledby="js_cell_itl1_hd js_cell_itl1_bd js_cell_itl1_ft"
+            class="weui-cell weui-cell_access weui-cell_example" href="javascript:">
+             <span class="weui-cell__hd" id="js_cell_itl1_hd" aria-hidden="true"><img
+                     src="img/device_list.png"
+                     alt="图标" style="width: 20px; margin-right: 16px; display: block;"></span>
+             <span class="weui-cell__bd" id="js_cell_itl1_bd" aria-hidden="true">
+                     <span>cell standard</span>   <span style="font-size: small">cell standard</span>
+                 </span>
+             <span class="weui-cell__ft" id="js_cell_itl1_ft" aria-hidden="true">操作</span>
+         </a>-->
+
+    </div>
+    <!--tips-->
+    <div role="alert" id="warnToast" style="display: none;">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-icon-warn weui-icon_toast"></i>
+            <p class="weui-toast__content">离线状态</p>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    var template = "<a id='deviceId_{deviceId}_{netStatus}_{isShare}' aria-labelledby=\"js_cell_itl1_hd js_cell_itl1_bd js_cell_itl1_ft\"\n" +
+        "           class=\"weui-cell weui-cell_access weui-cell_example\" onclick='operation(this.id)' >\n" +
+        "            <span class=\"weui-cell__hd\" id=\"js_cell_itl1_hd_{deviceId}_img\" aria-hidden=\"true\"><img\n" +
+        "                    src=\"img/device.png\"\n" +
+        "                    alt=\"图标\" style=\"width: 20px; margin-right: 16px; display: block;\"></span>\n" +
+        "            <span class=\"weui-cell__bd\" id=\"js_cell_itl1_bd_{deviceId}_text\" aria-hidden=\"true\">\n" +
+        "                    <span>{name}&nbsp;</span><span style=\"font-size: small; color: var(--weui-FG-1);\">{other}</span>\n" +
+        "                </span>\n" +
+        "            <span class=\"weui-cell__ft\" id=\"js_cell_itl1_ft_{device_id}_op\" aria-hidden=\"true\"></span>\n" +
+        "        </a>"
+
+    function createHtml() {
+        let result = httpGet("api/v1/device/list");
+        if (result.code === RES_OK) {
+            var html = "";
+            let deviceList = result.data;
+            deviceList.forEach(function (v) {
+                v['other'] = (v.netStatus === 0 ? '离线' : '在线  ').concat("   ").concat((v.isShare === 0 ? '' : '共享设备'));
+                console.log(v);
+                html = html + template.format(v);
+            })
+            document.getElementById("device_list").innerHTML = html;
+        }
+    }
+
+    function operation(id) {
+        console.log(id);
+        // toast("warnToast", id)
+    }
+
+    verifyJump("device_list.html");
+    createHtml();
+
+</script>
+</body>
+</html>

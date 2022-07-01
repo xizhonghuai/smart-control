@@ -62,4 +62,14 @@ public class MessageUtil {
         }
         throw new RuntimeException("message error");
     }
+
+    public static boolean isHeader(Object message) {
+        String toString = message.toString();
+        return toString.length() >= 2 && toString.charAt(0) == 0x02;
+    }
+
+    public static boolean isIntact(Object message) {
+        String toString = message.toString();
+        return (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 1) == 0x03);
+    }
 }

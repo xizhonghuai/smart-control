@@ -30,7 +30,8 @@ import java.util.Map;
 public class VirtualDevice implements SchedulingConfigurer {
     private final static String CRON = "0 0/1 * * * ?";//每1分钟
     private String deviceId = "100001";
-    private static String ip = "127.0.0.1";
+     private static String ip = "127.0.0.1";
+//      private static String ip = "8.131.57.109";
     private static int port = 8889;
     private IoSession ioSession;
     public IoConnector ioConnector;
@@ -38,7 +39,7 @@ public class VirtualDevice implements SchedulingConfigurer {
 
     public void connect() {
         // 创建一个非阻塞的客户端
-        IoConnector ioConnector = new NioSocketConnector();
+        ioConnector = new NioSocketConnector();
         // 设置超时时间
         ioConnector.setConnectTimeoutMillis(30000);
         // 设置编码解码器
@@ -73,6 +74,10 @@ public class VirtualDevice implements SchedulingConfigurer {
 
 
     public void status() {
+        if (ioSession == null) {
+            connect();
+            return;
+        }
         StatusQueryMessageAck ack = new StatusQueryMessageAck();
         ack.setCode(MessageUtil.getMessageCode(StatusQueryMessageAck.class));
         ack.setResult(1);
@@ -81,6 +86,14 @@ public class VirtualDevice implements SchedulingConfigurer {
         ack.setWaterLevel("normal");
         ack.setRunningTime(9);
         ioSession.write(VirtualDevice.toPack(ack));
+      /*  ioSession.write(VirtualDevice.toPack(ack).substring(0,3));
+        try {
+            Thread.sleep(1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        ioSession.write(VirtualDevice.toPack(ack).substring(3));*/
+
     }
 
     @Override

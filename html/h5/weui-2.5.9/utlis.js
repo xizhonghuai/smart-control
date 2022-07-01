@@ -25,6 +25,7 @@ function GetQueryString(name) {
     var r = location.href.match(reg);
     if (r != null) return decodeURIComponent(r[1]);
 }
+
 function getSearchStringV2(key, url) {
     var str = url;
     str = decodeURIComponent(str);
@@ -42,6 +43,8 @@ function getSearchStringV2(key, url) {
 
 /*net*/
 const API_URL = "http://8.131.57.109:8000/"
+const RES_OK = 20000;
+const RES_ERROR = 40000;
 
 // const API_URL = "http://127.0.0.1:8000/"
 
@@ -100,5 +103,28 @@ function verifyJump(uri) {
 function checkToken() {
     let response = httpGet("api/v1/account/verify");
     return response.code === 20000;
+}
+
+String.prototype.format = function (args) {
+    var result = this;
+    if (arguments.length > 0) {
+        if (arguments.length == 1 && typeof (args) == "object") {
+            for (var key in args) {
+                if (args[key] != undefined) {
+                    var reg = new RegExp("({" + key + "})", "g");
+                    result = result.replace(reg, args[key]);
+                }
+            }
+        } else {
+            for (var i = 0; i < arguments.length; i++) {
+                if (arguments[i] != undefined) {
+                    //var reg = new RegExp("({[" + i + "]})", "g");//这个在索引大于9时会有问题，谢谢何以笙箫的指出
+                    var reg = new RegExp("({)" + i + "(})", "g");
+                    result = result.replace(reg, arguments[i]);
+                }
+            }
+        }
+    }
+    return result;
 }
 

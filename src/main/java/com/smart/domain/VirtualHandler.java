@@ -9,6 +9,7 @@ import com.smart.domain.message.s2c.ParamsConfMessage;
 import com.smart.domain.message.s2c.ParamsQueryMessage;
 import com.smart.domain.message.s2c.StatusQueryMessage;
 import com.smart.utils.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
@@ -21,6 +22,7 @@ import java.util.Objects;
  * @description: VirtualHandler
  * @create: 2022-06-30 09:58
  **/
+@Slf4j
 public class VirtualHandler extends IoHandlerAdapter {
 
     private static ParamsConfMessage defaultConfig = new ParamsConfMessage();
@@ -64,9 +66,9 @@ public class VirtualHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+        log.info("虚拟设备收到数据:\r\n" + message);
         MessageUtil.verify(message);
         Message rec = MessageUtil.parse(message);
-        System.out.println(rec);
         String code = rec.getCode();
         if (Objects.equals(MessageUtil.getMessageCode(ParamsConfMessage.class), code)) {
             session.setAttribute("paramsConfig", rec);
