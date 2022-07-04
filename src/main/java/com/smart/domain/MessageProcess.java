@@ -1,13 +1,11 @@
 package com.smart.domain;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.smart.cache.CacheService;
 import com.smart.domain.message.Message;
 import com.smart.domain.message.MessageUtil;
-import com.smart.domain.message.c2s.ParamsConfMessageAck;
-import com.smart.domain.message.c2s.ParamsQueryMessageAck;
-import com.smart.domain.message.c2s.RegisterMessage;
-import com.smart.domain.message.c2s.TimingMessage;
+import com.smart.domain.message.c2s.*;
 import com.smart.domain.message.s2c.RegisterMessageAck;
 import com.smart.domain.message.s2c.TimingMessageAck;
 import com.smart.mvc.service.CommandPoolService;
@@ -29,10 +27,12 @@ public class MessageProcess {
 
     public void accept(IotSession iotSession, Object message) {
         Message messageObject = MessageUtil.parse(message);
-        String code = messageObject.getCode();
-        cacheService.setValue(String.format("%s,%s", iotSession.getDeviceId(), code), messageObject);
-        cacheService.setValue(iotSession.getDeviceId(), messageObject);
-        commandPoolService.remove(iotSession.getDeviceId(), code);
+        if (!StrUtil.isBlank(iotSession.getDeviceId())) {
+            String code = messageObject.getCode();
+            cacheService.setValue(String.format("%s,%s", iotSession.getDeviceId(), code), messageObject);
+            cacheService.setValue(iotSession.getDeviceId(), messageObject);
+            commandPoolService.remove(iotSession.getDeviceId(), code);
+        }
         if (messageObject instanceof RegisterMessage) {
             RegisterMessage registerMessage = (RegisterMessage) messageObject;
             String deviceId = registerMessage.getDeviceId();
@@ -42,14 +42,13 @@ public class MessageProcess {
             RegisterMessageAck registerMessageAck = new RegisterMessageAck();
             registerMessageAck.setCode(MessageUtil.getMessageCode(RegisterMessageAck.class));
             iotSession.sendMsg(registerMessageAck);
-            log.info(deviceId + "注册");
+            log.info(deviceId + " 注册");
             return;
         }
         if (messageObject instanceof TimingMessage) {
             TimingMessage timingMessage = (TimingMessage) messageObject;
             TimingMessage.Body params = timingMessage.getParams();
-            log.info(iotSession.getDeviceId());
-            log.info(JSON.toJSONString(params));
+            // TODO: 2022/7/4  
             //ack
             TimingMessageAck timingMessageAck = new TimingMessageAck();
             timingMessageAck.setCode(MessageUtil.getMessageCode(TimingMessageAck.class));
@@ -66,6 +65,22 @@ public class MessageProcess {
         if (messageObject instanceof ParamsQueryMessageAck) {
             ParamsQueryMessageAck paramsQueryMessageAck = (ParamsQueryMessageAck) messageObject;
             log.info(JSON.toJSONString(paramsQueryMessageAck));
+            return;
+        }
+        if (messageObject instanceof RevStopMessageAck) {
+            RevStopMessageAck revStopMessageAck = (RevStopMessageAck) messageObject;
+            log.info(JSON.toJSONString(revStopMessageAck));
+            return;
+        }
+        if (messageObject instanceof KeyEnablingMessageAck) {
+            KeyEnablingMessageAck keyEnablingMessageAck = (KeyEnablingMessageAck) messageObject;
+            log.info(JSON.toJSONString(keyEnablingMessageAck));
+            return;
+        }
+        if (messageObject instanceof WarningEventMessage) {
+            WarningEventMessage warningEventMessage = (WarningEventMessage) messageObject;
+            //todo
+            log.info(JSON.toJSONString(warningEventMessage));
         }
     }
 }

@@ -3,11 +3,7 @@ package com.smart.domain;
 import com.smart.domain.message.Message;
 import com.smart.domain.message.MessageUtil;
 import com.smart.domain.message.c2s.ParamsConfMessageAck;
-import com.smart.domain.message.c2s.ParamsQueryMessageAck;
-import com.smart.domain.message.c2s.StatusQueryMessageAck;
 import com.smart.domain.message.s2c.ParamsConfMessage;
-import com.smart.domain.message.s2c.ParamsQueryMessage;
-import com.smart.domain.message.s2c.StatusQueryMessage;
 import com.smart.utils.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mina.core.service.IoHandlerAdapter;
@@ -27,7 +23,7 @@ public class VirtualHandler extends IoHandlerAdapter {
 
     private static ParamsConfMessage defaultConfig = new ParamsConfMessage();
 
-    static {
+    /*static {
         defaultConfig.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
         List<ParamsConfMessage.Body> bodies = new ArrayList<>();
         bodies.add(new ParamsConfMessage.Body().setChannel(1)
@@ -49,7 +45,7 @@ public class VirtualHandler extends IoHandlerAdapter {
                             .setStart(Utils.getDate()));
                 }}));
         defaultConfig.setParams(bodies);
-    }
+    }*/
 
     //会话创建时触发
     @Override
@@ -79,7 +75,7 @@ public class VirtualHandler extends IoHandlerAdapter {
             return;
         }
 
-        if (Objects.equals(MessageUtil.getMessageCode(ParamsQueryMessage.class), code)) {
+     /*   if (Objects.equals(MessageUtil.getMessageCode(ParamsQueryMessage.class), code)) {
             ParamsQueryMessageAck ack = new ParamsQueryMessageAck();
             ack.setCode(MessageUtil.getMessageCode(ParamsQueryMessageAck.class));
             ack.setResult(1);
@@ -87,8 +83,8 @@ public class VirtualHandler extends IoHandlerAdapter {
             ack.setData(paramsConfig.getParams());
             session.write(VirtualDevice.toPack(ack));
             return;
-        }
-
+        }*/
+/*
         if (Objects.equals(MessageUtil.getMessageCode(StatusQueryMessage.class), code)) {
             StatusQueryMessageAck ack = new StatusQueryMessageAck();
             ack.setCode(MessageUtil.getMessageCode(StatusQueryMessageAck.class));
@@ -98,7 +94,7 @@ public class VirtualHandler extends IoHandlerAdapter {
             ack.setWaterLevel("normal");
             ack.setRunningTime(9);
             session.write(VirtualDevice.toPack(ack));
-        }
+        }*/
 
 
     }

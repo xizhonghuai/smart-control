@@ -7,17 +7,19 @@ import lombok.experimental.Accessors;
 
 /**
  * @author: xizhonghuai
- * @description: RegisterMessage
- * @create: 2022-06-09 22:43
+ * @description: EventMessage
+ * @create: 2022-07-04 14:10
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class RegisterMessage extends Message {
+@Accessors(chain = true)
+public class WarningEventMessage extends Message {
     private Body params;
+
     @Data
     @Accessors(chain = true)
     public static class Body {
-        String iccid;
-        String ver;
+        private Integer eventId;
+        private String msg;
     }
 }

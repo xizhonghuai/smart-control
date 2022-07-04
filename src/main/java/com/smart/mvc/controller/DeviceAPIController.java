@@ -3,10 +3,14 @@ package com.smart.mvc.controller;
 import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
 import com.smart.domain.message.Message;
-import com.smart.domain.message.MessageUtil;
 import com.smart.domain.message.c2s.ParamsQueryMessageAck;
-import com.smart.domain.message.c2s.StatusQueryMessageAck;
+import com.smart.domain.message.c2s.TimingMessage;
+import com.smart.domain.message.c2s.WarningEventMessage;
 import com.smart.domain.message.s2c.ParamsConfMessage;
+import com.smart.domain.message.s2c.WarningEventMessageAck;
+import com.smart.mvc.dto.KeyEnDTO;
+import com.smart.mvc.dto.RevStopDTO;
+import com.smart.mvc.dto.SolenoidValveSwitchDTO;
 import com.smart.mvc.service.CommandPoolService;
 import com.smart.mvc.service.DeviceControlService;
 import com.transmission.server.core.ConnectProperty;
@@ -43,8 +47,7 @@ public class DeviceAPIController {
 
     @GetMapping("device-message/{code}")
     @ApiOperation("根据消息code获取设备最新消息")
-    public RestResponse<Message> deviceMessage(@RequestParam("deviceId") String deviceId
-            , @PathVariable("code") String code) {
+    public RestResponse<Message> deviceMessage(@RequestParam("deviceId") String deviceId, @PathVariable("code") String code) {
         return RestResponse.success(service.deviceMessage(deviceId, code));
     }
 
@@ -66,38 +69,10 @@ public class DeviceAPIController {
         return RestResponse.success(service.deviceParamsConf(1, paramsConfMessage));
     }
 
-    @GetMapping("device-status")
-    @ApiOperation("查询设备状态数据")
-    public RestResponse<Message> deviceStatus(@RequestParam("deviceId") String deviceId) {
-        return RestResponse.success(service.deviceStatus(0, deviceId));
-    }
-
-    @GetMapping("device-status-v2")
-    @ApiOperation("查询设备状态数据v2")
-    public RestResponse<StatusQueryMessageAck> deviceStatusV2(@RequestParam("deviceId") String deviceId) {
-        service.deviceStatus(0, deviceId);
-        StatusQueryMessageAck message = (StatusQueryMessageAck) service.deviceMessage(deviceId, MessageUtil.getMessageCode(StatusQueryMessageAck.class));
-        return RestResponse.success(message);
-    }
-
-    @GetMapping("device-status/sync")
-    @ApiOperation("查询设备状态数据(同步方式)")
-    public RestResponse<Message> deviceStatusSync(@RequestParam("deviceId") String deviceId) {
-        return RestResponse.success(service.deviceStatus(1, deviceId));
-    }
-
     @GetMapping("device-params")
     @ApiOperation("查询设备运行参数数据")
     public RestResponse<Message> deviceParams(@RequestParam("deviceId") String deviceId) {
         return RestResponse.success(service.deviceParams(0, deviceId));
-    }
-
-    @GetMapping("device-params-v2")
-    @ApiOperation("查询设备运行参数数据v2")
-    public RestResponse<ParamsQueryMessageAck> deviceParamsV2(@RequestParam("deviceId") String deviceId) {
-        service.deviceParams(0, deviceId);
-        ParamsQueryMessageAck message = (ParamsQueryMessageAck) service.deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class));
-        return RestResponse.success(message);
     }
 
     @GetMapping("device-params/sync")
@@ -106,10 +81,74 @@ public class DeviceAPIController {
         return RestResponse.success(service.deviceParams(1, deviceId));
     }
 
+    @PostMapping("power")
+    @ApiOperation("电源")
+    public RestResponse<Message> power(@RequestBody RevStopDTO dto) {
+        return RestResponse.success(service.power(0, dto));
+    }
+
+    @PostMapping("power/sync")
+    @ApiOperation("电源(同步方式)")
+    public RestResponse<Message> powerSync(@RequestBody RevStopDTO dto) {
+        return RestResponse.success(service.power(1, dto));
+    }
+
+    @PostMapping("key-en")
+    @ApiOperation("按键使能")
+    public RestResponse<Message> keyEn(@RequestBody KeyEnDTO dto) {
+        return RestResponse.success(service.keyEn(0, dto));
+    }
+
+    @PostMapping("key-en/sync")
+    @ApiOperation("按键使能(同步方式)")
+    public RestResponse<Message> keyEnSync(@RequestBody KeyEnDTO dto) {
+        return RestResponse.success(service.keyEn(1, dto));
+    }
+
+
+    @PostMapping("solenoid-valve-switch")
+    @ApiOperation("按键使能")
+    public RestResponse<Message> solenoidValveSwitch(@RequestBody SolenoidValveSwitchDTO dto) {
+        return RestResponse.success(service.solenoidValveSwitch(0, dto));
+    }
+
+    @PostMapping("solenoid-valve-switch/sync")
+    @ApiOperation("按键使能(同步方式)")
+    public RestResponse<Message> solenoidValveSwitchSync(@RequestBody SolenoidValveSwitchDTO dto) {
+        return RestResponse.success(service.solenoidValveSwitch(1, dto));
+    }
+
+
     @GetMapping("command-list")
     @ApiOperation("待发送命令")
     public RestResponse<List<CommandPoolService.Command>> commandPoolList() {
         return RestResponse.success(service.commandPoolList());
     }
+
+    //use
+    @GetMapping("device-data")
+    @ApiOperation("查询设备数据")
+    public RestResponse<TimingMessage> deviceData(@RequestParam("deviceId") String deviceId) {
+        return RestResponse.success(service.deviceData(deviceId));
+    }
+
+    @PostMapping("device-params-conf-v2")
+    @ApiOperation("配置运行参数-v2")
+    public RestResponse<Boolean> deviceParamsConfV2(@RequestBody ParamsConfMessage paramsConfMessage) {
+        return RestResponse.success(service.deviceParamsConfV2(paramsConfMessage));
+    }
+
+    @GetMapping("device-params-v2")
+    @ApiOperation("查询设备运行参数数据v2")
+    public RestResponse<ParamsQueryMessageAck> deviceParamsV2(@RequestParam("deviceId") String deviceId) {
+        return RestResponse.success(service.deviceParamsV2(deviceId));
+    }
+
+    @GetMapping("device-warning")
+    @ApiOperation("查询异常事件")
+    public RestResponse<WarningEventMessageAck> deviceWarningEvent(@RequestParam("deviceId") String deviceId) {
+        return RestResponse.success(service.deviceWarningEvent(deviceId));
+    }
+
 
 }

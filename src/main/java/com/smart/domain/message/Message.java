@@ -9,5 +9,6 @@ import lombok.Data;
  **/
 @Data
 public abstract class Message {
+    private String deviceId;
     private String code;
 }

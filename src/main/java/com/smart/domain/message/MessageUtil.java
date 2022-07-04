@@ -25,14 +25,20 @@ public class MessageUtil {
             put("10002", ParamsConfMessageAck.class);
             put("20003", ParamsQueryMessage.class);
             put("10003", ParamsQueryMessageAck.class);
-            put("20004", StatusQueryMessage.class);
-            put("10004", StatusQueryMessageAck.class);
+            put("20004", ParamsQueryMessage.class);
+            put("10004", ParamsQueryMessageAck.class);
+
+            put("20006", RevStopMessage.class);
+            put("10006", RevStopMessageAck.class);
+            put("20007", SolenoidValveMessage.class);
+            put("10007", SolenoidValveMessageAck.class);
+            put("20008", WarningEventMessage.class);
+            put("10008", WarningEventMessageAck.class);
         }
     };
 
     public static String getMessageCode(Class<?> classz) {
-        Optional<Map.Entry<String, Class<?>>> optional = messageTypeMap.entrySet()
-                .stream().filter(entry -> Objects.equals(entry.getValue(), classz)).findAny();
+        Optional<Map.Entry<String, Class<?>>> optional = messageTypeMap.entrySet().stream().filter(entry -> Objects.equals(entry.getValue(), classz)).findAny();
         return optional.map(Map.Entry::getKey).orElse(null);
     }
 

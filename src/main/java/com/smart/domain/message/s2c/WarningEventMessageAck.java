@@ -1,19 +1,19 @@
 package com.smart.domain.message.s2c;
 
-import com.smart.domain.message.Message;
+import com.smart.domain.message.MessageAck;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author: xizhonghuai
- * @description: ParamsQueryMessage
- * @create: 2022-06-10 13:57
+ * @description: EventMessage
+ * @create: 2022-07-04 14:10
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ParamsQueryMessage extends Message implements S2cMessage {
-    private Integer id;//模式编号
-
+@Accessors(chain = true)
+public class WarningEventMessageAck extends MessageAck implements S2cMessage {
     @Override
     public String toString() {
         return pack();

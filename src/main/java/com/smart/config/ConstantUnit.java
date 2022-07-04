@@ -9,13 +9,13 @@ package com.smart.config;
  **/
 public class ConstantUnit {
 
-    public final static String PERMISSION = "no permission";
-    public final static String API_PREFIX = "api/v1/";
-    public final static Long adminId = 1L;
-    public final static Long adminRoleId = 1L;
-    public final static Long agentRoleId = 2L;
-    public final static Long userRoleId = 3L;
+    public static final String PERMISSION = "no permission";
+    public static final String API_PREFIX = "api/v1/";
+    public static final Long adminId = 1L;
+    public static final Long adminRoleId = 1L;
+    public static final Long agentRoleId = 2L;
+    public static final Long userRoleId = 3L;
 
-
-
+    public static final String on = "on";
+    public static final String off = "off";
 }

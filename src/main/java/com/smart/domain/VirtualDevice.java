@@ -4,8 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.smart.domain.message.MessageUtil;
 import com.smart.domain.message.c2s.RegisterMessage;
-import com.smart.domain.message.c2s.StatusQueryMessageAck;
-import com.smart.utils.Utils;
 import com.transmission.server.core.CodecFactory;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -15,7 +13,6 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
-import org.springframework.stereotype.Service;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -26,12 +23,12 @@ import java.util.Map;
  * @description: VirtualDevice
  * @create: 2022-06-30 09:31
  **/
-@Service
+//@Service
 public class VirtualDevice implements SchedulingConfigurer {
     private final static String CRON = "0 0/1 * * * ?";//每1分钟
     private String deviceId = "100001";
-     private static String ip = "127.0.0.1";
-//      private static String ip = "8.131.57.109";
+    private static String ip = "127.0.0.1";
+    //      private static String ip = "8.131.57.109";
     private static int port = 8889;
     private IoSession ioSession;
     public IoConnector ioConnector;
@@ -78,7 +75,7 @@ public class VirtualDevice implements SchedulingConfigurer {
             connect();
             return;
         }
-        StatusQueryMessageAck ack = new StatusQueryMessageAck();
+    /*    StatusQueryMessageAck ack = new StatusQueryMessageAck();
         ack.setCode(MessageUtil.getMessageCode(StatusQueryMessageAck.class));
         ack.setResult(1);
         ack.setDateTime(Utils.getDate());
@@ -86,14 +83,14 @@ public class VirtualDevice implements SchedulingConfigurer {
         ack.setWaterLevel("normal");
         ack.setRunningTime(9);
         ioSession.write(VirtualDevice.toPack(ack));
-      /*  ioSession.write(VirtualDevice.toPack(ack).substring(0,3));
+      *//*  ioSession.write(VirtualDevice.toPack(ack).substring(0,3));
         try {
             Thread.sleep(1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        ioSession.write(VirtualDevice.toPack(ack).substring(3));*/
-
+        ioSession.write(VirtualDevice.toPack(ack).substring(3));*//*
+         */
     }
 
     @Override

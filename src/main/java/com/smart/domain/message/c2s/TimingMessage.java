@@ -12,17 +12,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class TimingMessage extends Message {
-    private String deviceId;
     private Body params;
 
     @Data
     public static class Body {
         private Integer csq;
-        private String dragAmount;
-        private Integer waterLevel;
-        private Integer runningTime;
-        private String state;
-        private String errorMessage;
+        private String dragAmount;//药量信息，百分比
+        private Integer waterLevel;//1正常，0缺水
+        private Integer runningTime;//累计运行时间
+        private String state;//运行状态 （自动、常开、常关）
+        private String errorMessage; //异常信息
     }
 
 }

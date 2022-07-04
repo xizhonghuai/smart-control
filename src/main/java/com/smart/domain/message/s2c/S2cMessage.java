@@ -15,7 +15,7 @@ public interface S2cMessage {
     byte[] s2 = {0x03};
 
     default String pack() {
-        Map<String, Object> map = BeanUtil.beanToMap(this, true, true);
+        Map<String, Object> map = BeanUtil.beanToMap(this, true, false);
         return new String(s1) + JSON.toJSONString(map) + new String(s2);
     }
 }
