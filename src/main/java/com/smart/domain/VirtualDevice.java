@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.smart.domain.message.MessageUtil;
 import com.smart.domain.message.c2s.RegisterMessage;
+import com.smart.domain.message.c2s.TimingMessage;
 import com.transmission.server.core.CodecFactory;
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -13,6 +14,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.stereotype.Service;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -23,13 +25,13 @@ import java.util.Map;
  * @description: VirtualDevice
  * @create: 2022-06-30 09:31
  **/
-//@Service
+@Service
 public class VirtualDevice implements SchedulingConfigurer {
-    private final static String CRON = "0 0/1 * * * ?";//每1分钟
-    private String deviceId = "100001";
+    private static final String CRON = "0 0/1 * * * ?";//每1分钟
+    public static final String deviceId = "100001";
     private static String ip = "127.0.0.1";
     //      private static String ip = "8.131.57.109";
-    private static int port = 8889;
+    private static final int port = 8889;
     private IoSession ioSession;
     public IoConnector ioConnector;
 
@@ -63,39 +65,40 @@ public class VirtualDevice implements SchedulingConfigurer {
     }
 
     public static <T> String toPack(T t) {
-        Map<String, Object> map = BeanUtil.beanToMap(t, true, true);
+        Map<String, Object> map = BeanUtil.beanToMap(t, true, false);
         byte[] s1 = {0x02};
         byte[] s2 = {0x03};
         return new String(s1) + JSON.toJSONString(map) + new String(s2);
     }
 
 
-    public void status() {
+    public void timing() {
         if (ioSession == null) {
             connect();
-            return;
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Thread.currentThread().interrupt();
+            }
         }
-    /*    StatusQueryMessageAck ack = new StatusQueryMessageAck();
-        ack.setCode(MessageUtil.getMessageCode(StatusQueryMessageAck.class));
-        ack.setResult(1);
-        ack.setDateTime(Utils.getDate());
-        ack.setDragAmount("30");
-        ack.setWaterLevel("normal");
-        ack.setRunningTime(9);
-        ioSession.write(VirtualDevice.toPack(ack));
-      *//*  ioSession.write(VirtualDevice.toPack(ack).substring(0,3));
-        try {
-            Thread.sleep(1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        ioSession.write(VirtualDevice.toPack(ack).substring(3));*//*
-         */
+        TimingMessage timingMessage = new TimingMessage();
+        timingMessage.setCode(MessageUtil.getMessageCode(TimingMessage.class));
+        timingMessage.setDeviceId(deviceId);
+        timingMessage.setParams(new TimingMessage.Body()
+                .setCsq(12)
+                .setDragAmount("5")
+                .setState("running")
+                .setWaterLevel(1)
+                .setTotalDragAmount(123234)
+                .setTotalWorkTime(234551)
+                .setRunningTime(56));
+        ioSession.write(VirtualDevice.toPack(timingMessage));
     }
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
-        scheduledTaskRegistrar.addTriggerTask(this::status, triggerContext -> {
+        scheduledTaskRegistrar.addTriggerTask(this::timing, triggerContext -> {
             CronTrigger cronTrigger = new CronTrigger(CRON);
             return cronTrigger.nextExecutionTime(triggerContext);
         });

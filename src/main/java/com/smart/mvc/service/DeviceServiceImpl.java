@@ -1,9 +1,11 @@
 package com.smart.mvc.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.smart.cache.CacheService;
 import com.smart.config.AuthContext;
 import com.smart.config.ConstantUnit;
 import com.smart.config.SpringUtil;
@@ -48,6 +50,8 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     private ShareDeviceServiceImpl shareDeviceService;
     @Autowired
     private AccountServiceImpl accountService;
+    @Autowired
+    private CacheService cacheService;
 
     public static DeviceServiceImpl get() {
         return SpringUtil.getObject(DeviceServiceImpl.class);
@@ -103,6 +107,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return deviceVOS.stream().peek(deviceVO -> {
             deviceVO.setNetStatus(olineRegIds.contains(deviceVO.getDeviceId()) ? 1 : 0);
             deviceVO.setIsShare(shareIds.contains(deviceVO.getId()) ? 1 : 0);
+            String key = ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
+            Object warningValue = cacheService.getValue(key);
+            deviceVO.setIsWarning(warningValue == null ? 0 : 1);
         }).collect(Collectors.toList());
     }
 
@@ -198,5 +205,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             return accountDeviceXrefService.isAccountDeviceExist(id, AuthContext.get().getLoginUserId());
         }
         return false;
+    }
+
+    public DeviceVO findByDeviceId(String deviceId) {
+        List<DeviceVO> list = list(new QueryDeviceDTO().setDeviceId(deviceId));
+        return CollectionUtil.isEmpty(list) ? null : list.get(0);
+
     }
 }

@@ -3,6 +3,7 @@ package com.smart.domain.message.s2c;
 import com.smart.domain.message.Message;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author: xizhonghuai
@@ -12,7 +13,14 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ParamsQueryMessage extends Message implements S2cMessage {
-    private Integer id;//模式编号
+
+    private Body params;
+
+    @Data
+    @Accessors(chain = true)
+    public static class Body {
+        private Integer id;//模式编号1-6
+    }
 
     @Override
     public String toString() {

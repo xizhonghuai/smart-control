@@ -1,5 +1,7 @@
 package com.smart.config;
 
+import java.util.function.Function;
+
 /**
  * @ClassName SystemConstantUnit
  * @Description: TODO
@@ -18,4 +20,6 @@ public class ConstantUnit {
 
     public static final String on = "on";
     public static final String off = "off";
+
+    public static Function<String, String> WARNING_CACHE_KEY_FUNCTION = deviceId -> String.format("%s,warning", deviceId);
 }

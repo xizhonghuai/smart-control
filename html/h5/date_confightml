@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>预约日期</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+    <style>
+        .weui-bar__item_on {
+            background-color: #ffffff;
+            color: #4cce07;
+        }
+
+        .weui-panel {
+            background-color: rgba(237, 237, 237, 0);
+        }
+    </style>
+
+</head>
+<body>
+<div class="container" id="container">
+    <div class="page navbar js_show" tabindex="-1">
+        <div class="weui-panel weui-panel_access">
+            <div class="page__bd">
+                <div class=" form_">
+                    <div class="weui-panel">
+                        <div class="weui-panel__hd">
+                            <label for="cb" id="beginDatePicker"
+                                   class="weui-cell weui-cell_active weui-cell_switch">
+                                <div class="weui-cell__bd" aria-hidden="true">开始日期</div>
+                                <div class="weui-cell__ft">
+                                    <span id="startDate">2019-02-01</span>
+                                </div>
+                            </label>
+                            <label for="cb" id="endDatePicker" class="weui-cell weui-cell_active weui-cell_switch">
+                                <div class="weui-cell__bd" aria-hidden="true">结束日期</div>
+                                <div class="weui-cell__ft">
+                                    <span id="endDate">2019-02-01</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weui-panel__hd">设置排除日期</div>
+            <div class="weui-panel__bd" id="excludesDate_html">
+
+
+            </div>
+            <div class="weui-panel__ft">
+                <a href="javascript:" id="excludesDate"
+                   class="weui-cell weui-cell_active weui-cell_access weui-cell_link">
+                    <span class="weui-cell__bd">添加</span>
+                </a>
+            </div>
+            <div class="weui-panel__hd">
+                <div class="button-sp-area cell">
+                    <a href="javascript:history.back()" role="button"
+                       class="weui-btn_cell weui-btn_cell-primary">返回</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--tips-->
+<div role="alert" id="infoToast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-waiting weui-icon_toast"></i>
+        <p class="weui-toast__content" id="toastContent">执行中...</p>
+    </div>
+</div>
+
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    verifyJump("operation.html");
+    var deviceId = getSearchString('deviceId');
+    var dateId = getSearchString('dateId');
+    document.title = '预约模式' + dateId + "日期配置";
+
+    function clearRenderDate() {
+        document.getElementById("startDate").innerText = null;
+        document.getElementById("endDate").innerText = null;
+        document.getElementById("excludesDate_html").innerHTML = null;
+    }
+
+    function renderExcludesDate() {
+        let html = "<div role=\"option\" id=\"{dom_id}\" class=\"weui-media-box weui-media-box_text\">\n" +
+            "                    <div class=\"weui-flex js_category\" aria-haspopup=\"true\" aria-expanded=\"false\" tabindex=\"0\"\n" +
+            "                         wah-hotarea=\"click\" aria-live=\"assertive\">\n" +
+            "                        <p class=\"weui-flex__item weui-media-box__desc\">{date}</p>\n" +
+            "                        <img src=\"img/del.png\" onclick=\"deleteExcludesDate('{dom_id}')\" role=\"button\" style=\"width: 24px;\" alt=\"delete\"/>\n" +
+            "                    </div>\n" +
+            "                </div>";
+        let excludeDates = getSessionStorage(dateId + "_excludeDates");
+        if (excludeDates === null) {
+            return;
+        }
+        let html_ = "";
+        excludeDates.forEach(function (item, index) {
+            html_ = html_ + html.format({
+                "dom_id": "a_" + index,
+                "date": item
+            })
+        });
+        document.getElementById("excludesDate_html").innerHTML = html_;
+    }
+
+    function renderDate() {
+        let date1 = getSessionStorage(dateId + "_start_date");
+        if (date1 === null) {
+            date1 = formatDate(new Date(), "yyyy-MM-dd");
+        }
+        document.getElementById("startDate").innerText = date1;
+        document.getElementById("endDate").innerText = getSessionStorage(dateId + "_end_date");
+        renderExcludesDate();
+    }
+
+    function deleteExcludesDate(id) {
+        let element = document.getElementById(id);
+        let innerText = element.innerText;
+        let excludeDates = getSessionStorage(dateId + "_excludeDates");
+        let index = excludeDates.indexOf(innerText);
+        if (index > -1) {
+            excludeDates.splice(index, 1);
+            setSessionStorage(dateId + "_excludeDates", excludeDates);
+        }
+        element.remove();
+    }
+
+    $(function () {
+
+        $('#beginDatePicker').on('click', function () {
+            weui.datePicker({
+                start: new Date(),
+                end: 2099,
+                onConfirm: function (result) {
+                    let v = result[0].value + "-" + result[1].value + "-" + result[2].value;
+                    let dateV = stringToDate(v + " 00:00:00");
+                    let dateS = formatDate(dateV, "yyyy-MM-dd");
+                    document.getElementById("startDate").innerText = dateS;
+                    setSessionStorage(dateId + "_start_date", dateS);
+                    document.getElementById("endDate").innerText = null;
+                    setSessionStorage(dateId + "_end_date", null);
+                },
+                title: '选择开始日期'
+            });
+        });
+        $('#endDatePicker').on('click', function () {
+            let innerText = document.getElementById("startDate").innerText;
+            let date1 = stringToDate(innerText + " 00:00:00");
+            if (!(date1 instanceof Date)) {
+                return;
+            }
+            let date2 = stringToDate(innerText + " 00:00:00");
+            date2.setMonth(date2.getMonth() + 1);
+            console.log(date1);
+            weui.datePicker({
+                start: date1,
+                end: date2,
+                // cron: pickerConfig.cron2,
+                onConfirm: function (result) {
+                    console.log(result);
+                    let v = result[0].value + "-" + result[1].value + "-" + result[2].value;
+                    let dateV = stringToDate(v + " 00:00:00");
+                    let dateS = formatDate(dateV, "yyyy-MM-dd");
+                    document.getElementById("endDate").innerText = dateS;
+                    setSessionStorage(dateId + "_end_date", dateS);
+                },
+                title: '选择结束日期'
+            });
+        });
+        $('#excludesDate').on('click', function () {
+            let date1 = stringToDate(document.getElementById("startDate").innerText + " 00:00:00");
+            let date2 = stringToDate(document.getElementById("endDate").innerText + " 00:00:00");
+            console.log(date1);
+            console.log(date2);
+            if (isDate(date1) && isDate(date2)) {
+                weui.datePicker({
+                    start: date1,
+                    end: date2,
+                    onConfirm: function (result) {
+                        console.log(result);
+                        let v = result[0].value + "-" + result[1].value + "-" + result[2].value + " 00:00:00";
+                        console.log(v);
+                        let date = formatDate(stringToDate(v), "yyyy-MM-dd");
+                        let excludeDates = getSessionStorage(dateId + "_excludeDates");
+                        if (excludeDates == null) {
+                            excludeDates = [];
+                        }
+
+                        if (excludeDates.indexOf(date) < 0) {
+                            excludeDates.push(date);
+                            setSessionStorage(dateId + "_excludeDates", excludeDates);
+                            renderExcludesDate();
+                        }
+                    },
+                    title: '选择排除日期'
+                });
+            }
+
+        });
+
+        clearRenderDate();
+        renderDate();
+    });
+</script>
+
+</body>
+</html>

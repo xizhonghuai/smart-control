@@ -20,7 +20,13 @@ import java.util.function.Supplier;
  **/
 public class Utils {
     public static String getDate() {
-        return DateUtil.format(new Date(), "yyyyMMddHHmm");
+        return DateUtil.format(new Date(), "yyyy-MM-dd");
+    }
+    public static String getDateV2() {
+        return DateUtil.format(new Date(), "yy-MM-dd");
+    }
+    public static String getDateTime() {
+        return DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
     }
 
     public static <T> Wrapper<T> queryWrapper(T t) {

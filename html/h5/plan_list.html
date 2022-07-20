@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>计划列表</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+
+    <style>
+        .weui-form-preview__bd_ {
+            padding: 16px;
+            font-size: 0.9em;
+            /* text-align: right; */
+            color: rgba(0, 0, 0, 0.5);
+            color: var(--weui-FG-1);
+            line-height: 2;
+        }
+
+        .my-center {
+            position: relative;
+            text-align: center;
+            padding: 10px 0
+        }
+
+        .preview_label_title {
+            float: left;
+            margin-right: 1em;
+            min-width: 4em;
+            color: rgb(73, 73, 67);
+            text-align: justify;
+        }
+
+        .preview_label_item {
+            float: left;
+            margin-right: 1em;
+            min-width: 4em;
+            color: rgb(73, 73, 67);
+            text-align: justify;
+        }
+    </style>
+
+
+</head>
+<body>
+<div class="container" id="container">
+    <div class="weui-panel__hd" style="padding-top: 0px;padding-bottom: 0px;">
+        <div class="weui-flex">
+            <div>
+                <div class="placeholder"></div>
+            </div>
+            <div class="weui-flex__item">
+                <div class="placeholder my-center">计划列表</div>
+            </div>
+            <div>
+                <div class="placeholder my-center"><img onclick="addPlan()" id="showDialog4"
+                                                        role="img" alt=""
+                                                        src="img/加.png"
+                                                        style="height: 32px;"/></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page__bd" id="js_plan_list">
+        <!-- <div class="weui-form-preview" id="js_plan_1">
+             <div role="option" class="weui-form-preview__hd">
+                 <div class="weui-form-preview__item">
+                     <label class="preview_label_title">计划1</label>
+                     <em class="weui-form-preview__value" id="js_plan_1_status">运行中</em>
+                 </div>
+             </div>
+             <div role="option" aria-labelledby="p1 js_a11y_comma p2 js_a11y_comma p3" class="weui-form-preview__bd_">
+
+                 <div class="weui-form-preview__item">
+                     <label class="preview_label_item">开始日期</label>
+                     <span class="weui-form-preview__value">2022-08-01</span>
+                     <label class="preview_label_item">结束日期</label>
+                     <span class="weui-form-preview__value">2022-09-01</span>
+                 </div>
+                 <div class="page__bd">
+                     <div class="weui-cells__title">带图标、说明的列表项</div>
+                     <div class="weui-cells">
+                         <div role="option" class="weui-cell  weui-cell_example">
+                             <div class="weui-cell__hd"><img
+                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII="
+                                     alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+                             <div class="weui-cell__bd">
+                                 <p>标题文字</p>
+                             </div>
+                             <div class="weui-cell__ft">说明文字</div>
+                         </div>
+                         <div role="option" class="weui-cell  weui-cell_example">
+                             <div class="weui-cell__hd"><img
+                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAuCAMAAABgZ9sFAAAAVFBMVEXx8fHMzMzr6+vn5+fv7+/t7e3d3d2+vr7W1tbHx8eysrKdnZ3p6enk5OTR0dG7u7u3t7ejo6PY2Njh4eHf39/T09PExMSvr6+goKCqqqqnp6e4uLgcLY/OAAAAnklEQVRIx+3RSRLDIAxE0QYhAbGZPNu5/z0zrXHiqiz5W72FqhqtVuuXAl3iOV7iPV/iSsAqZa9BS7YOmMXnNNX4TWGxRMn3R6SxRNgy0bzXOW8EBO8SAClsPdB3psqlvG+Lw7ONXg/pTld52BjgSSkA3PV2OOemjIDcZQWgVvONw60q7sIpR38EnHPSMDQ4MjDjLPozhAkGrVbr/z0ANjAF4AcbXmYAAAAASUVORK5CYII="
+                                     alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+                             <div class="weui-cell__bd">
+                                 <p>标题文字</p>
+                             </div>
+                             <div class="weui-cell__ft">说明文字</div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="weui-form-preview__ft">
+                 <a role="button" class="weui-form-preview__btn weui-form-preview__btn_primary"
+                    href="javascript:">修改配置</a>
+             </div>
+         </div>
+         <br>-->
+
+    </div>
+
+</div>
+
+
+<!--tips-->
+<div role="alert" id="infoToastOK" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-success weui-icon_toast"></i>
+        <p class="weui-toast__content">成功</p>
+    </div>
+</div>
+
+<div role="alert" id="infoToastPower" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-waiting weui-icon_toast"></i>
+        <p class="weui-toast__content" id="toastContent">执行中...</p>
+    </div>
+</div>
+
+<div role="alert" id="errorToastPower" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-warn weui-icon_toast"></i>
+
+        <p class="weui-toast__content">执行失败</p>
+    </div>
+</div>
+
+
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    var deviceId = getSearchString('deviceId');
+    verifyJump("plan_list.html?deviceId=" + deviceId);
+
+    var plan_date_html_template = "<div class=\"weui-form-preview__item\">\n" +
+        "                    <label class=\"preview_label_item\">开始日期</label>\n" +
+        "                    <span class=\"weui-form-preview__value\">{startDate}</span>\n" +
+        "                    <label class=\"preview_label_item\">结束日期</label>\n" +
+        "                    <span class=\"weui-form-preview__value\">{endDate}</span>\n" +
+        "                </div>";
+    var time_group_begin = "<div class=\"page__bd\">\n" +
+        "                    <div class=\"weui-cells__title\">{time_type}</div>\n" +
+        "                    <div class=\"weui-cells\">\n";
+    var time_group_end = "</div>\n" +
+        "                </div>";
+    var pw_html_template = " <div role=\"option\" class=\"weui-cell  weui-cell_example\">\n" +
+        "                            <div class=\"weui-cell__hd\"><img\n" +
+        "                                    src=\"img/定时.png\"  alt=\"\" style=\"width: 20px; margin-right: 16px; display: block;\"></div>\n" +
+        "                            <div class=\"weui-cell__bd\">\n" +
+        "                                <p>定时{timeId}:</p>\n" +
+        "                            </div>\n" +
+        "                            <div class=\"weui-cell__ft\">开始:{time}--结束:{endTime}</div></div>\n";
+    var py_html_template = " <div role=\"option\" class=\"weui-cell  weui-cell_example\">\n" +
+        "                            <div class=\"weui-cell__hd\"><img\n" +
+        "                                    src=\"img/定时.png\" alt=\"\" style=\"width: 20px; margin-right: 16px; display: block;\"></div>\n" +
+        "                            <div class=\"weui-cell__bd\">\n" +
+        "                                <p>定时{timeId}:</p>\n" +
+        "                            </div>\n" +
+        "                            <div class=\"weui-cell__ft\">开始:{time}---持续:{duration}s</div></div>\n";
+
+    var begin_html_template = " <div class=\"weui-form-preview\" id=\"js_plan_{dateId}\">\n" +
+        "            <div role=\"option\" class=\"weui-form-preview__hd\">\n" +
+        "                <div class=\"weui-form-preview__item\">\n" +
+        "                    <label class=\"preview_label_title\" id=\"js_plan_name_{dateId}\"> {planName}</label>\n" +
+        "                    <em class=\"weui-form-preview__value\">{planStatus}</em>\n" +
+        "                </div>\n" +
+        "            </div>\n" +
+        "            <div role=\"option\" aria-labelledby=\"p1 js_a11y_comma p2 js_a11y_comma p3\" class=\"weui-form-preview__bd_\">\n";
+
+    var end_html_template = " </div>\n" +
+        "            <div class=\"weui-form-preview__ft\">\n" +
+        "                <a role=\"button\" class=\"weui-form-preview__btn weui-form-preview__btn_primary\"\n" +
+        "                   href=\"javascript:\" id=\"js_plan_{dateId}_edit\" onclick=\"editConf('js_plan_{dateId}_edit')\" >修改配置</a>\n" +
+    /*    "                <a role=\"button\" class=\"weui-form-preview__btn weui-form-preview__btn_primary\"\n" +
+        "                   href=\"javascript:\">删除配置</a>\n" +*/
+        "            </div>\n" +
+        "        </div> </div>\n" +
+        "        <br>";
+
+    var run_html = "<span role=\"img\" aria-label=\"加载中\" class=\"weui-primary-loading weui-primary-loading_brand\">\n" +
+        "          <span class=\"weui-primary-loading__dot\"></span>\n" +
+        "        </span>";
+
+    function createList(confs) {
+        let htmls = "";
+        if (confs === null || confs.length === 0) {
+            return;
+        }
+        confs.forEach(function (item) {
+            let begin_html = begin_html_template.format({
+                dateId: item.id,
+                planName: isEmpty(item.name) ? "计划" + item.id : item.name,
+                planStatus: isEmpty(item.status) ? "" : item.status ? run_html : "",
+            });
+            let body = item.body;
+            let plan_date_html = plan_date_html_template.format({
+                startDate: body.start_date
+                , endDate: body.end_date
+            });
+            let timeList = body.time_list;
+            let time_map = groupBy(timeList, function (item) {
+                return [item.repeat];
+            });
+            let pw_list_html = time_group_begin.format({time_type: "喷雾定时组"});
+            let py_list_html = time_group_begin.format({time_type: "喷药定时组"});
+            let index = 0;
+            time_map.forEach(function (times) {
+                times.forEach(function (time) {
+                    index = index + 1;
+                    if (time.repeat === 1) {
+                        let d = stringToDate("2022-01-01 " + time.time);
+                        let endDate = timeAddSecond(d, time.duration);
+                        let pw_html = pw_html_template.format({
+                            timeId: index,
+                            time: time.time,
+                            endTime: formatDate(endDate)
+                        });
+                        pw_list_html = pw_list_html + pw_html;
+                    } else {
+                        let py_html = py_html_template.format({
+                            timeId: index,
+                            time: time.time,
+                            duration: time.duration
+                        });
+                        py_list_html = py_list_html + py_html;
+                    }
+                });
+            });
+            pw_list_html = pw_list_html + time_group_end;
+            py_list_html = py_list_html + time_group_end;
+            let html = begin_html + plan_date_html + pw_list_html + py_list_html + end_html_template.format({dateId: item.id});
+            htmls = htmls + html;
+        })
+        document.getElementById("js_plan_list").innerHTML = htmls;
+    }
+
+    function getList() {
+        for (let i = 1; i < 7; i++) {
+            httpGet("api/v1/control/device-params?deviceId=" + deviceId + "&id=" + i);
+        }
+        let result = httpGet("api/v1/device-config/plan-list?deviceId=" + deviceId);
+        if (result.code === RES_OK && 'data' in result) {
+            createList(result.data);
+        }
+    }
+
+    function editConf(js_id) {
+        let planId = js_id.split("_")[2];
+        window.location.href = "device_config.html?deviceId=" + deviceId + "&planId=" + planId + "&planName=" + document.getElementById("js_plan_name_" + planId).innerText;
+    }
+
+    function addPlan() {
+        openToast('infoToastPower');
+        setTimeout(function () {
+            let result = httpRequest("api/v1/device-config/add-plan", 'POST', {
+                deviceId: deviceId
+            });
+            closeToast('infoToastPower');
+            let susses_flag = false;
+            if (result.code === RES_OK) {
+                getList();
+            } else {
+                alert(result.message);
+            }
+        }, 50);
+    }
+
+
+    $(function () {
+        getList();
+    });
+</script>
+
+</body>
+</html>

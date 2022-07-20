@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>设备配置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+    <style>
+        .page.navbar .weui-tab__panel, .page.tabbar .weui-tab__panel {
+            padding: 0px;
+        }
+
+        .weui-navbar__item {
+            background-color: #b2b2b1;
+            color: #d5d4d4;
+        }
+
+        .weui-bar__item_on {
+            background-color: #ffffff;
+            color: #4cce07;
+        }
+
+        .weui-panel {
+            background-color: rgba(237, 237, 237, 0);
+        }
+    </style>
+
+</head>
+<body>
+<div class="container" id="container">
+    <div class="page navbar js_show" tabindex="-1">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-navbar">
+                    <div role="tab" aria-selected="true" aria-controls="panel1" id="tab1"
+                         class="weui-navbar__item weui-bar__item_on" wah-hotarea="click">
+                        状态数据
+                    </div>
+                    <div role="tab" aria-controls="panel2" id="tab2" class="weui-navbar__item" wah-hotarea="click"
+                         aria-selected="false">
+                        参数配置
+                    </div>
+                    <!--  <div role="tab" aria-controls="panel3" id="tab3" class="weui-navbar__item" wah-hotarea="click">
+                          选项三
+                      </div>-->
+                </div>
+                <!--状态数据-->
+                <div role="tabpanel" id="panel1" aria-labelledby="tab1" class="weui-tab__panel" style="display: block;">
+                    <div class=" form_">
+                        <div class="weui-panel">
+                            <div class="weui-panel__hd">
+                                <div class="weui-flex">
+                                    <div>
+                                        <div class="placeholder" id="device_name_id" style="padding:10px 0">test(1001)
+                                        </div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"></div>
+                                    </div>
+                                    <div>
+                                        <div class="placeholder">
+                                            <SPAN><a href="javascript:" role="button" title="等待中" onclick="power()"
+                                                     class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea weui-btn_loading">
+                                                <span class="weui-primary-loading weui-primary-loading_transparent"><i
+                                                        class="weui-primary-loading__dot"></i></span><span
+                                                    id="power_text">启动</span>
+                                            </a>
+                                                &nbsp;  &nbsp;  &nbsp;
+                                               <a href="javascript:" role="button" onclick="getDeviceStatus()"
+                                                  class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">刷新</a></SPAN>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_text">
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">水位:</span>
+                                        <span id="waterLevel"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">药量:</span>
+                                        <span id="dragAmount"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">状态:</span>
+                                        <span id="state"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">信号强度:</span>
+                                        <span id="csq"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">累计时长:</span>
+                                        <span id="runningTime"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--  <div class="weui-panel__bd">
+                                  <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                  </label>
+                                  <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                      <div class="weui-cell__bd" aria-hidden="true">通道2控制</div>
+                                      <div class="weui-cell__ft">
+                                          <input aria-labelledby="cb_txt" id="ch2" class="weui-switch" type="checkbox">
+                                      </div>
+                                  </label>
+                                  <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                      <div class="weui-cell__bd" aria-hidden="true">通道3控制</div>
+                                      <div class="weui-cell__ft">
+                                          <input aria-labelledby="cb_txt" id="ch3" class="weui-switch" type="checkbox">
+                                      </div>
+                                  </label>
+                                  <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                      <div class="weui-cell__bd" aria-hidden="true">通道4控制</div>
+                                      <div class="weui-cell__ft">
+                                          <input aria-labelledby="cb_txt" id="ch4" class="weui-switch" type="checkbox">
+                                      </div>
+                                  </label>
+                                  <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                      <div class="weui-cell__bd" aria-hidden="true">按键使能</div>
+                                      <div class="weui-cell__ft">
+                                          <input aria-labelledby="cb_txt" id="keyEn" class="weui-switch" type="checkbox">
+                                      </div>
+                                  </label>
+                                  <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                  </label>
+                              </div>-->
+
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_text">
+                                    <ul class="weui-media-box__info" aria-hidden="true">
+                                        <li class="weui-media-box__info__meta" aria-hidden="true" id="js_p4m1_time">
+                                            设备时钟:<span id="deviceSystemClock">2022-09-22 12:36:00</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  <img class="weui-media-box__thumb" src="img/runing.gif" alt="">-->
+                </div>
+                <!--参数配置-->
+                <div style="display: none;" role="tabpanel" id="panel2" aria-labelledby="tab2" class="weui-tab__panel">
+                    <div class=" form_">
+                        <div class="weui-panel">
+                            <div class="weui-panel__hd">
+                                <div class="weui-flex">
+                                    <div>
+                                        <div class="placeholder" style="padding:10px 0">当前预约模式: &nbsp;模式<span
+                                                id="date_id">1</span>
+                                        </div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"></div>
+                                    </div>
+                                    <div>
+                                        <div class="placeholder">
+                                            <SPAN>
+                                                     <!--<a href="javascript:" role="button"
+                                                        class="weui-btn weui-btn_default" id="model_select">预约模式切换</a>-->
+                                                   <a href="javascript:" role="button"
+                                                      class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea"
+                                                      id="model_select">预约模式切换</a></SPAN>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label for="cb" id="beginDatePicker"
+                                       class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">开始日期</div>
+                                    <div class="weui-cell__ft">
+                                        <span id="beginDate">2019-02-01</span>
+                                    </div>
+                                </label>
+                                <label for="cb" id="endDatePicker" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">结束日期</div>
+                                    <div class="weui-cell__ft">
+                                        <span id="endDate">2019-02-01</span>
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">药泵开关</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="dragEn" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">出药速度</div>
+                                    <div class="weui-cell__ft">
+                                        <input id="dragSpeed" class="weui-input weui-cell__ft" placeholder="百分比">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">药泵启动延时</div>
+                                    <div class="weui-cell__ft">
+                                        <input id="dragOnDelay" class="weui-input weui-cell__ft"
+                                               placeholder="输入延时时间，单位秒">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">药泵关闭延时</div>
+                                    <div class="weui-cell__ft">
+                                        <input class="weui-input weui-cell__ft" placeholder="输入延时时间，单位秒">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" id="cb_txt" aria-hidden="true">电磁阀2状态</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="cb" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" id="cb_txt" aria-hidden="true">电磁阀3状态</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="cb" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" id="cb_txt" aria-hidden="true">电磁阀4状态</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="cb" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <!--time_list-->
+
+
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true" id="time_select">
+                                        定时组:&nbsp;定时<span>1</span></div>
+                                    <!--<div class="weui-cell__ft">
+                                        <a href="javascript:" role="button"
+                                           class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea"
+                                           id="time_select">时间组切换</a></SPAN>
+                                    </div>-->
+                                </label>
+                                <label for="cb" id="startDatePicker"
+                                       class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">启动时间</div>
+                                    <div class="weui-cell__ft">
+                                        <span>02:55:55</span>
+                                    </div>
+                                </label>
+                                <label for="cb" id="closeDatePicker"
+                                       class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">关闭时间</div>
+                                    <div class="weui-cell__ft">
+                                        <span>02:55:55</span>
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">开启时长</div>
+                                    <div class="weui-cell__ft">
+                                        <input class="weui-input weui-cell__ft" placeholder="输入开启时长，单位秒">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">关闭时长</div>
+                                    <div class="weui-cell__ft">
+                                        <input class="weui-input weui-cell__ft" placeholder="输入关闭时长，单位秒">
+                                    </div>
+                                </label>
+
+                            </div>
+                            <div class="weui-panel__hd">
+                                <!--<div class="weui-flex">
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"></div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder">
+                                            <a href="javascript:" role="button"
+                                               class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">执行配置</a>
+                                        </div>
+                                    </div>
+                                    &nbsp;
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder">
+                                            <a href="javascript:" role="button"
+                                               class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">查询配置</a>
+                                        </div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"></div>
+                                    </div>
+                                </div>-->
+                                <div class="button-sp-area cell">
+                                    <a href="javascript:" role="button"
+                                       class="weui-btn_cell weui-btn_cell-primary">执行配置</a>
+                                    <a href="javascript:" role="button"
+                                       class="weui-btn_cell weui-btn_cell-primary">查询配置</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: none;" role="tabpanel" id="panel3" aria-labelledby="tab3"
+                     class="weui-tab__panel">
+                    Dolor magnam expedita ex beatae maiores assumenda Doloribus et totam numquam
+                    officiis beatae Sint
+                    eos saepe magnam error aut Doloremque necessitatibus eligendi quod fuga debitis.
+                    Error ad optio
+                    repellendus amet.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--tips-->
+<div role="alert" id="infoToast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-waiting weui-icon_toast"></i>
+        <p class="weui-toast__content" id="toastContent">启动中...</p>
+    </div>
+</div>
+
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    verifyJump("operation.html");
+    var deviceId = getSearchString('deviceId');
+    function getDeviceStatus() {
+
+        let result = httpGet("api/v1/control/device-data?deviceId=" + deviceId);
+        if (result.code === RES_OK && 'data' in result) {
+            let params = result.data.params;
+            document.getElementById('waterLevel').innerText = params.waterLevel === 1 ? '正常' : '缺水';
+            document.getElementById('dragAmount').innerText = params.dragAmount + '%';
+            document.getElementById('state').innerText = params.state;
+            document.getElementById('csq').innerText = params.csq;
+            document.getElementById('runningTime').innerText = params.runningTime + 'H';
+        }
+    }
+
+    function power() {
+        let $toast = $('#infoToast');
+        let params = {
+            deviceId: deviceId,
+            name: $("#deviceName").val(),
+            imei: $("#imei").val(),
+            description: $("#desc").val()
+        };
+        httpRequest("api/v1/control/power/sync")
+        $toast.fadeIn(100);
+        setTimeout(function () {
+            $toast.fadeOut(100);
+        }, 2000);
+
+    }
+
+    $(function () {
+        $('.weui-navbar__item').on('click', function () {
+            $(this).attr('aria-selected', 'true').addClass('weui-bar__item_on');
+            $(this).siblings('.weui-bar__item_on').removeClass('weui-bar__item_on').attr('aria-selected', 'false');
+            var panelId = '#' + $(this).attr('aria-controls');
+            $(panelId).css('display', 'block');
+            $(panelId).siblings('.weui-tab__panel').css('display', 'none');
+        });
+
+        $('#model_select').on('click', function () {
+            weui.picker([{
+                label: '预约模式1',
+                value: 1
+            }, {
+                label: '预约模式2',
+                value: 2
+            }, {
+                label: '预约模式3',
+                value: 3
+            }, {
+                label: '预约模式4',
+                disabled: true,
+                value: 4
+            }, {
+                label: '预约模式5',
+                value: 5
+            }, {
+                label: '预约模式6',
+                value: 6
+            }], {
+                /*  onChange: function (result) {
+                      console.log(result);
+                  },*/
+                onConfirm: function (result) {
+                    console.log(result);
+                },
+                title: '预约模式选择'
+            });
+        });
+        $('#beginDatePicker').on('click', function () {
+            weui.datePicker({
+                start: 1990,
+                end: new Date().getFullYear(),
+                onChange: function (result) {
+                    console.log(result);
+                },
+                onConfirm: function (result) {
+                    console.log(result);
+                },
+                title: '选择开始日期'
+            });
+        });
+        $('#endDatePicker').on('click', function () {
+            weui.datePicker({
+                start: 1990,
+                end: new Date().getFullYear(),
+                onChange: function (result) {
+                    console.log(result);
+                },
+                onConfirm: function (result) {
+                    console.log(result);
+                },
+                title: '选择结束日期'
+            });
+        });
+        $('#time_select').on('click', function () {
+            weui.picker([{
+                label: '时间1',
+                value: 1
+            }, {
+                label: '时间2',
+                value: 2
+            }, {
+                label: '时间3',
+                value: 3
+            }, {
+                label: '时间4',
+                disabled: true,
+                value: 4
+            }, {
+                label: '时间5',
+                value: 5
+            }, {
+                label: '时间6',
+                value: 6
+            }, {
+                label: '时间7',
+                value: 7
+            }, {
+                label: '时间8',
+                value: 8
+            }], {
+                onConfirm: function (result) {
+                    console.log(result);
+                },
+                title: '时间组选择'
+            });
+        });
+
+        getDeviceStatus();
+
+    });
+</script>
+
+</body>
+</html>

@@ -4,11 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson.JSON;
 import com.smart.domain.message.c2s.*;
 import com.smart.domain.message.s2c.*;
+import com.smart.utils.Utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author xizhonghuai
@@ -25,8 +23,8 @@ public class MessageUtil {
             put("10002", ParamsConfMessageAck.class);
             put("20003", ParamsQueryMessage.class);
             put("10003", ParamsQueryMessageAck.class);
-            put("20004", ParamsQueryMessage.class);
-            put("10004", ParamsQueryMessageAck.class);
+          /*  put("20004", ParamsQueryMessage.class);
+            put("10004", ParamsQueryMessageAck.class);*/
 
             put("20006", RevStopMessage.class);
             put("10006", RevStopMessageAck.class);
@@ -77,5 +75,33 @@ public class MessageUtil {
     public static boolean isIntact(Object message) {
         String toString = message.toString();
         return (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 1) == 0x03);
+    }
+
+    public static ParamsConfMessage defaultConfig(Integer id, String deviceId) {
+        ParamsConfMessage confMessage = new ParamsConfMessage();
+        confMessage.setDeviceId(deviceId);
+        confMessage.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
+        ParamsConfMessage.Body body = new ParamsConfMessage.Body()
+                .setId(id)
+                .setStartDate(Utils.getDate())
+                .setEndDate(Utils.getDate())
+                .setDaysMap(new ArrayList<Integer>() {{
+                    add(1);
+                }})
+                .setDragPump(new ParamsConfMessage.DragPump()
+                        .setEnable(false)
+                        .setOnDelay(30)
+                        .setOffDelay(10)
+                        .setSpeed(0))
+                .setRelays(new ArrayList<String>() {{
+                    add("off");
+                    add("off");
+                    add("off");
+                }})
+                .setTimeList(new ArrayList<ParamsConfMessage.Time>() {{
+                    add(new ParamsConfMessage.Time().setTime("08:00:00").setOnTime(60).setOffTime(60).setDuration(3600).setRepeat(1));
+                }});
+        confMessage.setParams(body);
+        return confMessage;
     }
 }

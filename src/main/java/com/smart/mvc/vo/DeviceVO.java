@@ -15,5 +15,6 @@ public class DeviceVO {
     private String imei;
     private String description;
     private int netStatus;
+    private int isWarning;
     private int isShare;
 }

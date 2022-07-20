@@ -16,8 +16,10 @@ import com.transmission.server.core.ConnectProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author xizhonghuai
@@ -35,9 +37,15 @@ public class DeviceControlService {
         return deviceAPI.getOnlineDeviceList();
     }
 
-    public Message deviceMessage(String deviceId, String code) {
-        String key = StrUtil.isBlank(code) ? deviceId : String.format("%s,%s", deviceId, code);
+    public Message deviceMessage(String deviceId, String code, Object... params) {
+        String paramsCollect = Arrays.stream(params).filter(Objects::nonNull).map(Object::toString).collect(Collectors.joining(","));
+        if (StrUtil.isBlank(paramsCollect)) {
+            String key = StrUtil.isBlank(code) ? deviceId : String.format("%s,%s", deviceId, code);
+            return (Message) cacheService.getValue(key);
+        }
+        String key = StrUtil.isBlank(code) ? deviceId : String.format("%s,%s,%s", deviceId, code, paramsCollect);
         return (Message) cacheService.getValue(key);
+
     }
 
     public String deviceNetStatus(String deviceId) {
@@ -59,27 +67,29 @@ public class DeviceControlService {
         String deviceId = paramsConfMessage.getDeviceId();
         checkDevice(deviceId);
         paramsConfMessage.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
+        paramsConfMessage.process();
         deviceAPI.sendCmd(deviceId, paramsConfMessage);
         commandPoolService.add(deviceId, paramsConfMessage);
         if (isSync <= 0) {
             return null;
         }
-        cacheService.invalid(deviceId);
+        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
         return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
     }
 
-    public Message deviceParams(int isSync, String deviceId) {
+    public Message deviceParams(int isSync, String deviceId, Integer id) {
         checkDevice(deviceId);
         ParamsQueryMessage paramsQueryMessage = new ParamsQueryMessage();
         paramsQueryMessage.setDeviceId(deviceId);
         paramsQueryMessage.setCode(MessageUtil.getMessageCode(ParamsQueryMessage.class));
+        paramsQueryMessage.setParams(new ParamsQueryMessage.Body().setId(id));
         deviceAPI.sendCmd(deviceId, paramsQueryMessage);
         commandPoolService.add(deviceId, paramsQueryMessage);
         if (isSync == 0) {
             return null;
         }
-        cacheService.invalid(deviceId);
-        return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class)));
+        cacheService.invalid(String.format("%s,%s,%s", deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class), id));
+        return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class), id.toString()));
     }
 
     public Message power(int isSync, RevStopDTO dto) {
@@ -93,7 +103,7 @@ public class DeviceControlService {
         if (isSync == 0) {
             return null;
         }
-        cacheService.invalid(deviceId);
+        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(RevStopMessageAck.class)));
         return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(RevStopMessageAck.class)));
     }
 
@@ -108,7 +118,7 @@ public class DeviceControlService {
         if (isSync == 0) {
             return null;
         }
-        cacheService.invalid(deviceId);
+        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(KeyEnablingMessageAck.class)));
         return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(KeyEnablingMessageAck.class)));
     }
 
@@ -131,25 +141,25 @@ public class DeviceControlService {
         return commandPoolService.getCommands();
     }
 
-    public Boolean deviceParamsConfV2(ParamsConfMessage paramsConfMessage) {
+    public Message deviceParamsConfV2(ParamsConfMessage paramsConfMessage) {
         String deviceId = paramsConfMessage.getDeviceId();
         checkDevice(deviceId);
         paramsConfMessage.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
         //todo check params
-        deviceParamsConf(0, paramsConfMessage);
-        return true;
+        return deviceParamsConf(1, paramsConfMessage);
     }
 
-    public ParamsQueryMessageAck deviceParamsV2(String deviceId) {
+    public ParamsQueryMessageAck deviceParamsV2(String deviceId, Integer id) {
         checkDevice(deviceId);
-        deviceParams(0, deviceId);
-        Message message = deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class));
+        deviceParams(0, deviceId, id);
+        Message message = deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class), id.toString());
         return (ParamsQueryMessageAck) message;
     }
 
     public TimingMessage deviceData(String deviceId) {
         checkDevice(deviceId);
         Message message = deviceMessage(deviceId, MessageUtil.getMessageCode(TimingMessage.class));
+//        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(TimingMessage.class)));
         return (TimingMessage) message;
     }
 

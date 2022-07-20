@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>定时配置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+    <style>
+        .page.navbar .weui-tab__panel, .page.tabbar .weui-tab__panel {
+            padding: 0px;
+        }
+
+        .weui-navbar__item {
+            background-color: #b2b2b1;
+            color: #d5d4d4;
+        }
+
+        .weui-bar__item_on {
+            background-color: #ffffff;
+            color: #4cce07;
+        }
+
+        .weui-panel {
+            background-color: rgba(237, 237, 237, 0);
+        }
+
+        .my-center {
+            position: relative;
+            text-align: center;
+            padding: 10px 0
+        }
+    </style>
+
+</head>
+<body>
+<div class="container" id="container">
+    <div class=" form_">
+        <div class="weui-panel">
+            <div class="weui-panel__hd">
+                <div class="weui-flex">
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_1" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时1</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_2" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时2</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_3" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时3</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_4" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时4</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_5" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时5</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_6" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时6</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_7" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时7</p>
+                        </a></div>
+                    </div>
+                    <div class="weui-flex__item">
+                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                            <div class="weui-grid__icon">
+                                <img id="timerId_8" onclick="changeTimerPage(this.id)" src="img/timer1.png" alt="">
+                            </div>
+                            <p class="weui-grid__label">定时8</p>
+                        </a></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="weui-panel__hd">
+                <label for="cb" id="startDatePicker"
+                       class="weui-cell weui-cell_active weui-cell_switch">
+                    <div class="weui-cell__bd" aria-hidden="true">启动时间</div>
+                    <div class="weui-cell__ft">
+                        <span id="startTime">02:55:55</span>
+                    </div>
+                </label>
+                <label for="cb" id="closeDatePicker"
+                       class="weui-cell weui-cell_active weui-cell_switch">
+                    <div class="weui-cell__bd" aria-hidden="true">关闭时间</div>
+                    <div class="weui-cell__ft">
+                        <span id="endTime">02:55:55</span>
+                    </div>
+                </label>
+                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                    <div class="weui-cell__bd" aria-hidden="true">开启时长</div>
+                    <div class="weui-cell__ft">
+                        <input id="onTime" onchange="setOnTimeValue(this.value)" class="weui-input weui-cell__ft"
+                               placeholder="输入开启时长，单位秒">
+                    </div>
+                </label>
+                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                    <div class="weui-cell__bd" aria-hidden="true">关闭时长</div>
+                    <div class="weui-cell__ft">
+                        <input id="offTime" onchange="setOffTimeValue(this.value)" class="weui-input weui-cell__ft"
+                               placeholder="输入关闭时长，单位秒">
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div class="weui-panel__hd">
+            <div class="button-sp-area cell">
+                <a href="javascript:history.go(-1)" role="button"
+                   class="weui-btn_cell weui-btn_cell-primary">返回</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--tips-->
+<div role="alert" id="infoToast" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-waiting weui-icon_toast"></i>
+        <p class="weui-toast__content" id="toastContent">启动中...</p>
+    </div>
+</div>
+
+
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    verifyJump("operation.html");
+    var deviceId = getSearchString('deviceId');
+    var dateId = getSearchString('dateId');
+    document.title = '预约模式' + dateId + "定时配置";
+    var timeId = 1;
+
+    function timerIdChange(id) {
+        for (let i = 1; i < 9; i++) {
+            if (i === id) {
+                document.getElementById("timerId_" + i).src = "img/timer2.png";
+            } else {
+                document.getElementById("timerId_" + i).src = "img/timer1.png";
+            }
+        }
+    }
+
+    function clearRenderTimer() {
+        document.getElementById("startTime").innerText = null;
+        document.getElementById("endTime").innerText = null;
+        $("#onTime").val(null);
+        $("#offTime").val(null);
+    }
+
+    function renderTimer(obj) {
+
+        document.getElementById("startTime").innerText = obj.time;
+        let duration = obj.duration;
+        let date1 = stringToDate("2022-01-01 " + obj.time);
+        var addSeconds = new Date(date1.setSeconds(date1.getSeconds() + duration));
+        document.getElementById("endTime").innerText = formatDate(addSeconds, "HH:mm:ss");
+        $("#onTime").val(obj.on_time);
+        $("#offTime").val(obj.off_time);
+    }
+
+    function changeTimerPage(dom_id) {
+        let id = parseInt(dom_id.split("_")[1]);
+        timeId = id;
+        timerIdChange(id);
+        clearRenderTimer();
+        let par = getSessionStorage(dateId + "_time_" + id);
+        if (par != null) {
+            renderTimer(par);
+        }
+    }
+
+    function setOnTimeValue(value) {
+        let obj = getSessionStorage(dateId + "_time_" + timeId);
+        if (obj == null) {
+            obj = {};
+        }
+        obj.on_time = value;
+        setSessionStorage(dateId + "_time_" + timeId, obj);
+
+    }
+
+    function setOffTimeValue(value) {
+        let obj = getSessionStorage(dateId + "_time_" + timeId);
+        if (obj == null) {
+            obj = {};
+        }
+        obj.off_time = value;
+        setSessionStorage(dateId + "_time_" + timeId, obj);
+    }
+
+    function setStartTimeValue(value) {
+        let obj = getSessionStorage(dateId + "_time_" + timeId);
+        if (obj == null) {
+            obj = {};
+        }
+
+        let date1 = stringToDate("2022-01-01 " + value);
+        let date2 = stringToDate("2022-01-01 " + document.getElementById("endTime").innerText);
+        let duration = date2.getTime() / 1000 - date1.getTime() / 1000;
+        console.log(duration);
+        obj.duration = duration;
+        obj.time = value;
+        setSessionStorage(dateId + "_time_" + timeId, obj);
+
+    }
+
+    function setDurationValue(value) {
+        let obj = getSessionStorage(dateId + "_time_" + timeId);
+        if (obj == null) {
+            obj = {};
+        }
+
+        let date1 = stringToDate("2022-01-01 " + obj.time);
+        let date2 = stringToDate("2022-01-01 " + value);
+        let duration = date2.getTime() / 1000 - date1.getTime() / 1000;
+        console.log(duration);
+        obj.duration = duration;
+        setSessionStorage(dateId + "_time_" + timeId, obj);
+
+    }
+
+
+    function createTime() {
+        let hours = [];
+        let mins = [];
+        let seconds = [];
+
+        for (let i = 0; i < 24; i++) {
+            hours.push({label: i + '时', value: i});
+        }
+        for (let i = 0; i < 60; i++) {
+            mins.push({label: i + '分', value: i});
+        }
+        for (let i = 0; i < 60; i++) {
+            seconds.push({label: i + '秒', value: i});
+        }
+        return {h: hours, m: mins, s: seconds};
+    }
+
+    $(function () {
+        let time = createTime();
+        $('#startDatePicker').on('click', function () {
+            weui.picker(
+                time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value + ":" + result[2].value);
+                        let dateV = stringToDate("2022-01-01 " + startTime);
+                        let dateS = formatDate(dateV);
+                        document.getElementById("startTime").innerText = dateS;
+                        setStartTimeValue(dateS);
+                    },
+                    title: '启动时间'
+                });
+        });
+        $('#closeDatePicker').on('click', function () {
+            weui.picker(
+                time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let endTime = (result[0].value + ":" + result[1].value + ":" + result[2].value);
+                        let dateV = stringToDate("2022-01-01 " + endTime);
+                        let dateS = formatDate(dateV);
+                        document.getElementById("endTime").innerText = dateS;
+                        setDurationValue(dateS);
+                    },
+                    title: '关闭时间'
+                });
+        });
+
+        for (let i = 8; i > 0; i--) {
+            changeTimerPage("timerId_" + i);
+        }
+    });
+</script>
+
+</body>
+</html>

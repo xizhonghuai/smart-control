@@ -5,7 +5,6 @@ import com.smart.config.RestResponse;
 import com.smart.domain.message.Message;
 import com.smart.domain.message.c2s.ParamsQueryMessageAck;
 import com.smart.domain.message.c2s.TimingMessage;
-import com.smart.domain.message.c2s.WarningEventMessage;
 import com.smart.domain.message.s2c.ParamsConfMessage;
 import com.smart.domain.message.s2c.WarningEventMessageAck;
 import com.smart.mvc.dto.KeyEnDTO;
@@ -71,14 +70,17 @@ public class DeviceAPIController {
 
     @GetMapping("device-params")
     @ApiOperation("查询设备运行参数数据")
-    public RestResponse<Message> deviceParams(@RequestParam("deviceId") String deviceId) {
-        return RestResponse.success(service.deviceParams(0, deviceId));
+    public RestResponse<Message> deviceParams(@RequestParam("deviceId") String deviceId
+            , @RequestParam("id") Integer id) {
+        return RestResponse.success(service.deviceParams(0, deviceId, id));
     }
 
     @GetMapping("device-params/sync")
     @ApiOperation("查询设备运行参数数据(同步方式)")
-    public RestResponse<Message> deviceParamsSync(@RequestParam("deviceId") String deviceId) {
-        return RestResponse.success(service.deviceParams(1, deviceId));
+    public RestResponse<Message> deviceParamsSync(@RequestParam("deviceId") String deviceId
+            , @RequestParam("id") Integer id) {
+        Message message = service.deviceParams(1, deviceId, id);
+        return RestResponse.success(message);
     }
 
     @PostMapping("power")
@@ -134,14 +136,15 @@ public class DeviceAPIController {
 
     @PostMapping("device-params-conf-v2")
     @ApiOperation("配置运行参数-v2")
-    public RestResponse<Boolean> deviceParamsConfV2(@RequestBody ParamsConfMessage paramsConfMessage) {
+    public RestResponse<Message> deviceParamsConfV2(@RequestBody ParamsConfMessage paramsConfMessage) {
         return RestResponse.success(service.deviceParamsConfV2(paramsConfMessage));
     }
 
     @GetMapping("device-params-v2")
     @ApiOperation("查询设备运行参数数据v2")
-    public RestResponse<ParamsQueryMessageAck> deviceParamsV2(@RequestParam("deviceId") String deviceId) {
-        return RestResponse.success(service.deviceParamsV2(deviceId));
+    public RestResponse<ParamsQueryMessageAck> deviceParamsV2(@RequestParam("deviceId") String deviceId
+            , @RequestParam("id") Integer id) {
+        return RestResponse.success(service.deviceParamsV2(deviceId, id));
     }
 
     @GetMapping("device-warning")

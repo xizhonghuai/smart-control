@@ -4,6 +4,7 @@ import com.transmission.server.core.AbstractBootServer;
 import com.transmission.server.core.ConnectProperty;
 import com.transmission.server.core.ServerUtils;
 import com.transmission.server.core.WriteMsgUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mina.core.session.IoSession;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Date 2020/4/24
  * @Version V1.0
  **/
+@Slf4j
 public class DeviceAPI {
     private static final String serviceId = "smart-control";
 
@@ -34,6 +36,7 @@ public class DeviceAPI {
         AbstractBootServer server = (AbstractBootServer) ServerUtils.getServer(serviceId);
         if (server != null) {
             WriteMsgUtils.sendMsg(server.getManagedSessions(), cmd, redId);
+            log.info(String.format("下发数据:{%s}->{%s}", redId, cmd));
         }
     }
 

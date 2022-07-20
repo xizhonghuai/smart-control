@@ -3,6 +3,7 @@ package com.smart.cache;
 import com.smart.config.SpringUtil;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author xizhonghuai
@@ -21,6 +22,8 @@ public interface CacheService {
     void invalid(String key);
 
     Boolean isEmpty(String key);
+
+    Map<String, Object> getCacheMap();
 
     static CacheService getCacheService() {
         return SpringUtil.getObject(CacheService.class);

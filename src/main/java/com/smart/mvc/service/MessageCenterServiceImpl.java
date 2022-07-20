@@ -7,6 +7,8 @@ import com.smart.config.AuthContext;
 import com.smart.config.ConstantUnit;
 import com.smart.mvc.dto.MessageCenterDTO;
 import com.smart.mvc.entity.Account;
+import com.smart.mvc.entity.AccountDeviceXref;
+import com.smart.mvc.entity.Device;
 import com.smart.mvc.entity.MessageCenter;
 import com.smart.mvc.mapper.MessageCenterMapper;
 import com.smart.mvc.vo.MessageCenterVO;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class MessageCenterServiceImpl extends ServiceImpl<MessageCenterMapper, MessageCenter> implements IService<MessageCenter> {
 
+    @Autowired
+    private DeviceServiceImpl deviceService;
     @Autowired
     private AccountDeviceXrefServiceImpl accountDeviceXrefService;
     @Autowired
@@ -70,6 +74,22 @@ public class MessageCenterServiceImpl extends ServiceImpl<MessageCenterMapper, M
         return saveBatch(collect);
     }
 
+    public void sendDeviceWarningMessage(String deviceId, String message) {
+        List<Device> list = deviceService.list(Utils.queryWrapper(new Device().setDeviceId(deviceId)));
+        if (list.isEmpty()) {
+            return;
+        }
+        Device device = list.get(0);
+        List<AccountDeviceXref> xrefs = accountDeviceXrefService.list(Utils.queryWrapper(new AccountDeviceXref().setDeviceId(device.getId())));
+        List<Long> accountIds = xrefs.stream().map(AccountDeviceXref::getAccountId).collect(Collectors.toList());
+        List<MessageCenter> collect = accountIds.stream().map(accountId -> new MessageCenter()
+                .setMessage(message)
+                .setReadFlag(0)
+                .setFromAccountId(ConstantUnit.adminId)
+                .setToAccountId(accountId)).peek(Utils::insertBeforeAction).collect(Collectors.toList());
+        saveBatch(collect);
+    }
+
     public Boolean updateReadFlag(Long id) {
         MessageCenter messageCenter = getById(id);
         if (Objects.equals(AuthContext.get().getLoginUserId(), messageCenter.getToAccountId())) {
@@ -78,4 +98,6 @@ public class MessageCenterServiceImpl extends ServiceImpl<MessageCenterMapper, M
         }
         return false;
     }
+
+
 }

@@ -20,7 +20,7 @@ public class MvcInterceptor implements HandlerInterceptor {
 
     private final AuthenticationService authenticationService = new AuthenticationService();
 
-    private static final String[] URL_WHITE_LIST = {"login", "reg"};
+    private static final String[] URL_WHITE_LIST = {"login", "reg", "swagger", "debug"};
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -34,7 +34,7 @@ public class MvcInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("token");
-        log.info("token:" + token);
+//        log.info("token:" + token);
         return authenticationService.authentication(token, response);
 
 //        if ("/".equals(url)) {

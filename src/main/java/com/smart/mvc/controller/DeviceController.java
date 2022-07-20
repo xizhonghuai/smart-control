@@ -57,6 +57,12 @@ public class DeviceController {
         return RestResponse.success(deviceService.list(queryDeviceDTO));
     }
 
+    @GetMapping("by-device-id")
+    @ApiOperation("根据deviceId查询设备信息")
+    public RestResponse<DeviceVO> findByDeviceId(@RequestParam("deviceId") String deviceId) {
+        return RestResponse.success(deviceService.findByDeviceId(deviceId));
+    }
+
     @GetMapping("account-device-exist")
     @ApiOperation("查询设备是否已经绑定")
     public RestResponse<Boolean> isAccountDeviceExist(@RequestParam("deviceId") String deviceId) {

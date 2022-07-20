@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>设备配置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+    <style>
+        .page.navbar .weui-tab__panel, .page.tabbar .weui-tab__panel {
+            padding: 0px;
+        }
+
+
+        .weui-navbar__item {
+            background-color: #b2b2b1;
+            color: #d5d4d4;
+        }
+
+        .weui-bar__item_on {
+            background-color: #ffffff;
+            color: #4cce07;
+        }
+
+        .weui-panel {
+            background-color: rgba(237, 237, 237, 0);
+        }
+
+        .weui-panel {
+            background-color: rgba(237, 237, 237, 0);
+        }
+
+        .weui-panel__hd {
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        .my-center {
+            position: relative;
+            text-align: center;
+            padding: 10px 0
+        }
+    </style>
+
+</head>
+<body>
+<div class="container" id="container">
+    <div class="page navbar js_show" tabindex="-1">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class=" form_">
+                    <div class="weui-panel">
+                        <div class="weui-panel__hd">
+                            <div class="weui-flex">
+                                <div>
+                                    <div class="placeholder"></div>
+                                </div>
+                                <div class="weui-flex__item">
+                                    <div class="placeholder my-center"><span id="planName"></span></div>
+                                </div>
+                                <div>
+                                    <div class="placeholder my-center"><img id="showDialog4"
+                                                                            role="img" alt=""
+                                                                            src="img/修改.png"
+                                                                            style="height: 24px;"/></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="weui-panel__hd">
+                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                <img role="img" alt="" src="img/预约开关.png" style="height: 18px;"/>&nbsp;
+                                <div class="weui-cell__bd" aria-hidden="true">预约开关</div>
+                                <div class="weui-cell__ft">
+                                    <input aria-labelledby="cb_txt" id="valid" class="weui-switch" type="checkbox">
+                                </div>
+                            </label>
+                            <label for="cb" id="beginDatePicker"
+                                   class="weui-cell weui-cell_active weui-cell_switch">
+                                <img role="img" alt="" src="img/日历.png" style="height: 18px;"/>&nbsp;
+                                <div class="weui-cell__bd" aria-hidden="true">开始日期</div>
+                                <div class="weui-cell__ft">
+                                    <span id="startDate">2019-02-01</span>
+                                </div>
+                            </label>
+                            <label for="cb" id="endDatePicker" class="weui-cell weui-cell_active weui-cell_switch">
+                                <img role="img" alt="" src="img/日历.png" style="height: 18px;"/>&nbsp;
+                                <div class="weui-cell__bd" aria-hidden="true">结束日期</div>
+                                <div class="weui-cell__ft">
+                                    <span id="endDate">2019-02-01</span>
+                                </div>
+                            </label>
+                        </div>
+                        <br>
+                        <div class="weui-panel__hd">
+                            <div class="weui-panel__hd">设置排除日期</div>
+                            <div class="weui-panel__bd" id="excludesDate_html">
+
+
+                            </div>
+                            <div class="weui-panel__ft">
+                                <a href="javascript:" id="excludesDate"
+                                   class="weui-cell weui-cell_active weui-cell_access weui-cell_link">
+                                    <span class="weui-cell__bd"> <img role="img" alt="" src="img/加.png"
+                                                                      style="height: 32px;"/></span>
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                        <!--timeList-->
+                        <div class="weui-panel__hd">
+                            <div class="weui-navbar" style="height: 40px">
+                                <div role="tab" aria-selected="true" aria-controls="panel1" id="tab1"
+                                     class="weui-navbar__item weui-bar__item_on" wah-hotarea="click" style="
+    padding-top: 8px;">
+                                    喷雾定时
+                                </div>
+                                <div role="tab" aria-controls="panel2" id="tab2" class="weui-navbar__item"
+                                     wah-hotarea="click"
+                                     aria-selected="false" style="padding-top: 8px;">
+                                    喷药定时
+                                </div>
+                                <div role="tab" aria-controls="panel3" id="tab3" class="weui-navbar__item"
+                                     wah-hotarea="click"
+                                     aria-selected="false" style="padding-top: 8px;">
+                                    高级设置
+                                </div>
+                            </div>
+
+                            <!--pw-->
+                            <div role="tabpanel" id="panel1" aria-labelledby="tab1" class="weui-tab__panel"
+                                 style="display: block;">
+                                <div class=" form_">
+                                    <div class="weui-panel">
+                                        <div id="js_pw_html"></div>
+                                        <div class="weui-panel__hd">
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <a href="javascript:" role="button" onclick="addPWTimeHtml()"
+                                                   class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">新增定时</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--  <img class="weui-media-box__thumb" src="img/runing.gif" alt="">-->
+                            </div>
+                            <!--py-->
+                            <div style="display: none;" role="tabpanel" id="panel2" aria-labelledby="tab2"
+                                 class="weui-tab__panel">
+                                <div class=" form_">
+                                    <div class="weui-panel">
+
+
+                                        <div id="js_py_html">
+
+
+                                        </div>
+                                        <div class="weui-panel__hd">
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <a href="javascript:" role="button" onclick="addPYTimeHtml()"
+                                                   class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">新增定时</a>
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--advanced setting-->
+                            <div style="display: none;" role="tabpanel" id="panel3" aria-labelledby="tab3"
+                                 class="weui-tab__panel">
+                                <div class=" form_">
+                                    <div class="weui-panel">
+                                        <br>
+                                        <div class="weui-panel__hd">
+
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/药泵开关.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">药泵开关</div>
+                                                <div class="weui-cell__ft">
+                                                    <input aria-labelledby="cb_txt" id="dragEn" class="weui-switch"
+                                                           type="checkbox">
+                                                </div>
+                                            </label>
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/速度.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">出药速度</div>
+                                                <div class="weui-cell__ft">
+                                                    <input id="dragSpeed" class="weui-input weui-cell__ft"
+                                                           placeholder="百分比">
+                                                </div>
+                                            </label>
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/延时.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">药泵开延时</div>
+                                                <div class="weui-cell__ft">
+                                                    <input id="dragOnDelay" class="weui-input weui-cell__ft"
+                                                           placeholder="单位秒">
+                                                </div>
+                                            </label>
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/延时.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">药泵关延时</div>
+                                                <div class="weui-cell__ft">
+                                                    <input id="dragOffDelay" class="weui-input weui-cell__ft"
+                                                           placeholder="单位秒">
+                                                </div>
+                                            </label>
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/电磁阀.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">电磁阀2状态</div>
+                                                <div class="weui-cell__ft">
+                                                    <input aria-labelledby="cb_txt" id="ch2" class="weui-switch"
+                                                           type="checkbox">
+                                                </div>
+                                            </label>
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/电磁阀.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">电磁阀3状态</div>
+                                                <div class="weui-cell__ft">
+                                                    <input aria-labelledby="cb_txt" id="ch3" class="weui-switch"
+                                                           type="checkbox">
+                                                </div>
+                                            </label>
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/电磁阀.png"
+                                                     style="height: 18px;"/>&nbsp;
+                                                <div class="weui-cell__bd" aria-hidden="true">电磁阀4状态</div>
+                                                <div class="weui-cell__ft">
+                                                    <input aria-labelledby="cb_txt" id="ch4" class="weui-switch"
+                                                           type="checkbox">
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="weui-panel__hd">
+                            <div class="button-sp-area cell">
+                                <a href="javascript:" role="button"
+                                   class="weui-btn_cell weui-btn_cell-primary"
+                                   onclick="queryConfigSync()">刷新配置</a>
+                                <a href="javascript:" role="button" onclick="paramsConf()"
+                                   class="weui-btn_cell weui-btn_cell-warn">保存配置</a>
+                                <!--  <a href="javascript:" role="button"
+                                     class="weui-btn_cell weui-btn_cell-primary">加载配置</a>
+                                  <a href="javascript:" role="button"
+                                     class="weui-btn_cell weui-btn_cell-primary">配置另存为...</a>-->
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--tips-->
+<div role="alert" id="infoToastPower" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-waiting weui-icon_toast"></i>
+        <p class="weui-toast__content" id="toastContent">执行中...</p>
+    </div>
+</div>
+
+<div role="alert" id="errorToastPower" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-warn weui-icon_toast"></i>
+
+        <p class="weui-toast__content">执行失败</p>
+    </div>
+</div>
+
+<div id="dialogs">
+    <div id="dialogWrap4" class="js_dialog_wrap" ref="showDialog4" aria-label="弹窗标题" role="dialog" aria-modal="false"
+         aria-hidden="true" style="display: none;">
+        <div aria-label="关闭" role="button" class="js_close weui-mask" wah-hotarea="touchend"></div>
+        <div id="js_dialog_4" class="js_dialog weui-half-screen-dialog">
+            <div class="weui-half-screen-dialog__hd">
+                <div class="weui-half-screen-dialog__hd__main">
+                    <div class="weui-flex" style="align-items: center; font-size: 14px;">
+                        修改计划名称
+                    </div>
+                </div>
+            </div>
+            <div class="weui-half-screen-dialog__bd">
+                <input id="editPlanName" class="my-center" placeholder="计划名称">
+            </div>
+            <div class="weui-half-screen-dialog__ft">
+                <div id="js_wrap_btn_area" class="weui-half-screen-dialog__btn-area">
+                    <a id="js_wrap_btn_1" href="javascript:" onclick="editPlanName()"
+                       class="js_close weui-btn weui-btn_default">确定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    var deviceId = getSearchString('deviceId');
+    var planId = getSearchString('planId');
+    var planName = getSearchString('planName');
+    verifyJump("device_config.html?deviceId=" + deviceId + "&planId=" + planId + "&planName=" + planName);
+
+    function clearRenderParams() {
+        let $valid = $("#valid");
+        let $dragEn = $("#dragEn");
+        let $dragSpeed = $("#dragSpeed");
+        let $dragOnDelay = $("#dragOnDelay");
+        let $dragOffDelay = $("#dragOffDelay");
+        let $ch2 = $("#ch2");
+        let $ch3 = $("#ch3");
+        let $ch4 = $("#ch4");
+
+        $valid.prop("checked", false);
+        $valid.attr("checked", false);
+        $dragEn.prop("checked", false);
+        $dragEn.attr("checked", false);
+        $dragSpeed.val(null);
+        $dragOnDelay.val(null);
+        $dragOffDelay.val(null);
+        $ch2.prop("checked", false);
+        $ch2.attr("checked", false);
+        $ch3.prop("checked", false);
+        $ch3.attr("checked", false);
+        $ch4.prop("checked", false);
+        $ch4.attr("checked", false);
+
+        document.getElementById("startDate").innerText = null;
+        document.getElementById("endDate").innerText = null;
+        document.getElementById("excludesDate_html").innerHTML = null;
+    }
+
+    function renderParams(params) {
+        let $valid = $("#valid");
+        let $dragEn = $("#dragEn");
+        let $dragSpeed = $("#dragSpeed");
+        let $dragOnDelay = $("#dragOnDelay");
+        let $dragOffDelay = $("#dragOffDelay");
+
+        $valid.prop("checked", params.valid === 1);
+        $valid.attr("checked", params.valid === 1);
+        $dragEn.prop("checked", params.drag_pump.enable);
+        $dragEn.attr("checked", params.drag_pump.enable);
+        $dragSpeed.val(params.drag_pump.speed);
+        $dragOnDelay.val(params.drag_pump.on_delay);
+        $dragOffDelay.val(params.drag_pump.off_delay);
+        let relays = params.relays;
+        relays.forEach((item, index) => {
+            let ch_index = index + 2;
+            let dom = $("#ch" + ch_index);
+            dom.prop("checked", 'on' === item);
+            dom.attr("checked", 'on' === item);
+        });
+        document.getElementById("startDate").innerText = params.start_date;
+        document.getElementById("endDate").innerText = params.end_date;
+        renderExcludesDate(params.excludeDates);
+        renderPWTimer(params.time_list);
+        renderPYTimer(params.time_list);
+    }
+
+    function renderExcludesDate(excludeDates) {
+        let html = "<div role=\"option\" id=\"{dom_id}\" class=\"weui-media-box weui-media-box_text\">\n" +
+            "                    <div class=\"weui-flex js_category\" aria-haspopup=\"true\" aria-expanded=\"false\" tabindex=\"0\"\n" +
+            "                         wah-hotarea=\"click\" aria-live=\"assertive\">\n" +
+            "                        <p class=\"weui-flex__item weui-media-box__desc\">{date}</p>\n" +
+            "                        <img src=\"img/del.png\" onclick=\"deleteExcludesDate('{dom_id}')\" role=\"button\" style=\"width: 24px;\" alt=\"delete\"/>\n" +
+            "                    </div>\n" +
+            "                </div>";
+        if (excludeDates === null) {
+            return;
+        }
+        let html_ = "";
+        excludeDates.forEach(function (item, index) {
+            html_ = html_ + html.format({
+                "dom_id": "a_" + index,
+                "date": item
+            })
+        });
+        document.getElementById("excludesDate_html").innerHTML = html_;
+        setSessionStorage("excludeDates", excludeDates);
+    }
+
+    var timer_header_template = "    <div id='pw_header_{timeId}' class=\"\">\n" +
+        "                                            <div class=\"weui-flex\">\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder\"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder\"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder\"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder\"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder my-center\"><!--定时{Id}--></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder \"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder\"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder\"></div>\n" +
+        "                                                </div>\n" +
+        "                                                <div class=\"weui-flex__item\">\n" +
+        "                                                    <div class=\"placeholder my-center\"><img id='{type}_deleteTime_{timeId}' role=\"img\" alt=\"\"\n" +
+        "                                                                                            src=\"img/del.png\"\n" +
+        "                                                                                            style=\"height: 32px;\"\n" +
+        "                                                                                            onclick=\"deletePanelHtml(this.id)\">\n" +
+        "                                                    </div>\n" +
+        "                                                </div>\n" +
+        "                                            </div>\n" +
+        "                                        </div>";
+
+    var pw_timer_html_template = "<div class=\"weui-panel__hd\" id='pw_panel_{timeId}'>\n" +
+        "                                            <label for=\"cb\" id=\"pw_startDatePicker_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/开始.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">启动时间</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"pw_startTime_{timeId}\">{startTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                            <label for=\"cb\" id=\"pw_closeDatePicker_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/结束.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时间</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"pw_endTime_{timeId}\">{endTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                            <label for=\"cb\" class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">开启时长</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <input id=\"pw_onTime_{timeId}\" onchange=\"setOnTimeValue(this.id,this.value)\"\n" +
+        "                                                           class=\"weui-input weui-cell__ft\"\n" +
+        "                                                           placeholder=\"输入开启时长，单位秒\" value='{onTime}'>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                            <label for=\"cb\" class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时长</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <input id=\"pw_offTime_{timeId}\" onchange=\"setOffTimeValue(this.id,this.value)\"\n" +
+        "                                                           class=\"weui-input weui-cell__ft\"\n" +
+        "                                                           placeholder=\"输入关闭时长，单位秒\" value='{offTime}'>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                         <br></div>\n";
+
+    var py_timer_html_template = "<div class=\"weui-panel__hd\" id='py_panel_{timeId}'>\n" +
+        "                                            <label for=\"cb\" id=\"py_startDatePicker_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/开始.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">启动时间</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"py_startTime_{timeId}\">{startTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                            <label for=\"cb\" id=\"py_closeDatePicker_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/结束.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时间</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"py_endTime_{timeId}\">{endTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                        <br></div>\n";
+
+    function createTime() {
+        let hours = [];
+        let mins = [];
+        let seconds = [];
+
+        for (let i = 0; i < 24; i++) {
+            hours.push({label: i + '时', value: i});
+        }
+        for (let i = 0; i < 60; i++) {
+            mins.push({label: i + '分', value: i});
+        }
+        for (let i = 0; i < 60; i++) {
+            seconds.push({label: i + '秒', value: i});
+        }
+        return {h: hours, m: mins, s: seconds};
+    }
+
+    function setOnTimeValue(dom_id, value) {
+        let type = (dom_id.split("_")[0]);
+        let name = (dom_id.split("_")[1]);
+        let time_id = parseInt(dom_id.split("_")[2]);
+        let objs = getSessionStorage(type + "_times");
+        if (objs == null) {
+            objs = [];
+        }
+        let obj = objs[time_id];
+        if (isEmpty(obj)) {
+            obj = {};
+        }
+        obj.on_time = value;
+        objs[time_id] = obj;
+        setSessionStorage(type + "_times", objs);
+    }
+
+    function setOffTimeValue(dom_id, value) {
+        let type = (dom_id.split("_")[0]);
+        let name = (dom_id.split("_")[1]);
+        let time_id = parseInt(dom_id.split("_")[2]);
+        let objs = getSessionStorage(type + "_times");
+        if (objs == null) {
+            objs = [];
+        }
+        let obj = objs[time_id];
+        if (isEmpty(obj)) {
+            obj = {};
+        }
+        obj.off_time = value;
+        objs[time_id] = obj;
+        setSessionStorage(type + "_times", objs);
+    }
+
+    function setStartTimeValue(dom_id, value) {
+        let type = (dom_id.split("_")[0]);
+        let name = (dom_id.split("_")[1]);
+        let time_id = parseInt(dom_id.split("_")[2]);
+        let objs = getSessionStorage(type + "_times");
+        if (objs == null) {
+            objs = [];
+        }
+        let date1 = stringToDate("2022-01-01 " + value);
+        let date2 = stringToDate("2022-01-01 " + document.getElementById(type + "_endTime_" + time_id).innerText);
+        let duration = date2.getTime() / 1000 - date1.getTime() / 1000;
+        let obj = objs[time_id];
+        if (isEmpty(obj)) {
+            obj = {};
+        }
+        obj.duration = duration;
+        obj.time = value;
+        objs[time_id] = obj;
+        setSessionStorage(type + "_times", objs);
+    }
+
+    function setDurationValue(dom_id, value) {
+        let type = (dom_id.split("_")[0]);
+        let name = (dom_id.split("_")[1]);
+        let time_id = parseInt(dom_id.split("_")[2]);
+        let objs = getSessionStorage(type + "_times");
+        if (objs == null) {
+            objs = [];
+        }
+        let obj = objs[time_id];
+        if (isEmpty(obj)) {
+            obj = {};
+        }
+        if (isEmpty(obj.time)) {
+            alert("确定开始时间");
+            return;
+        }
+        let date1 = stringToDate("2022-01-01 " + obj.time);
+        let date2 = stringToDate("2022-01-01 " + value);
+        obj.duration = date2.getTime() / 1000 - date1.getTime() / 1000;
+        if (obj.repeat === 0) {
+            obj.on_time = parseInt(obj.duration * 0.8);
+            obj.off_time = parseInt(obj.duration - obj.duration * 0.8);
+        }
+
+        objs[time_id] = obj;
+        setSessionStorage(type + "_times", objs);
+    }
+
+    function initTimePicker(start_js_dom_id, end_js_dom_id) {
+        let type = (start_js_dom_id.split("_")[0]);
+        let timeId = parseInt(start_js_dom_id.split("_")[2]);
+        let time = createTime();
+        $('#' + start_js_dom_id).on('click', function () {
+            weui.picker(
+                time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+
+                        let startTime = (result[0].value + ":" + result[1].value + ":" + result[2].value);
+                        let dateV = stringToDate("2022-01-01 " + startTime);
+                        let dateS = formatDate(dateV);
+                        document.getElementById(type + "_startTime_" + timeId).innerText = dateS;
+                        document.getElementById(type + "_endTime_" + timeId).innerText = null;
+                        setStartTimeValue(start_js_dom_id, dateS);
+                        setDurationValue(end_js_dom_id, null);
+                    },
+                    title: '启动时间'
+                });
+        });
+        if (end_js_dom_id != null) {
+            $('#' + end_js_dom_id).on('click', function () {
+                weui.picker(
+                    time.h,
+                    time.m,
+                    time.s
+                    , {
+                        onConfirm: function (result) {
+                            let endTime = (result[0].value + ":" + result[1].value + ":" + result[2].value);
+                            let dateV = stringToDate("2022-01-01 " + endTime);
+                            let dateS = formatDate(dateV);
+                            document.getElementById(type + "_endTime_" + timeId).innerText = dateS;
+                            setDurationValue(end_js_dom_id, dateS);
+                        },
+                        title: '关闭时间'
+                    });
+            });
+        }
+    }
+
+    function renderPWTimer(time_list) {
+        let pw_times = [];
+        time_list.forEach(function (item) {
+            if (item.repeat === 1) {
+                pw_times.push(item);
+            }
+        });
+        setSessionStorage("pw_times", pw_times);
+        let time_htmls = "";
+        pw_times.forEach(function (obj, index) {
+            let duration = obj.duration;
+            let date1 = stringToDate("2022-01-01 " + obj.time);
+            let addSeconds = new Date(date1.setSeconds(date1.getSeconds() + duration));
+            let html = pw_timer_html_template.format({
+                timeId: index,
+                startTime: obj.time,
+                endTime: formatDate(addSeconds, "HH:mm:ss"),
+                onTime: obj.on_time,
+                offTime: obj.off_time
+            });
+            let header = timer_header_template.format({type: 'pw', Id: index + 1, timeId: index});
+            time_htmls = time_htmls + header + html;
+        });
+        document.getElementById("js_pw_html").innerHTML = time_htmls;
+        pw_times.forEach(function (item, index) {
+            initTimePicker('pw_startDatePicker_' + index, 'pw_closeDatePicker_' + index);
+        });
+    }
+
+    function renderPYTimer(time_list) {
+        let py_times = [];
+        time_list.forEach(function (item) {
+            if (item.repeat === 0) {
+                py_times.push(item);
+            }
+        });
+        setSessionStorage("py_times", py_times);
+        let time_htmls = "";
+        py_times.forEach(function (obj, index) {
+            let duration = obj.duration;
+            let date1 = stringToDate("2022-01-01 " + obj.time);
+            let addSeconds = new Date(date1.setSeconds(date1.getSeconds() + duration));
+            let html = py_timer_html_template.format({
+                timeId: index,
+                startTime: obj.time,
+                endTime: formatDate(addSeconds, "HH:mm:ss"),
+            });
+            let header = timer_header_template.format({type: 'py', Id: index + 1, timeId: index});
+            time_htmls = time_htmls + header + html;
+        });
+
+        document.getElementById("js_py_html").innerHTML = time_htmls;
+        py_times.forEach(function (item, index) {
+            initTimePicker('py_startDatePicker_' + index, 'py_closeDatePicker_' + index);
+        });
+    }
+
+    function addPWTimeHtml() {
+        let obj = {
+            time: formatDate(new Date()),
+            duration: 500,
+            on_time: 30,
+            off_time: 10,
+            repeat: 1
+        }
+        let pw_objs = getSessionStorage('pw' + "_times");
+        let py_objs = getSessionStorage('py' + "_times");
+        let index;
+        if (pw_objs == null) {
+            pw_objs = [];
+        }
+        if (py_objs == null) {
+            py_objs = [];
+        }
+        if (py_objs.length + pw_objs.length >= 8) {
+            alert("最多设置8组");
+            return;
+        }
+        index = pw_objs.length;
+        pw_objs.push(obj);
+        setSessionStorage("pw_times", pw_objs);
+        renderPWTimer(pw_objs);
+    }
+
+    function deletePanelHtml(dom_id) {
+        console.log(dom_id);
+        let type = (dom_id.split("_")[0]);
+        let id = (dom_id.split("_")[2]);
+
+        // $('#' + type + "_panel_" + id).slideUp(300, function () {
+        //     $(this).remove()
+        // });
+        // $('#' + type + "_header_" + id).slideUp(300, function () {
+        //     $(this).remove()
+        // });
+        // document.getElementById(type + "_panel_" + id).remove();
+        // document.getElementById(type + "_header_" + id).remove();
+        let objs = getSessionStorage(type + "_times");
+        objs[id] = null;
+        // setSessionStorage(type + "_times", arrayObjectNonNull(objs));
+        if (type === 'pw') {
+            renderPWTimer(arrayObjectNonNull(objs));
+        } else {
+            renderPYTimer(arrayObjectNonNull(objs));
+        }
+    }
+
+    function addPYTimeHtml() {
+        let obj = {
+            time: formatDate(new Date()),
+            duration: 500,
+            on_time: 450,
+            off_time: 50,
+            repeat: 0
+        }
+        let pw_objs = getSessionStorage('pw' + "_times");
+        let py_objs = getSessionStorage('py' + "_times");
+        let index;
+        if (pw_objs == null) {
+            pw_objs = [];
+        }
+        if (py_objs == null) {
+            py_objs = [];
+        }
+        if (py_objs.length + pw_objs.length >= 8) {
+            alert("最多设置8组");
+            return;
+        }
+        index = py_objs.length;
+        py_objs.push(obj);
+        setSessionStorage("py_times", py_objs);
+        renderPYTimer(py_objs);
+
+    }
+
+    function deleteExcludesDate(id) {
+        let element = document.getElementById(id);
+        let innerText = element.innerText;
+        let excludeDates = getSessionStorage("excludeDates");
+        let index = excludeDates.indexOf(innerText);
+        if (index > -1) {
+            excludeDates.splice(index, 1);
+            setSessionStorage("excludeDates", excludeDates);
+        }
+        element.remove();
+    }
+
+
+    function queryConfig() {
+        clearRenderParams();
+        sessionStorage.clear();
+        let result = httpGet("api/v1/control/device-params-v2?deviceId=" + deviceId + "&id=" + planId);
+        if (result.code === RES_OK && 'data' in result) {
+            let params = result.data.data;
+            renderParams(params);
+        }
+    }
+
+    function queryConfigSync() {
+        openToast('infoToastPower');
+        setTimeout(function () {
+            let result = httpGet("api/v1/control/device-params/sync?deviceId=" + deviceId + "&id=" + planId);
+            closeToast('infoToastPower');
+            let susses_flag = false;
+            if (result.code === RES_OK && 'data' in result) {
+                susses_flag = true;
+                let params = result.data.data;
+                clearRenderParams();
+                sessionStorage.clear();
+                renderParams(params);
+            } else {
+                alert(result.message);
+            }
+            if (susses_flag) {
+            } else {
+                toast('errorToastPower');
+            }
+        }, 500);
+    }
+
+    function getParamsConfigByDocument() {
+        let conf = {};
+        conf.deviceId = deviceId;
+        let params = {};
+        params.id = planId;
+        params.valid = document.getElementById("valid").checked ? 1 : 0;
+        params.startDate = document.getElementById("startDate").innerText;
+        params.endDate = document.getElementById("endDate").innerText;
+        params.excludeDates = getSessionStorage("excludeDates");
+        params.relays = [document.getElementById("ch2").checked ? "on" : "off"
+            , document.getElementById("ch3").checked ? "on" : "off"
+            , document.getElementById("ch4").checked ? "on" : "off"];
+        params.dragPump = {
+            "enable": document.getElementById("dragEn").checked,
+            "speed": $("#dragSpeed").val(),
+            "onDelay": $("#dragOnDelay").val(),
+            "offDelay": $("#dragOffDelay").val()
+        };
+        let pw_objs = getSessionStorage("pw_times");
+        let py_objs = getSessionStorage("py_times");
+        params.timeList = pw_objs.concat(py_objs);
+        conf.params = params;
+        return conf;
+    }
+
+    function paramsConf() {
+        let config = getParamsConfigByDocument();
+        openToast('infoToastPower');
+        setTimeout(function () {
+            let result = httpRequest("api/v1/control/device-params-conf-v2", "POST", config);
+            closeToast('infoToastPower');
+            let susses_flag = false;
+            if (result.code === RES_OK && 'data' in result) {
+                if (result.data.result === 0) {
+                    susses_flag = true;
+                }
+            } else {
+                alert(result.message);
+            }
+            if (susses_flag) {
+            } else {
+                toast('errorToastPower');
+            }
+        }, 500);
+    }
+
+    function editPlanName() {
+        let name = $("#editPlanName").val();
+        document.getElementById('planName').innerText = name;
+        httpRequest("api/v1/device-config/edit-plan-name", 'POST', {
+            deviceId: deviceId,
+            name: name,
+            planId: planId
+        });
+    }
+
+    $(function () {
+        $('.weui-navbar__item').on('click', function () {
+            $(this).attr('aria-selected', 'true').addClass('weui-bar__item_on');
+            $(this).siblings('.weui-bar__item_on').removeClass('weui-bar__item_on').attr('aria-selected', 'false');
+            var panelId = '#' + $(this).attr('aria-controls');
+            $(panelId).css('display', 'block');
+            $(panelId).siblings('.weui-tab__panel').css('display', 'none');
+        });
+        document.getElementById('planName').innerText = planName;
+        $("#editPlanName").val(planName);
+        /*计划日期*/
+        $('#beginDatePicker').on('click', function () {
+            weui.datePicker({
+                start: new Date(),
+                end: 2099,
+                onConfirm: function (result) {
+                    let v = result[0].value + "-" + result[1].value + "-" + result[2].value;
+                    let dateV = stringToDate(v + " 00:00:00");
+                    document.getElementById("startDate").innerText = formatDate(dateV, "yyyy-MM-dd");
+                    document.getElementById("endDate").innerText = null;
+                },
+                title: '选择开始日期'
+            });
+        });
+        $('#endDatePicker').on('click', function () {
+            let innerText = document.getElementById("startDate").innerText;
+            let date1 = stringToDate(innerText + " 00:00:00");
+            if (!(date1 instanceof Date)) {
+                return;
+            }
+            let date2 = stringToDate(innerText + " 00:00:00");
+            date2.setMonth(date2.getMonth() + 1);
+            weui.datePicker({
+                start: date1,
+                end: date2,
+                // cron: pickerConfig.cron2,
+                onConfirm: function (result) {
+                    let v = result[0].value + "-" + result[1].value + "-" + result[2].value;
+                    let dateV = stringToDate(v + " 00:00:00");
+                    document.getElementById("endDate").innerText = formatDate(dateV, "yyyy-MM-dd");
+                },
+                title: '选择结束日期'
+            });
+        });
+        $('#excludesDate').on('click', function () {
+            let date1 = stringToDate(document.getElementById("startDate").innerText + " 00:00:00");
+            let date2 = stringToDate(document.getElementById("endDate").innerText + " 00:00:00");
+            console.log(date1);
+            console.log(date2);
+            if (isDate(date1) && isDate(date2)) {
+                weui.datePicker({
+                    start: date1,
+                    end: date2,
+                    onConfirm: function (result) {
+                        let v = result[0].value + "-" + result[1].value + "-" + result[2].value + " 00:00:00";
+                        let date = formatDate(stringToDate(v), "yyyy-MM-dd");
+                        let excludeDates = getSessionStorage("excludeDates");
+                        if (excludeDates == null) {
+                            excludeDates = [];
+                        }
+
+                        if (excludeDates.indexOf(date) < 0) {
+                            excludeDates.push(date);
+                            renderExcludesDate(excludeDates);
+                        }
+                    },
+                    title: '选择排除日期'
+                });
+            }
+        });
+        queryConfig();
+    });
+
+</script>
+<script type="text/javascript" class="half-screen-dialog js_show">
+    $(function () {
+        const $dialog4 = $('#js_dialog_4');
+        const $dialogWrap4 = $('#dialogWrap4');
+
+
+        $('.js_close').on('click', function () {
+            const $jsDialogWrap = $(this).parents('.js_dialog_wrap');
+            $jsDialogWrap.attr('aria-hidden', 'true').attr('aria-modal', 'false').removeAttr('tabindex');
+            $jsDialogWrap.fadeOut(300);
+            $jsDialogWrap.find('.js_dialog').removeClass('weui-half-screen-dialog_show');
+            setTimeout(function () {
+                $('#' + $jsDialogWrap.attr('ref')).trigger('focus');
+            }, 300);
+        });
+
+        $('#showDialog4').on('click', function () {
+            $dialogWrap4.attr('aria-hidden', 'false');
+            $dialogWrap4.attr('aria-modal', 'true');
+            $dialogWrap4.attr('tabindex', '0');
+            $dialogWrap4.fadeIn(200);
+            $dialog4.addClass('weui-half-screen-dialog_show');
+            wrapArea.style.visibility = 'hidden';
+            setTimeout(function () {
+                if (wrapBtn1.offsetHeight > 48) {
+                    $dialog4.addClass('weui-half-screen-dialog_btn-wrap');
+                }
+                wrapArea.style.visibility = 'visible';
+            }, 100);
+            setTimeout(function () {
+                $dialogWrap4.trigger('focus');
+            }, 200)
+        });
+
+
+        const wrapBtn = document.getElementById('js_wrap_btn');
+        const wrapBtn1 = document.getElementById('js_wrap_btn_1');
+        const wrapPage = document.getElementById('js_wrap_wrp');
+        const wrapArea = document.getElementById('js_wrap_btn_area');
+    });</script>
+
+</body>
+</html>

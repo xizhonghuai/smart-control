@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>设备配置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0,viewport-fit=cover">
+    <meta name="wechat-enable-text-zoom-em" content="true">
+    <!--ui-->
+    <link rel="stylesheet" href="weui-2.5.9/dist/style/weui.css"/>
+    <link rel="stylesheet" href="weui-2.5.9/dist/example/example.css"/>
+    <style>
+        .page.navbar .weui-tab__panel, .page.tabbar .weui-tab__panel {
+            padding: 0px;
+        }
+
+        .weui-navbar__item {
+            background-color: #b2b2b1;
+            color: #d5d4d4;
+        }
+
+        .weui-bar__item_on {
+            background-color: #ffffff;
+            color: #4cce07;
+        }
+
+        .weui-panel {
+            background-color: rgba(237, 237, 237, 0);
+        }
+
+        .my-center {
+            position: relative;
+            text-align: center;
+            padding: 10px 0
+        }
+    </style>
+
+</head>
+<body>
+<div class="container" id="container">
+    <div class="page navbar js_show" tabindex="-1">
+        <div class="page__bd" style="height: 100%;">
+            <div class="weui-tab">
+                <div class="weui-navbar" style="height: 40px">
+                    <div role="tab" aria-selected="true" aria-controls="panel1" id="tab1"
+                         class="weui-navbar__item weui-bar__item_on" wah-hotarea="click" style="
+    padding-top: 8px;">
+                        状态数据
+                    </div>
+                    <div role="tab" aria-controls="panel2" id="tab2" class="weui-navbar__item" wah-hotarea="click"
+                         aria-selected="false" style="
+    padding-top: 8px;">
+                        参数配置
+                    </div>
+                    <!--  <div role="tab" aria-controls="panel3" id="tab3" class="weui-navbar__item" wah-hotarea="click">
+                          选项三
+                      </div>-->
+                </div>
+                <!--状态数据-->
+                <div role="tabpanel" id="panel1" aria-labelledby="tab1" class="weui-tab__panel" style="display: block;">
+                    <div class=" form_">
+                        <div class="weui-panel">
+                            <div class="weui-panel__hd">
+                                <div class="weui-flex">
+                                    <div>
+                                        <div class="placeholder" id="device_name_id" style="padding:10px 0">test(1001)
+                                        </div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"></div>
+                                    </div>
+                                    <div>
+                                        <div class="placeholder">
+                                            <span>
+                                                <a id="power" href="javascript:" role="button" title="等待中"
+                                                   onclick="power()"
+                                                   class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea weui-btn_loading">
+                                                <span class=""></span><span></span>
+                                            </a>
+                                                &nbsp;  &nbsp;  &nbsp;
+                                               <a href="javascript:" role="button" onclick="getDeviceStatus()"
+                                                  class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">刷新</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_text">
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">水位:</span>
+                                        <span id="waterLevel"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">剩余药量:</span>
+                                        <span id="dragAmount"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">累积消耗药量:</span>
+                                        <span id="totalDragAmount"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">信号强度:</span>
+                                        <span id="csq"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">累计时长:</span>
+                                        <span id="runningTime"></span>
+                                    </div>
+                                    <div class="weui-flex js_category">
+                                        <span class="weui-flex__item">设备状态:</span>
+                                        <span id="state"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="weui-panel__bd">
+                                <div class="weui-media-box weui-media-box_text">
+                                    <ul class="weui-media-box__info" aria-hidden="true">
+                                        <li class="weui-media-box__info__meta" aria-hidden="true" id="js_p4m1_time">
+                                            设备时钟:<span id="deviceSystemClock">2022-09-22 12:36:00</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  <img class="weui-media-box__thumb" src="img/runing.gif" alt="">-->
+                </div>
+                <!--参数配置-->
+                <div style="display: none;" role="tabpanel" id="panel2" aria-labelledby="tab2" class="weui-tab__panel">
+                    <div class=" form_">
+                        <div class="weui-panel">
+                            <div class="weui-panel__hd">
+                                <div class="weui-flex">
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                                            <div class="weui-grid__icon">
+                                                <img id="dateId_1" onclick="changeParamsConfigPage(this.id)"
+                                                     src="img/yuyue2.png"
+                                                     alt="">
+                                            </div>
+                                            <p class="weui-grid__label">预约1</p>
+                                        </a></div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                                            <div class="weui-grid__icon">
+                                                <img id="dateId_2" onclick="changeParamsConfigPage(this.id)"
+                                                     src="img/yuyue2.png"
+                                                     alt="">
+                                            </div>
+                                            <p class="weui-grid__label">预约2</p>
+                                        </a></div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                                            <div class="weui-grid__icon">
+                                                <img id="dateId_3" onclick="changeParamsConfigPage(this.id)"
+                                                     src="img/yuyue2.png"
+                                                     alt="">
+                                            </div>
+                                            <p class="weui-grid__label">预约3</p>
+                                        </a></div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                                            <div class="weui-grid__icon">
+                                                <img id="dateId_4" onclick="changeParamsConfigPage(this.id)"
+                                                     src="img/yuyue2.png"
+                                                     alt="">
+                                            </div>
+                                            <p class="weui-grid__label">预约4</p>
+                                        </a></div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                                            <div class="weui-grid__icon">
+                                                <img id="dateId_5" onclick="changeParamsConfigPage(this.id)"
+                                                     src="img/yuyue2.png"
+                                                     alt="">
+                                            </div>
+                                            <p class="weui-grid__label">预约5</p>
+                                        </a></div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder"><a href="javascript:" class="my-center" role="button">
+                                            <div class="weui-grid__icon">
+                                                <img id="dateId_6" onclick="changeParamsConfigPage(this.id)"
+                                                     src="img/yuyue2.png"
+                                                     alt="">
+                                            </div>
+                                            <p class="weui-grid__label">预约6</p>
+                                        </a></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="weui-panel__hd">
+                                <div class="weui-flex">
+
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder" style="text-align:center;padding:10px 0">
+                                            <a href="javascript:" role="button" onclick="dateConfig()"
+                                               class="weui-btn weui-btn_default" style="width: 120px;">预约日期</a>
+                                        </div>
+                                    </div>
+                                    <div class="weui-flex__item">
+                                        <div class="placeholder" style="text-align:center;padding:10px 0">
+                                            <a href="javascript:" role="button" onclick="timerConfig()"
+                                               class="weui-btn weui-btn_default" style="width: 120px;">定时时间</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">预约开关</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="valid" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">药泵开关</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="dragEn" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">出药速度</div>
+                                    <div class="weui-cell__ft">
+                                        <input id="dragSpeed" class="weui-input weui-cell__ft" placeholder="百分比">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">药泵启动延时</div>
+                                    <div class="weui-cell__ft">
+                                        <input id="dragOnDelay" class="weui-input weui-cell__ft"
+                                               placeholder="输入延时时间，单位秒">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">药泵关闭延时</div>
+                                    <div class="weui-cell__ft">
+                                        <input id="dragOffDelay" class="weui-input weui-cell__ft"
+                                               placeholder="输入延时时间，单位秒">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">电磁阀2状态</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="ch2" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">电磁阀3状态</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="ch3" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+                                <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                    <div class="weui-cell__bd" aria-hidden="true">电磁阀4状态</div>
+                                    <div class="weui-cell__ft">
+                                        <input aria-labelledby="cb_txt" id="ch4" class="weui-switch" type="checkbox">
+                                    </div>
+                                </label>
+
+                            </div>
+                            <div class="weui-panel__hd">
+                                <div class="button-sp-area cell">
+                                    <a href="javascript:" role="button"
+                                       class="weui-btn_cell weui-btn_cell-primary"
+                                       onclick="queryConfigSync()">查询设备配置</a>
+                                    <a href="javascript:" role="button" onclick="paramsConf()"
+                                       class="weui-btn_cell weui-btn_cell-warn">执行设备配置</a>
+                                    <!--  <a href="javascript:" role="button"
+                                         class="weui-btn_cell weui-btn_cell-primary">加载配置</a>
+                                      <a href="javascript:" role="button"
+                                         class="weui-btn_cell weui-btn_cell-primary">配置另存为...</a>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: none;" role="tabpanel" id="panel3" aria-labelledby="tab3"
+                     class="weui-tab__panel">
+                    Dolor magnam expedita ex beatae maiores assumenda Doloribus et totam numquam
+                    officiis beatae Sint
+                    eos saepe magnam error aut Doloremque necessitatibus eligendi quod fuga debitis.
+                    Error ad optio
+                    repellendus amet.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--tips-->
+<div role="alert" id="infoToastPower" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-waiting weui-icon_toast"></i>
+        <p class="weui-toast__content" id="toastContent">执行中...</p>
+    </div>
+</div>
+
+<div role="alert" id="errorToastPower" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-warn weui-icon_toast"></i>
+
+        <p class="weui-toast__content">执行失败</p>
+    </div>
+</div>
+
+
+<!--js-->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script src="https://res.wx.qq.com/t/wx_fed/cdn_libs/res/weui/1.2.8/weui.min.js"></script>
+<script src="weui-2.5.9/dist/example/wah.js"></script>
+<script src="weui-2.5.9/utlis.js"></script>
+<script>
+    var deviceId = getSearchString('deviceId');
+    var deviceName = getSearchString('deviceName');
+    var dateId = 1;
+    verifyJump("operation.html?deviceId="+deviceId);
+
+    function getDevice() {
+        let result = httpGet("api/v1/device/by-device-id?deviceId=" + deviceId);
+        if (result.code === RES_OK && 'data' in result) {
+            let deviceName = result.data.name;
+            document.getElementById("device_name_id").innerText = "{0}({1})".format(deviceName, deviceId);
+        }
+    }
+
+    function getDeviceStatus() {
+        let result = httpGet("api/v1/control/device-data?deviceId=" + deviceId);
+        if (result.code === RES_OK && 'data' in result) {
+            let params = result.data.params;
+            document.getElementById('waterLevel').innerText = params.water_level === 1 ? '正常' : '缺水';
+            document.getElementById('dragAmount').innerText = params.drag_amount;
+            document.getElementById('totalDragAmount').innerText = params.total_drag_amount + "mL";
+            document.getElementById('state').innerText = params.state;
+            let sate_flag = getSessionStorage(dateId + "_sate_flag");
+            if (sate_flag === null) {
+                if (params.state === 'running') {
+                    document.getElementById('power').innerHTML = "<span></span><span>关闭</span>";
+                    power_value = false;
+                } else {
+                    document.getElementById('power').innerHTML = "<span></span><span>启动</span>";
+                    power_value = true;
+                }
+            }
+            document.getElementById('csq').innerText = params.csq;
+            document.getElementById('runningTime').innerText = params.total_work_time + 'S';
+        }
+    }
+
+    var power_value = true;
+
+    function changePowerText() {
+        let html = " <span></span><span>{text}</span>";
+        let element = document.getElementById('power');
+        if (power_value) {
+            element.innerHTML = html.format({
+                text: '关闭'
+            });
+            document.getElementById('state').innerText = 'running';
+            power_value = false;
+            return;
+        }
+        element.innerHTML = html.format({
+            text: '启动'
+        });
+        document.getElementById('state').innerText = 'stop';
+        power_value = true;
+    }
+
+    function power() {
+        openToast('infoToastPower');
+        let params = {
+            deviceId: deviceId,
+            power: power_value
+        };
+        setTimeout(function () {
+            let request = httpRequest("api/v1/control/power/sync", 'POST', params);
+            closeToast('infoToastPower');
+            let susses_flag = false;
+            if (request.code === RES_OK && 'data' in request) {
+                if (request.data.result === 0) {
+                    susses_flag = true;
+                }
+            }
+            console.log(power_value);
+            if (susses_flag) {
+                setSessionStorage(dateId + "_sate_flag", 1);
+            } else {
+                toast('errorToastPower');
+            }
+            changePowerText();
+        }, 500);
+    }
+
+    function dateConfig() {
+        window.location.href = 'date_config.html?deviceId=' + deviceId + '&dateId=' + dateId;
+    }
+
+    function timerConfig() {
+        window.location.href = 'timer_config.html?deviceId=' + deviceId + '&dateId=' + dateId;
+    }
+
+    function dateIdChange(id) {
+        for (let i = 1; i < 7; i++) {
+            if (i === id) {
+                document.getElementById("dateId_" + i).src = "img/yuyue1.png";
+            } else {
+                document.getElementById("dateId_" + i).src = "img/yuyue2.png";
+            }
+        }
+    }
+
+    function clearRenderParams() {
+        $("#valid").prop("checked", false);
+        $("#valid").attr("checked", false);
+        $("#dragEn").prop("checked", false);
+        $("#dragEn").attr("checked", false);
+        $("#dragSpeed").val(null);
+        $("#dragOnDelay").val(null);
+        $("#dragOffDelay").val(null);
+        $("#ch2").prop("checked", false);
+        $("#ch2").attr("checked", false);
+        $("#ch3").prop("checked", false);
+        $("#ch3").attr("checked", false);
+        $("#ch4").prop("checked", false);
+        $("#ch4").attr("checked", false);
+    }
+
+    function renderParams(params) {
+        $("#valid").prop("checked", params.valid === 1);
+        $("#valid").attr("checked", params.valid === 1);
+        $("#dragEn").prop("checked", params.drag_pump.enable);
+        $("#dragEn").attr("checked", params.drag_pump.enable);
+        $("#dragSpeed").val(params.drag_pump.speed);
+        $("#dragOnDelay").val(params.drag_pump.on_delay);
+        $("#dragOffDelay").val(params.drag_pump.off_delay);
+        let relays = params.relays;
+        relays.forEach((item, index) => {
+            let ch_index = index + 2;
+            $("#ch" + ch_index).prop("checked", 'on' === item);
+            $("#ch" + ch_index).attr("checked", 'on' === item);
+        });
+    }
+
+
+    function getParamsConfigByDocument() {
+        let conf = {};
+        conf.deviceId = deviceId;
+        let params = {};
+        params.id = dateId;
+        params.valid = document.getElementById("valid").checked ? 1 : 0;
+        params.startDate = getSessionStorage(dateId + "_start_date");
+        params.endDate = getSessionStorage(dateId + "_end_date");
+        params.excludeDates = getSessionStorage(dateId + "_excludeDates");
+        params.relays = [document.getElementById("ch2").checked ? "on" : "off"
+            , document.getElementById("ch3").checked ? "on" : "off"
+            , document.getElementById("ch4").checked ? "on" : "off"];
+        params.dragPump = {
+            "enable": document.getElementById("dragEn").checked,
+            "speed": $("#dragSpeed").val(),
+            "onDelay": $("#dragOnDelay").val(),
+            "offDelay": $("#dragOffDelay").val()
+        };
+        let timeList = [];
+        for (let i = 1; i < 9; i++) {
+            timeList.push(getSessionStorage(dateId + "_time_" + i));
+        }
+        params.timeList = timeList;
+        conf.params = params;
+        return conf;
+    }
+
+    function paramsConf() {
+        let config = getParamsConfigByDocument();
+        openToast('infoToastPower');
+        setTimeout(function () {
+            let result = httpRequest("api/v1/control/device-params-conf-v2", "POST", config);
+            closeToast('infoToastPower');
+            let susses_flag = false;
+            if (result.code === RES_OK && 'data' in result) {
+                if (result.data.result === 0) {
+                    susses_flag = true;
+                }
+            } else {
+                alert(result.message);
+            }
+            if (susses_flag) {
+            } else {
+                toast('errorToastPower');
+            }
+        }, 500);
+    }
+
+    function queryConfig() {
+        clearRenderParams();
+        sessionStorage.clear();
+        let result = httpGet("api/v1/control/device-params-v2?deviceId=" + deviceId + "&id=" + dateId);
+        if (result.code === RES_OK && 'data' in result) {
+            let params = result.data.data;
+            renderParams(params);
+            /*time_list*/
+            let timeList = params.time_list;
+            timeList.forEach((item, index) => {
+                let i = index + 1;
+                setSessionStorage(dateId + "_time_" + i, item);
+            });
+            /*date*/
+            setSessionStorage(dateId + "_start_date", params.start_date);
+            setSessionStorage(dateId + "_end_date", params.end_date);
+            setSessionStorage(dateId + "_excludeDates", params.excludeDates);
+        }
+    }
+
+    function queryConfigSync() {
+        openToast('infoToastPower');
+        setTimeout(function () {
+            let result = httpGet("api/v1/control/device-params/sync?deviceId=" + deviceId + "&id=" + dateId);
+            closeToast('infoToastPower');
+            let susses_flag = false;
+            if (result.code === RES_OK && 'data' in result) {
+
+                susses_flag = true;
+                let params = result.data.data;
+                clearRenderParams();
+                sessionStorage.clear();
+                renderParams(params);
+                /*time_list*/
+                let timeList = params.time_list;
+                timeList.forEach((item, index) => {
+                    let i = index + 1;
+                    setSessionStorage(dateId + "_time_" + i, item);
+                });
+                /*date*/
+                setSessionStorage(dateId + "_start_date", params.start_date);
+                setSessionStorage(dateId + "_end_date", params.end_date);
+                setSessionStorage(dateId + "_excludeDates", params.excludeDates);
+            } else {
+                alert(result.message);
+            }
+            if (susses_flag) {
+            } else {
+                toast('errorToastPower');
+            }
+        }, 500);
+    }
+
+    function changeParamsConfigPage(dom_id) {
+        let id = parseInt(dom_id.split("_")[1]);
+        dateId = id;
+        dateIdChange(id);
+        queryConfig();
+    }
+
+
+    $(function () {
+        $('.weui-navbar__item').on('click', function () {
+            $(this).attr('aria-selected', 'true').addClass('weui-bar__item_on');
+            $(this).siblings('.weui-bar__item_on').removeClass('weui-bar__item_on').attr('aria-selected', 'false');
+            var panelId = '#' + $(this).attr('aria-controls');
+            $(panelId).css('display', 'block');
+            $(panelId).siblings('.weui-tab__panel').css('display', 'none');
+        });
+        getDeviceStatus();
+        changeParamsConfigPage("dataId_1");
+        getDevice();
+
+    });
+</script>
+
+</body>
+</html>

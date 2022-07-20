@@ -18,4 +18,9 @@ public class TimingMessageAck extends MessageAck implements S2cMessage {
     public String toString() {
         return pack();
     }
+
+    public static void main(String[] args) {
+        TimingMessageAck timingMessageAck = new TimingMessageAck();
+        System.out.println(timingMessageAck);
+    }
 }

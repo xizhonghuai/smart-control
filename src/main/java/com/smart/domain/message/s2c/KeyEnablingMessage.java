@@ -1,5 +1,6 @@
 package com.smart.domain.message.s2c;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.smart.domain.message.Message;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -17,6 +18,7 @@ public class KeyEnablingMessage extends Message implements S2cMessage {
     @Data
     @Accessors(chain = true)
     public static class Body {
+        @JSONField(name = "key_en")
         private Boolean keyEn;
     }
 
