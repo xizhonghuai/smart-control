@@ -107,9 +107,19 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return deviceVOS.stream().peek(deviceVO -> {
             deviceVO.setNetStatus(olineRegIds.contains(deviceVO.getDeviceId()) ? 1 : 0);
             deviceVO.setIsShare(shareIds.contains(deviceVO.getId()) ? 1 : 0);
+
             String key = ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
             Object warningValue = cacheService.getValue(key);
             deviceVO.setIsWarning(warningValue == null ? 0 : 1);
+
+            String workStatusKey = ConstantUnit.WORK_STATUS_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
+            Object workStatus = cacheService.getValue(workStatusKey);
+            deviceVO.setWorkStatus(workStatus == null ? null : workStatus.toString());
+
+            String runModeKey = ConstantUnit.RUNNING_MODEL_DESCRIPTION_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
+            Object runModeValue = cacheService.getValue(runModeKey);
+            deviceVO.setWorkStatus(runModeValue == null ? null : runModeValue.toString());
+
         }).collect(Collectors.toList());
     }
 

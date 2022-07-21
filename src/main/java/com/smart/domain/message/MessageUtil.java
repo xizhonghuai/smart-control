@@ -32,6 +32,8 @@ public class MessageUtil {
             put("10007", SolenoidValveMessageAck.class);
             put("20008", WarningEventMessage.class);
             put("10008", WarningEventMessageAck.class);
+            put("20009", ImmediateParamsConfMessage.class);
+            put("10009", ImmediateParamsConfMessageAck.class);
         }
     };
 

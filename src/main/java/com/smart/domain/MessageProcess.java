@@ -57,7 +57,8 @@ public class MessageProcess {
         if (messageObject instanceof TimingMessage) {
             TimingMessage timingMessage = (TimingMessage) messageObject;
             TimingMessage.Body params = timingMessage.getParams();
-            // TODO: 2022/7/4  
+            // TODO: 2022/7/4
+            cacheService.setValue(ConstantUnit.WORK_STATUS_CACHE_KEY_FUNCTION.apply(iotSession.getDeviceId()), params.getState());
             //ack
             TimingMessageAck timingMessageAck = new TimingMessageAck();
             timingMessageAck.setCode(MessageUtil.getMessageCode(TimingMessageAck.class));

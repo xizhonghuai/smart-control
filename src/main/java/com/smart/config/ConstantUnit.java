@@ -21,5 +21,8 @@ public class ConstantUnit {
     public static final String on = "on";
     public static final String off = "off";
 
-    public static Function<String, String> WARNING_CACHE_KEY_FUNCTION = deviceId -> String.format("%s,warning", deviceId);
+    public static Function<String, String> WARNING_CACHE_KEY_FUNCTION = deviceId -> String.format("%s,WARNING_CACHE", deviceId);
+    public static Function<String, String> WORK_STATUS_CACHE_KEY_FUNCTION = deviceId -> String.format("%s,WORK_STATUS_CACHE", deviceId);
+    public static Function<String, String> RUNNING_MODEL_DESCRIPTION_CACHE_KEY_FUNCTION = deviceId -> String.format("%s,RUNNING_MODEL_DESCRIPTION_CACHE", deviceId);
+    public static Function<String,String> IMMEDIATE_PARAMS_CACHE_KEY_FUNCTION = deviceId -> String.format("%s,IMMEDIATE_PARAMS_CACHE", deviceId);
 }

@@ -5,6 +5,7 @@ import com.smart.config.RestResponse;
 import com.smart.domain.message.Message;
 import com.smart.domain.message.c2s.ParamsQueryMessageAck;
 import com.smart.domain.message.c2s.TimingMessage;
+import com.smart.domain.message.s2c.ImmediateParamsConfMessage;
 import com.smart.domain.message.s2c.ParamsConfMessage;
 import com.smart.domain.message.s2c.WarningEventMessageAck;
 import com.smart.mvc.dto.KeyEnDTO;
@@ -60,6 +61,12 @@ public class DeviceAPIController {
     @ApiOperation("配置运行参数")
     public RestResponse<Message> deviceParamsConf(@RequestBody ParamsConfMessage paramsConfMessage) {
         return RestResponse.success(service.deviceParamsConf(0, paramsConfMessage));
+    }
+
+    @PostMapping("immediate-device-params-conf/sync")
+    @ApiOperation("即时控制参数配置(同步方式)")
+    public RestResponse<Message> immediateDeviceParamsConf(@RequestBody ImmediateParamsConfMessage immediateParamsConfMessage) {
+        return RestResponse.success(service.immediateDeviceParamsConf(1, immediateParamsConfMessage));
     }
 
     @PostMapping("device-params-conf/sync")
@@ -139,6 +146,7 @@ public class DeviceAPIController {
     public RestResponse<Message> deviceParamsConfV2(@RequestBody ParamsConfMessage paramsConfMessage) {
         return RestResponse.success(service.deviceParamsConfV2(paramsConfMessage));
     }
+
 
     @GetMapping("device-params-v2")
     @ApiOperation("查询设备运行参数数据v2")

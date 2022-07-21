@@ -17,4 +17,6 @@ public class DeviceVO {
     private int netStatus;
     private int isWarning;
     private int isShare;
+    private String workStatus;
+    private String runningModelDescription;
 }

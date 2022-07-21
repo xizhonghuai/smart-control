@@ -1,5 +1,7 @@
 package com.smart.mvc.service;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.smart.cache.CacheService;
 import com.smart.communication.DeviceAPI;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -76,6 +79,27 @@ public class DeviceControlService {
         cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
         return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
     }
+
+    public Message immediateDeviceParamsConf(int isSync, ImmediateParamsConfMessage immediateParamsConfMessage) {
+        String deviceId = immediateParamsConfMessage.getDeviceId();
+        checkDevice(deviceId);
+        immediateParamsConfMessage.setCode(MessageUtil.getMessageCode(ImmediateParamsConfMessage.class));
+        deviceAPI.sendCmd(deviceId, immediateParamsConfMessage);
+        commandPoolService.add(deviceId, immediateParamsConfMessage);
+        if (isSync <= 0) {
+            return null;
+        }
+        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(ImmediateParamsConfMessageAck.class)));
+        Message message = new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ImmediateParamsConfMessageAck.class)));
+        String paramsKey = ConstantUnit.IMMEDIATE_PARAMS_CACHE_KEY_FUNCTION.apply(deviceId);
+        ImmediateParamsConfMessage.Body params = immediateParamsConfMessage.getParams();
+        Integer onTime = params.getOnTime();
+        Date now = new Date();
+        DateTime endTime = DateUtil.offsetSecond(now, onTime);
+        cacheService.setValue(paramsKey, endTime);
+        return message;
+    }
+
 
     public Message deviceParams(int isSync, String deviceId, Integer id) {
         checkDevice(deviceId);

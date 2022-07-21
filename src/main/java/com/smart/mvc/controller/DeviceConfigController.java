@@ -6,6 +6,7 @@ import com.smart.mvc.dto.ConfPlanAddDTO;
 import com.smart.mvc.dto.ConfPlanNameEditDTO;
 import com.smart.mvc.service.DeviceConfigService;
 import com.smart.mvc.vo.ConfPlanVO;
+import com.smart.mvc.vo.DeviceWorkStatusVO;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,12 @@ public class DeviceConfigController {
     @PostMapping("edit-plan-name")
     public RestResponse<Boolean> editPlanName(@RequestBody ConfPlanNameEditDTO dto) {
         return RestResponse.success(service.editPlanName(dto));
+    }
+
+
+    @GetMapping("work_status")
+    public RestResponse<DeviceWorkStatusVO> workStatus(@RequestParam("deviceId") String deviceId) {
+        return RestResponse.success(service.workStatus(deviceId));
     }
 
 
