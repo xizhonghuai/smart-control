@@ -15,10 +15,13 @@ import com.smart.domain.message.s2c.WarningEventMessageAck;
 import com.smart.mvc.service.CommandPoolService;
 import com.smart.mvc.service.DeviceServiceImpl;
 import com.smart.mvc.service.MessageCenterServiceImpl;
+import com.smart.mvc.service.RestrictService;
 import com.smart.mvc.vo.ConfPlanVO;
 import com.smart.utils.Utils;
 import com.transmission.server.core.IotSession;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Objects;
 
 /**
  * @author: xizhonghuai
@@ -32,7 +35,10 @@ public class MessageProcess {
     private final CommandPoolService commandPoolService = CommandPoolService.getCommandPoolService();
     private final DeviceServiceImpl deviceService = DeviceServiceImpl.get();
 
+    private final RestrictService restrictService = SpringUtil.getObject(RestrictService.class);
+
     public void accept(IotSession iotSession, Object message) {
+//        restrictService.ipProcess(iotSession);
         Message messageObject = MessageUtil.parse(message);
         if (!StrUtil.isBlank(iotSession.getDeviceId())) {
             String code = messageObject.getCode();
@@ -59,6 +65,10 @@ public class MessageProcess {
             TimingMessage.Body params = timingMessage.getParams();
             // TODO: 2022/7/4
             cacheService.setValue(ConstantUnit.WORK_STATUS_CACHE_KEY_FUNCTION.apply(iotSession.getDeviceId()), params.getState());
+            cacheService.setValue(ConstantUnit.SZ_CACHE_KEY_FUNCTION.apply(iotSession.getDeviceId()), params.getMode());
+            if (Objects.equals(params.getWaterLevel(), 1)) {
+                cacheService.invalid(ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(iotSession.getDeviceId()));
+            }
             //ack
             TimingMessageAck timingMessageAck = new TimingMessageAck();
             timingMessageAck.setCode(MessageUtil.getMessageCode(TimingMessageAck.class));
@@ -110,15 +120,22 @@ public class MessageProcess {
         if (messageObject instanceof WarningEventMessage) {
             WarningEventMessage warningEventMessage = (WarningEventMessage) messageObject;
             String key = ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(iotSession.getDeviceId());
-            String msg = warningEventMessage.getParams().getMsg();
+//            String msg = warningEventMessage.getParams().getMsg();
+            String msg = warningEventMessage.getWarningMsg();
             cacheService.setValue(key, msg);
-            new Thread(() -> messageCenterService.sendDeviceWarningMessage(iotSession.getDeviceId(), msg)).start();
+            String dbWarningMsg = String.format("设备%s:\n%s", iotSession.getDeviceId(), msg);
+            new Thread(() -> messageCenterService.sendDeviceWarningMessage(iotSession.getDeviceId(), dbWarningMsg)).start();
             WarningEventMessageAck warningEventMessageAck = new WarningEventMessageAck();
             warningEventMessageAck.setDeviceId(iotSession.getDeviceId());
             warningEventMessageAck.setCode(MessageUtil.getMessageCode(WarningEventMessageAck.class));
             warningEventMessageAck.setResult(0);
             iotSession.sendMsg(warningEventMessageAck);
             log.info(JSON.toJSONString(warningEventMessage));
+            return;
+        }
+        if (messageObject instanceof ParamsDeleteMessageAck) {
+            ParamsDeleteMessageAck paramsDeleteMessageAck = (ParamsDeleteMessageAck) messageObject;
+            log.info(JSON.toJSONString(paramsDeleteMessageAck));
         }
     }
 }

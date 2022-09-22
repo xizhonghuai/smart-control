@@ -55,6 +55,9 @@ public class CommandPoolService implements SchedulingConfigurer {
     }
 
     public synchronized void add(String deviceId, Message message) {
+        if (message == null) {
+            return;
+        }
         List<Command> commands = getCommands();
         Command command = new Command();
         command.setId(Utils.createSnowflakeId());
@@ -88,6 +91,10 @@ public class CommandPoolService implements SchedulingConfigurer {
         List<Command> commands = getCommands();
         commands.forEach(command -> {
             command.setNumberRetries(command.getNumberRetries() + 1);
+            if (command.getNumberRetries() > 10) {
+                remove(command.deviceId, command.getMessage().getCode());
+                return;
+            }
             deviceAPI.sendCmd(command.getDeviceId(), command.getMessage());
         });
     }

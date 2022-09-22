@@ -2,6 +2,7 @@ package com.smart.mvc.controller;
 
 import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
+import com.smart.domain.message.s2c.ParamsDeleteMessage;
 import com.smart.mvc.dto.ConfPlanAddDTO;
 import com.smart.mvc.dto.ConfPlanNameEditDTO;
 import com.smart.mvc.service.DeviceConfigService;
@@ -34,9 +35,9 @@ public class DeviceConfigController {
         return RestResponse.success(service.addPlan(dto));
     }
 
-    @DeleteMapping("delete-plan")
-    public RestResponse<Boolean> deletePlan(@RequestBody ConfPlanAddDTO dto) {
-        return null;
+    @PostMapping("delete-plan")
+    public RestResponse<Boolean> deletePlan(@RequestBody ParamsDeleteMessage paramsDeleteMessage) {
+        return RestResponse.success(service.deletePlan(paramsDeleteMessage));
     }
 
     @PostMapping("edit-plan-name")

@@ -11,4 +11,5 @@ import lombok.Data;
 public class AddShareDTO {
     private String accountName;
     private Long deviceId;
+    private Integer shareType;//0-查看与设置 0-仅查看
 }

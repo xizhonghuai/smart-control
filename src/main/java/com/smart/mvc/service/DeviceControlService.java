@@ -13,7 +13,9 @@ import com.smart.domain.message.s2c.*;
 import com.smart.mvc.dto.KeyEnDTO;
 import com.smart.mvc.dto.RevStopDTO;
 import com.smart.mvc.dto.SolenoidValveSwitchDTO;
+import com.smart.mvc.vo.ConfPlanVO;
 import com.smart.utils.Utils;
+import com.smart.utils.VerificationUtils;
 import com.transmission.server.core.ConnectProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +62,10 @@ public class DeviceControlService {
         return b ? "online" : "off-line";
     }
 
+    public Boolean isDeviceOnline(String deviceId) {
+        return Objects.equals(deviceNetStatus(deviceId), "online");
+    }
+
     private void checkDevice(String deviceId) {
         if (Objects.equals(deviceNetStatus(deviceId), "off-line")) {
             throw new RuntimeException("device is off-line");
@@ -67,9 +73,17 @@ public class DeviceControlService {
     }
 
     public Message deviceParamsConf(int isSync, ParamsConfMessage paramsConfMessage) {
+        Integer id = paramsConfMessage.getParams().getId();
+        if (id == null) {
+            throw new RuntimeException("参数错误,请重试");
+        }
         String deviceId = paramsConfMessage.getDeviceId();
         checkDevice(deviceId);
         paramsConfMessage.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
+        VerificationUtils.planDateCheck(deviceId
+                , DateUtil.parse(paramsConfMessage.getParams().getStartDate(), "yyyy-MM-dd")
+                , DateUtil.parse(paramsConfMessage.getParams().getEndDate(), "yyyy-MM-dd")
+                , id);
         paramsConfMessage.process();
         deviceAPI.sendCmd(deviceId, paramsConfMessage);
         commandPoolService.add(deviceId, paramsConfMessage);
@@ -77,7 +91,28 @@ public class DeviceControlService {
             return null;
         }
         cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
-        return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
+        Message message = new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsConfMessageAck.class)));
+
+        // 同步缓存数据
+        ParamsConfMessage.Body data = paramsConfMessage.getParams();
+        MessageUtil.c2sMsgProcess(data);
+        String planKey = String.format("%s,%s,%s,plan", paramsConfMessage.getDeviceId(), MessageUtil.getMessageCode(ParamsQueryMessageAck.class), data.getId());
+        Object value = cacheService.getValue(planKey);
+        if (value == null) {
+            ConfPlanVO confPlanVO = new ConfPlanVO();
+            confPlanVO.setId(data.getId());
+            confPlanVO.setName("计划" + data.getId());
+            confPlanVO.setBody(data);
+            confPlanVO.process();
+            cacheService.setValue(planKey, confPlanVO);
+        } else {
+            ConfPlanVO confPlanVO = (ConfPlanVO) value;
+            confPlanVO.setBody(data);
+            confPlanVO.process();
+            cacheService.setValue(planKey, confPlanVO);
+        }
+        //        deviceParams(0, deviceId, paramsConfMessage.getParams().getId());
+        return message;
     }
 
     public Message immediateDeviceParamsConf(int isSync, ImmediateParamsConfMessage immediateParamsConfMessage) {
@@ -128,7 +163,16 @@ public class DeviceControlService {
             return null;
         }
         cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(RevStopMessageAck.class)));
-        return new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(RevStopMessageAck.class)));
+        Message message = new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(RevStopMessageAck.class)));
+
+        //change running state
+        TimingMessage timingMessage = deviceData(deviceId);
+        if (timingMessage != null) {
+            timingMessage.getParams().setState(dto.getPower() ? "running" : "stop");
+            cacheService.setValue(deviceId, MessageUtil.getMessageCode(TimingMessage.class));
+        }
+
+        return message;
     }
 
     public Message keyEn(int isSync, KeyEnDTO dto) {
@@ -180,6 +224,21 @@ public class DeviceControlService {
         return (ParamsQueryMessageAck) message;
     }
 
+    public Message deleteParamsSync(ParamsDeleteMessage paramsDeleteMessage) {
+        String deviceId = paramsDeleteMessage.getDeviceId();
+        checkDevice(deviceId);
+        paramsDeleteMessage.setCode(MessageUtil.getMessageCode(ParamsDeleteMessage.class));
+        deviceAPI.sendCmd(deviceId, paramsDeleteMessage);
+        commandPoolService.add(deviceId, paramsDeleteMessage);
+
+        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(ParamsDeleteMessageAck.class)));
+        Message message = new Utils.SyncResult<Message>().get(() -> deviceMessage(deviceId, MessageUtil.getMessageCode(ParamsDeleteMessageAck.class)));
+        // 同步缓存数据
+        String planKey = String.format("%s,%s,%s,plan", deviceId, MessageUtil.getMessageCode(ParamsQueryMessageAck.class), paramsDeleteMessage.getParams().getId());
+        cacheService.invalid(planKey);
+        return message;
+    }
+
     public TimingMessage deviceData(String deviceId) {
         checkDevice(deviceId);
         Message message = deviceMessage(deviceId, MessageUtil.getMessageCode(TimingMessage.class));
@@ -187,9 +246,12 @@ public class DeviceControlService {
         return (TimingMessage) message;
     }
 
+
     public WarningEventMessageAck deviceWarningEvent(String deviceId) {
         checkDevice(deviceId);
         Message message = deviceMessage(deviceId, MessageUtil.getMessageCode(WarningEventMessageAck.class));
         return (WarningEventMessageAck) message;
     }
+
+
 }

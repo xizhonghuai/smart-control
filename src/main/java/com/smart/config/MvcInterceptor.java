@@ -26,6 +26,7 @@ public class MvcInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String url = request.getRequestURI();
         log.info("url:" + url);
+
         if (Arrays.stream(URL_WHITE_LIST).anyMatch(url::contains)) {
             return true;
         }
@@ -33,6 +34,8 @@ public class MvcInterceptor implements HandlerInterceptor {
             response.setStatus(HttpServletResponse.SC_OK);
             return true;
         }
+
+
         String token = request.getHeader("token");
 //        log.info("token:" + token);
         return authenticationService.authentication(token, response);

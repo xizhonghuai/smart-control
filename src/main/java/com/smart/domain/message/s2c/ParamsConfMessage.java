@@ -64,7 +64,8 @@ public class ParamsConfMessage extends Message implements S2cMessage {
     public static class Time {
         private String time;
         private Integer duration;
-        private Integer repeat;//0：不循环，1：循环
+//        private Integer repeat;//0：不循环，1：循环
+        private Integer mode;//0：喷雾，1：喷药
         @JSONField(name = "on_time")
         private Integer onTime;//65535
         @JSONField(name = "off_time")

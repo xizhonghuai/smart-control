@@ -66,11 +66,7 @@ function getLocalToken() {
 function httpGet(api) {
     var result;
     var settings = {
-        "url": API_URL + api,
-        "method": "GET",
-        "timeout": 0,
-        async: false,
-        "headers": {
+        "url": API_URL + api, "method": "GET", "timeout": 0, async: false, "headers": {
             "token": getLocalToken()
         },
     };
@@ -84,15 +80,9 @@ function httpGet(api) {
 function httpRequest(api, method, body) {
     var result;
     var settings = {
-        "url": API_URL + api,
-        "method": method,
-        "timeout": 0,
-        async: false,
-        "headers": {
-            "token": getLocalToken(),
-            "Content-Type": "application/json;charset=UTF-8"
-        },
-        "data": JSON.stringify(body)
+        "url": API_URL + api, "method": method, "timeout": 0, async: false, "headers": {
+            "token": getLocalToken(), "Content-Type": "application/json;charset=UTF-8"
+        }, "data": JSON.stringify(body)
     };
     $.ajax(settings).done(function (response) {
         console.log(response);
@@ -207,6 +197,25 @@ function getDiffDay(date_1, date_2) {
     return totalDays;   // 相差的天数
 }
 
+function getDiffS(date_1, date_2) {
+    // 计算两个日期之间的差值
+    let totalDays, diffDate;
+    // 将两个日期都转换为毫秒格式，然后做差
+    diffDate = date_1.getTime() - date_2.getTime(); // 取相差毫秒数的绝对值
+    s = Math.round(diffDate / (1000));
+    return s;
+}
+
+function getDiffTimeStr(date_1, date_2) {
+    let totalDays, diffDate;
+    // 将两个日期都转换为毫秒格式，然后做差
+    diffDate = date_1.getTime() - date_2.getTime(); // 取相差毫秒数的绝对值
+    console.log(diffDate);
+
+    return formatDate(new Date(diffDate + stringToDate("2022-01-01 00:00:00").getTime()), "HH:mm:ss");
+}
+
+
 function timeAddSecond(date, second) {
     return new Date(date.getTime() + 1000 * second);
 }
@@ -253,5 +262,56 @@ function arrayObjectNonNull(array) {
     });
     return ar;
 }
+
+function keepThreeNum(value) {
+    let resValue = 0
+    //小数点的位置
+    let index = value && value.toString().indexOf('.') + 1
+    //小数的位数
+    let num = value && Math.abs(Number(value)).toString().length - index
+    if (index && num > 3) {
+        resValue = value && Number(value).toFixed(3)
+    } else {
+        resValue = value
+    }
+    return resValue
+}
+
+function createTimeList() {
+    let hours = [];
+    let mins = [];
+    let seconds = [];
+
+    for (let i = 0; i < 24; i++) {
+        hours.push({label: i + '时', value: i});
+    }
+    for (let i = 0; i < 60; i++) {
+        mins.push({label: i + '分', value: i});
+    }
+    for (let i = 0; i < 60; i++) {
+        seconds.push({label: i + '秒', value: i});
+    }
+    return {h: hours, m: mins, s: seconds};
+}
+
+function secondToHHMMSS(v) {
+    let h = parseInt(v / 3600);
+    let m = parseInt((v - h * 3600) / 60);
+    let s = parseInt(v - (h * 3600 + m * 60));
+    let template = "{h}:{m}:{s}";
+    return template.format({
+        h: h < 10 ? '0' + h.toString() : h, m: m < 10 ? '0' + m.toString() : m, s: s < 10 ? '0' + s.toString() : s
+    });
+}
+
+function hhmmssToSecond(s) {
+    var timeStrs = s.split(":");
+    var hour = parseInt(timeStrs [0], 10);
+    var minute = parseInt(timeStrs[1], 10);
+    var second = parseInt(timeStrs[2], 10);
+    return hour * 3600 + minute * 60 + second;
+}
+
+
 
 

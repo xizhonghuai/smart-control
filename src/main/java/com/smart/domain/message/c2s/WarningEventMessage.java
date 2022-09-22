@@ -24,4 +24,14 @@ public class WarningEventMessage extends Message {
         private Integer eventId;
         private String msg;
     }
+
+    public String getWarningMsg() {
+        if (getParams().eventId == 0) {
+            return "药量低告警";
+        }
+        if (getParams().eventId == 1) {
+            return "低水位告警，请检查水位！";
+        }
+        return getParams().msg;
+    }
 }

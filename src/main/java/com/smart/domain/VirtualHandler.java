@@ -48,10 +48,10 @@ public class VirtualHandler extends IoHandlerAdapter {
                     add("on");
                 }})
                 .setTimeList(new ArrayList<ParamsConfMessage.Time>() {{
-                    add(new ParamsConfMessage.Time().setTime("140000").setOnTime(10).setOffTime(10).setDuration(500).setRepeat(1));
-                    add(new ParamsConfMessage.Time().setTime("000000").setOnTime(3600).setOffTime(0).setDuration(3600).setRepeat(0));
-                    add(new ParamsConfMessage.Time().setTime("162533").setOnTime(10).setOffTime(50).setDuration(180).setRepeat(1));
-                    add(new ParamsConfMessage.Time().setTime("172533").setOnTime(90).setOffTime(20).setDuration(180).setRepeat(1));
+                    add(new ParamsConfMessage.Time().setTime("140000").setOnTime(10).setOffTime(10).setDuration(500).setMode(1));
+                    add(new ParamsConfMessage.Time().setTime("000000").setOnTime(3600).setOffTime(0).setDuration(3600).setMode(0));
+                    add(new ParamsConfMessage.Time().setTime("162533").setOnTime(10).setOffTime(50).setDuration(180).setMode(1));
+                    add(new ParamsConfMessage.Time().setTime("172533").setOnTime(90).setOffTime(20).setDuration(180).setMode(1));
                 }})
         );
         session.setAttribute("params_" + params.getData().getId(), params);

@@ -1,6 +1,7 @@
 package com.smart.mvc.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.smart.config.ConstantUnit;
 import com.smart.config.RestResponse;
 import com.smart.mvc.dto.MessageCenterDTO;
@@ -12,7 +13,9 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -32,7 +35,9 @@ public class MessageCenterController {
     @GetMapping("my-message")
     @ApiOperation("我的消息")
     public RestResponse<List<MessageCenter>> myMessage(@RequestParam(value = "message", required = false) String message) {
-        return RestResponse.success(messageCenterService.myMessage(message));
+        List<MessageCenter> messageCenters = messageCenterService.myMessage(message);
+        Optional<MessageCenter> first = messageCenters.stream().min((o1, o2) -> o2.getCreatedDate().compareTo(o1.getCreatedDate()));
+        return RestResponse.success(first.isPresent() ? CollectionUtil.newArrayList(first.get()) : Collections.emptyList());
     }
 
     @GetMapping("list")
@@ -49,7 +54,7 @@ public class MessageCenterController {
 
     @PutMapping("update-read-flag/{id}")
     @ApiOperation("标记为已读")
-    public RestResponse<Boolean> updateReadFlag(@PathVariable("id")Long id) {
+    public RestResponse<Boolean> updateReadFlag(@PathVariable("id") Long id) {
         return RestResponse.success(messageCenterService.updateReadFlag(id));
     }
 }

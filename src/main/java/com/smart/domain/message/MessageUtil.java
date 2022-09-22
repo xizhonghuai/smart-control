@@ -1,11 +1,16 @@
 package com.smart.domain.message;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.smart.domain.message.c2s.*;
 import com.smart.domain.message.s2c.*;
-import com.smart.utils.Utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -23,17 +28,18 @@ public class MessageUtil {
             put("10002", ParamsConfMessageAck.class);
             put("20003", ParamsQueryMessage.class);
             put("10003", ParamsQueryMessageAck.class);
-          /*  put("20004", ParamsQueryMessage.class);
-            put("10004", ParamsQueryMessageAck.class);*/
+
 
             put("20006", RevStopMessage.class);
             put("10006", RevStopMessageAck.class);
             put("20007", SolenoidValveMessage.class);
             put("10007", SolenoidValveMessageAck.class);
-            put("20008", WarningEventMessage.class);
-            put("10008", WarningEventMessageAck.class);
+            put("10008", WarningEventMessage.class);
+
             put("20009", ImmediateParamsConfMessage.class);
             put("10009", ImmediateParamsConfMessageAck.class);
+            put("20010", ParamsDeleteMessage.class);
+            put("10010", ParamsDeleteMessageAck.class);
         }
     };
 
@@ -79,14 +85,15 @@ public class MessageUtil {
         return (toString.length() > 2 && toString.charAt(0) == 0x02 && toString.charAt(toString.length() - 1) == 0x03);
     }
 
-    public static ParamsConfMessage defaultConfig(Integer id, String deviceId) {
+    public static ParamsConfMessage defaultConfig(Integer id, String deviceId, Date date) {
         ParamsConfMessage confMessage = new ParamsConfMessage();
         confMessage.setDeviceId(deviceId);
         confMessage.setCode(MessageUtil.getMessageCode(ParamsConfMessage.class));
         ParamsConfMessage.Body body = new ParamsConfMessage.Body()
                 .setId(id)
-                .setStartDate(Utils.getDate())
-                .setEndDate(Utils.getDate())
+                .setValid(1)
+                .setStartDate(DateUtil.format(date, "yyyy-MM-dd"))
+                .setEndDate(DateUtil.format(date, "yyyy-MM-dd"))
                 .setDaysMap(new ArrayList<Integer>() {{
                     add(1);
                 }})
@@ -101,9 +108,57 @@ public class MessageUtil {
                     add("off");
                 }})
                 .setTimeList(new ArrayList<ParamsConfMessage.Time>() {{
-                    add(new ParamsConfMessage.Time().setTime("08:00:00").setOnTime(60).setOffTime(60).setDuration(3600).setRepeat(1));
+                    add(new ParamsConfMessage.Time().setTime("08:00:00").setOnTime(60).setOffTime(60).setDuration(3600).setMode(0));
                 }});
         confMessage.setParams(body);
         return confMessage;
     }
+
+
+    public static void c2sMsgProcess(ParamsConfMessage.Body data) {
+        List<Integer> daysMap = data.getDaysMap();
+        String s1 = data.getStartDate();
+        String s2 = data.getEndDate();
+        if (StrUtil.isNotBlank(s1)) {
+            data.setStartDate("20" + s1);
+        }
+        if (StrUtil.isNotBlank(s2)) {
+            data.setEndDate("20" + s2);
+        }
+        String startDateStr = data.getStartDate();
+        String endDateStr = data.getEndDate();
+        if (StrUtil.isBlank(startDateStr) || StrUtil.isBlank(endDateStr) || CollectionUtil.isEmpty(daysMap)) {
+            return;
+        }
+        DateTime startDate = DateUtil.parse(startDateStr, "yyyy-MM-dd");
+        DateTime endDate = DateUtil.parse(endDateStr, "yyyy-MM-dd");
+
+        long dif = DateUtil.between(startDate, endDate, DateUnit.DAY, true);
+        List<String> dates = new ArrayList<>();
+        Date temp = startDate;
+        dates.add(startDateStr);
+        for (int i = 0; i < dif; i++) {
+            DateTime dateTime = DateUtil.offsetDay(temp, 1);
+            dates.add(DateUtil.format(dateTime, "yyyy-MM-dd"));
+            temp = dateTime;
+        }
+        List<String> exDates = new ArrayList<>();
+        for (int i = 0; i < daysMap.size(); i++) {
+            if (daysMap.get(i) == 0) {
+                exDates.add(dates.get(i));
+            }
+        }
+        data.setExcludeDates(exDates);
+        List<ParamsConfMessage.Time> timeList = data.getTimeList();
+        timeList.stream().filter(Objects::nonNull).forEach(v -> {
+            String time = v.getTime();
+            byte[] bytes = time.getBytes(StandardCharsets.UTF_8);
+            String s = new String(new byte[]{bytes[0], bytes[1], 0x3A
+                    , bytes[2], bytes[3], 0x3A
+                    , bytes[4], bytes[5]});
+            v.setTime(s);
+        });
+    }
+
+
 }

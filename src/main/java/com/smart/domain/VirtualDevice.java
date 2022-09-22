@@ -25,7 +25,7 @@ import java.util.Map;
  * @description: VirtualDevice
  * @create: 2022-06-30 09:31
  **/
-@Service
+//@Service
 public class VirtualDevice implements SchedulingConfigurer {
     private static final String CRON = "0 0/1 * * * ?";//每1分钟
     public static final String deviceId = "100001";

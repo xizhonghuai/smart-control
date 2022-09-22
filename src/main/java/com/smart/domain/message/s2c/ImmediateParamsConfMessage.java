@@ -21,6 +21,8 @@ public class ImmediateParamsConfMessage extends Message implements S2cMessage {
     @Data
     @Accessors(chain = true)
     public static class Body {
+        @JSONField(name = "drag_pump_en")
+        private Boolean dragPumpEn;
         @JSONField(name = "on_time")
         private Integer onTime;
         @JSONField(name = "on_delay")
@@ -28,5 +30,10 @@ public class ImmediateParamsConfMessage extends Message implements S2cMessage {
         @JSONField(name = "off_delay")
         private Integer offDelay;
         private List<String> relays;
+    }
+
+    @Override
+    public String toString() {
+        return pack();
     }
 }

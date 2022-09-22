@@ -32,20 +32,25 @@
             text-align: center;
             padding: 10px 0
         }
+
+        .pad {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
     </style>
 
 </head>
 <body>
 <div class="container" id="container">
     <div class="page navbar js_show" tabindex="-1">
-        <div class="page__bd" style="height: 100%;">
+        <div class="page__bd" style="height: 85%;">
             <!--状态数据-->
             <div class=" form_">
                 <div class="weui-panel">
                     <div class="weui-panel__hd">
                         <div class="weui-flex">
                             <div>
-                                <div class="placeholder" id="device_name_id" style="padding:10px 0">test(1001)
+                                <div class="placeholder" id="device_name_id">test(1001)
                                 </div>
                             </div>
                             <div class="weui-flex__item">
@@ -54,14 +59,14 @@
                             <div>
                                 <div class="placeholder">
                                             <span>
-                                                <a id="power" href="javascript:" role="button" title="等待中"
+                                               <!-- <a id="power" href="javascript:" role="button" title="等待中"
                                                    onclick="power()"
                                                    class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea weui-btn_loading">
-                                                <span class=""></span><span></span>
-                                            </a>
+                                                    <span class=""></span><span></span>
+                                                </a>-->
                                                 &nbsp;  &nbsp;  &nbsp;
-                                               <a href="javascript:" role="button" onclick="openPlan()"
-                                                  class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">计划</a>
+                                                <!--   <a href="javascript:" role="button" onclick="openPlan()"
+                                                      class="weui-btn weui-btn_mini weui-btn_primary weui-wa-hotarea">计划</a>-->
                                             </span>
                                 </div>
                             </div>
@@ -69,7 +74,7 @@
                     </div>
                     <div class="weui-panel__bd">
 
-                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch pad">
                             <img role="img" alt="" src="img/水位.png"
                                  style="height: 32px;"/>&nbsp;
                             <div class="weui-cell__bd" aria-hidden="true">水位:</div>
@@ -77,7 +82,7 @@
                                 <span aria-labelledby="cb_txt" id="waterLevel"></span>
                             </div>
                         </label>
-                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                        <label  for="cb" class="weui-cell weui-cell_active weui-cell_switch pad">
                             <img role="img" alt="" src="img/药泵开关.png"
                                  style="height: 32px;"/>&nbsp;
                             <div class="weui-cell__bd" aria-hidden="true">剩余药量:</div>
@@ -85,7 +90,7 @@
                                 <span aria-labelledby="cb_txt" id="dragAmount"></span>
                             </div>
                         </label>
-                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch pad" style="display: none">
                             <img role="img" alt="" src="img/药泵开关.png"
                                  style="height: 32px;"/>&nbsp;
                             <div class="weui-cell__bd" aria-hidden="true">累积消耗药量:</div>
@@ -93,7 +98,7 @@
                                 <span aria-labelledby="cb_txt" id="totalDragAmount"></span>
                             </div>
                         </label>
-                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch pad">
                             <img role="img" alt="" src="img/信号.png"
                                  style="height: 18px;"/>&nbsp;
                             <div class="weui-cell__bd" aria-hidden="true">信号强度:</div>
@@ -101,7 +106,7 @@
                                 <span aria-labelledby="cb_txt" id="csq"></span>
                             </div>
                         </label>
-                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch pad">
                             <img role="img" alt="" src="img/时长.png"
                                  style="height: 32px;"/>&nbsp;
                             <div class="weui-cell__bd" aria-hidden="true">累计时长:</div>
@@ -109,7 +114,7 @@
                                 <span aria-labelledby="cb_txt" id="runningTime"></span>
                             </div>
                         </label>
-                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                        <label for="cb" class="weui-cell weui-cell_active weui-cell_switch pad">
                             <img role="img" alt="" src="img/状态.png"
                                  style="height: 32px;"/>&nbsp;
                             <div class="weui-cell__bd" aria-hidden="true">设备状态:</div>
@@ -126,30 +131,10 @@
                             </ul>
                         </div>
                     </div>
-                    <br>
+
                     <!--text area-->
                     <div class="weui-panel__bd">
-
-                        <!--    <h5>&nbsp;&nbsp;&nbsp;&nbsp;工作状态：<span id="workStatus" style="color: #bb8e00">暂无数据</span></h5>-->
-                        <div class="page__hd" id="workStatusHtml">
-                            <!--                            <div class="weui-panel__bd">-->
-                            <!--                                <a aria-labelledby="js_p1m1_bd" href="javascript:"-->
-                            <!--                                   class="weui-media-box weui-media-box_appmsg">-->
-                            <!--                                    <div aria-hidden="true" class="weui-media-box__hd">-->
-                            <!--                                        <img class="weui-media-box__thumb" src="img/强开.png" alt="">-->
-                            <!--                                    </div>-->
-                            <!--                                    <div aria-hidden="true" id="js_p1m1_bd" class="weui-media-box__bd">-->
-                            <!--                                        <strong class="weui-media-box__title">标题一</strong>-->
-                            <!--                                        <p class="weui-media-box__desc"></p>-->
-                            <!--                                    </div>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="weui-panel__ft">-->
-                            <!--                                <a href="javascript:" onclick="cancelImmediate()"-->
-                            <!--                                   class="weui-cell weui-cell_active weui-cell_access weui-cell_link">-->
-                            <!--                                    <span class="weui-cell__bd">停止</span>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
+                        <div class="weui-panel__bd" id="workStatusHtml">
                         </div>
                     </div>
 
@@ -157,22 +142,50 @@
                 </div>
             </div>
             <!--button area-->
-            <br>
-            <div class="weui-panel__hd">
-                <div class="button-sp-area cell">
-                    <a href="javascript:" role="button"
-                       class="weui-btn_cell weui-btn_cell-warn"
-                       id="showDialog4">即时启动</a>
-                    <!--   <a href="javascript:" role="button" onclick="paramsConf()"
-                          class="weui-btn_cell weui-btn_cell-warn">保存配置</a>-->
-                    <!--  <a href="javascript:" role="button"
-                         class="weui-btn_cell weui-btn_cell-primary">加载配置</a>
-                      <a href="javascript:" role="button"
-                         class="weui-btn_cell weui-btn_cell-primary">配置另存为...</a>-->
-                </div>
+
+            <div>
+                <!--   <div class="button-sp-area cell">
+                       <a id="power" href="javascript:" role="button" title="等待中"
+                          onclick="power()"
+                          class="weui-btn_cell weui-btn_cell-primary weui-wa-hotarea weui-btn_loading">
+                           <span class=""></span><span></span>
+                       </a>
+                       <a href="javascript:" role="button"
+                          class="weui-btn_cell weui-btn_cell-warn"
+                          id="showDialog4">即时启动</a>
+                       <a href="javascript:" role="button"
+                          class="weui-btn_cell weui-btn_cell-primary" onclick="openPlan()">计划</a>
+
+                   </div>-->
+
             </div>
+
         </div>
+
+        <div class="page__bd weui-tabbar weui-grids" style="height: 15%;">
+            <a href="javascript:" class="weui-grid" role="button" id="showDialog4">
+                <div class="weui-grid__icon">
+                    <img src="img/即时控制.png" alt="">
+                </div>
+                <p class="weui-grid__label">手动</p>
+            </a>
+            <a href="javascript:" class="weui-grid" role="button" onclick="power()">
+                <div class="weui-grid__icon">
+                    <img src="img/电源.png" alt="">
+                </div>
+                <!--    <p style="display: none" id="power">开关</p>-->
+                <p class="weui-grid__label" id="power">电源</p>
+            </a>
+            <a href="javascript:" class="weui-grid" role="button" onclick="openPlan()">
+                <div class="weui-grid__icon">
+                    <img src="img/计划配置.png" alt="">
+                </div>
+                <p class="weui-grid__label">计划</p>
+            </a>
+        </div>
+
     </div>
+
 </div>
 
 <div id="dialogs">
@@ -191,42 +204,84 @@
                 <!--params-->
                 <div class="weui-panel__hd">
 
-                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
+                        <img role="img" alt="" src="img/药泵开关.png"
+                             style="height: 18px;"/>&nbsp;
+                        <div class="weui-cell__bd" aria-hidden="true">喷药模式</div>
+                        <div class="weui-cell__ft">
+                            <input aria-labelledby="cb_txt" id="dragEn" class="weui-switch"
+                                   type="checkbox">
+                        </div>
+                    </label>
+
+                    <label for="cb" id="on_time_pk"
+                           class="weui-cell weui-cell_active weui-cell_switch">
+                        <img role="img" alt="" src="img/时长.png" style="height: 18px;"/>&nbsp;
+                        <div class="weui-cell__bd" aria-hidden="true">时长</div>
+                        <div class="weui-cell__ft">
+                            <span id="on_time">00:01:00</span>
+                        </div>
+                    </label>
+
+                    <label for="cb" id="on_delay_pk"
+                           class="weui-cell weui-cell_active weui-cell_switch">
+                        <img role="img" alt="" src="img/延时.png" style="height: 18px;"/>&nbsp;
+                        <div class="weui-cell__bd" aria-hidden="true">药泵开延时</div>
+                        <div class="weui-cell__ft">
+                            <span id="on_delay">00:00:01</span>
+                        </div>
+                    </label>
+
+                    <label for="cb" id="off_delay_pk"
+                           class="weui-cell weui-cell_active weui-cell_switch">
+                        <img role="img" alt="" src="img/延时.png" style="height: 18px;"/>&nbsp;
+                        <div class="weui-cell__bd" aria-hidden="true">药泵关延时</div>
+                        <div class="weui-cell__ft">
+                            <span id="off_delay">00:00:01</span>
+                        </div>
+                    </label>
+
+                    <!--<label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
                         <img role="img" alt="" src="img/定时.png" style="height: 18px;">&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">时长</div>
                         <div class="weui-cell__ft">
-                            <input id="on_time" class="weui-input weui-cell__ft" placeholder="单位s" value="60">
+                            <input id="on_time" class="weui-input weui-cell__ft" placeholder="单位s" value="60"
+                                   style="width: 100px">
                         </div>
                     </label>
                     <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
                         <img role="img" alt="" src="img/延时.png" style="height: 18px;">&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">开延时</div>
                         <div class="weui-cell__ft">
-                            <input id="on_delay" class="weui-input weui-cell__ft" placeholder="单位秒" value="5">
+                            <input id="on_delay" class="weui-input weui-cell__ft" placeholder="单位秒" value="5"
+                                   style="width: 100px">
                         </div>
                     </label>
                     <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
                         <img role="img" alt="" src="img/延时.png" style="height: 18px;">&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">关延时</div>
                         <div class="weui-cell__ft">
-                            <input id="off_delay" class="weui-input weui-cell__ft" placeholder="单位秒" value="5">
+                            <input id="off_delay" class="weui-input weui-cell__ft" placeholder="单位秒" value="5"
+                                   style="width: 100px">
                         </div>
                     </label>
-                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                 -->
+
+                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                         <img role="img" alt="" src="img/电磁阀.png" style="height: 18px;">&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">电磁阀2状态</div>
                         <div class="weui-cell__ft">
                             <input aria-labelledby="cb_txt" id="ch2" class="weui-switch" type="checkbox">
                         </div>
                     </label>
-                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                         <img role="img" alt="" src="img/电磁阀.png" style="height: 18px;">&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">电磁阀3状态</div>
                         <div class="weui-cell__ft">
                             <input aria-labelledby="cb_txt" id="ch3" class="weui-switch" type="checkbox">
                         </div>
                     </label>
-                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                    <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                         <img role="img" alt="" src="img/电磁阀.png" style="height: 18px;">&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">电磁阀4状态</div>
                         <div class="weui-cell__ft">
@@ -238,8 +293,10 @@
             </div>
             <div class="weui-half-screen-dialog__ft">
                 <div id="js_wrap_btn_area" class="weui-half-screen-dialog__btn-area">
-                    <a id="js_wrap_btn_1" href="javascript:" onclick="immediateConfigClick()"
-                       class="js_close weui-btn weui-btn_default">执行</a>
+                    <a id="js_wrap_btn_1" href="javascript:" onclick="immediatePWConfigClick()"
+                       class="js_close weui-btn weui-btn_default">喷雾执行</a>
+                    <a id="js_wrap_btn_1_1" href="javascript:" onclick="immediatePYConfigClick()"
+                       class="js_close weui-btn weui-btn_default">喷药执行</a>
                 </div>
             </div>
         </div>
@@ -290,8 +347,8 @@
             let params = result.data.params;
             document.getElementById('waterLevel').innerText = params.water_level === 1 ? '正常' : '缺水';
             document.getElementById('dragAmount').innerText = params.drag_amount;
-            document.getElementById('totalDragAmount').innerText = params.total_drag_amount + "mL";
-            document.getElementById('state').innerText = params.state;
+            document.getElementById('totalDragAmount').innerText = keepThreeNum((params.total_drag_amount) / 1000) + "L";
+            document.getElementById('state').innerText = params.state === 'running' ? '运行' : '停机';
             if (params.state === 'running') {
                 document.getElementById('power').innerHTML = "<span></span><span>关闭</span>";
                 power_value = false;
@@ -299,11 +356,21 @@
                 document.getElementById('power').innerHTML = "<span></span><span>启动</span>";
                 power_value = true;
             }
-            document.getElementById('csq').innerText = params.csq;
-            document.getElementById('runningTime').innerText = params.total_work_time + 'S';
+            document.getElementById('csq').innerText = csq(params.csq);
+            document.getElementById('runningTime').innerText = keepThreeNum((params.total_work_time) / 3600) + 'H';
             document.getElementById('deviceSystemClock').innerText = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
         }
+    }
+
+    function csq(v) {
+        if (v >= 20) {
+            return "强";
+        }
+        if (v >= 10) {
+            return "中"
+        }
+        return "弱";
     }
 
     var power_value = true;
@@ -324,6 +391,11 @@
         });
         document.getElementById('state').innerText = 'stop';
         power_value = true;
+        //这里的逻辑是当执行关闭时，如果手动打开需要关闭手动
+        let workStatus = getWorkStatus();
+        if (workStatus === 0) {
+            cancelImmediate();
+        }
     }
 
     function power() {
@@ -375,54 +447,114 @@
         "                            </div>"
 
     var secondsRemaining = 0;
+    var time_down_switch = false;
 
     function time_down() {
-        if (secondsRemaining <= 0) {
-            return;
+        if (time_down_switch) {
+            if (secondsRemaining <= 0) {
+                return;
+            }
+            secondsRemaining = secondsRemaining - 1;
+            let element = document.getElementById("workText");
+            element.innerText = secondToHHMMSS(secondsRemaining);
+
+            // let h = parseInt(secondsRemaining / 3600);
+            // let m = parseInt((secondsRemaining - h * 3600) / 60);
+            // let s = parseInt(secondsRemaining - (h * 3600 + m * 60));
+            // let template = "{h}:{m}:{s}";
+            // element.innerText = template.format({
+            //     h: h,
+            //     m: m,
+            //     s: s
+            // });
         }
-        secondsRemaining = secondsRemaining - 1;
-        let element = document.getElementById("workText");
-        let h = parseInt(secondsRemaining / 3600);
-        let m = parseInt((secondsRemaining - h * 3600) / 60);
-        let s = parseInt(secondsRemaining - (h * 3600 + m * 60));
-        let template = "{h}:{m}:{s}";
-        element.innerText = template.format({
-            h: h,
-            m: m,
-            s: s
-        });
     }
 
     function getWorkStatus() {
         let result = httpGet("api/v1/device-config/work_status?deviceId=" + deviceId);
         let element = document.getElementById("workStatusHtml");
-        element.innerHTML = null;
+        // element.innerHTML = null;
         if (result.code === RES_OK && 'data' in result) {
             let data = result.data;
+            if (data.ex) {
+                element.innerHTML = "     <div class=\"weui-panel__bd my-center\">\n" +
+                    "\n" +
+                    "                                <div aria-hidden=\"true\" class=\"weui-media-box__hd\">\n" +
+                    "                                    <img class=\"weui-media-box__thumb\" src=\"img/停止.png\" alt=\"\">\n" +
+                    "                                </div>\n" +
+                    "                                <div aria-hidden=\"true\" id=\"js_p1m1_bd\" class=\"weui-media-box__bd\">\n" +
+                    "                                    <strong class=\"weui-media-box__title\">设备状态获取中...</strong>\n" +
+                    "                                    <p class=\"weui-media-box__desc\"></p>\n" +
+                    "                                </div>\n" +
+                    "                            </div>";
+                return -1;
+            }
+            if (data.status === 'stop') {
+                element.innerHTML = "     <div class=\"weui-panel__bd my-center\">\n" +
+                    "\n" +
+                    "                                <div aria-hidden=\"true\" class=\"weui-media-box__hd\">\n" +
+                    "                                    <img class=\"weui-media-box__thumb\" src=\"img/停止.png\" alt=\"\">\n" +
+                    "                                </div>\n" +
+                    "                                <div aria-hidden=\"true\" id=\"js_p1m1_bd\" class=\"weui-media-box__bd\">\n" +
+                    "                                    <strong class=\"weui-media-box__title\">设备停机</strong>\n" +
+                    "                                    <p class=\"weui-media-box__desc\"></p>\n" +
+                    "                                </div>\n" +
+                    "                            </div>";
+                return -1;
+            }
+
             if (!isEmpty(data.planName)) {
                 let planName = data.planName;
                 element.innerHTML = work_status_html.format({
                     imgName: '任务',
                     text: planName,
                 });
-                return;
+                time_down_switch = false;
+                return 1;
             }
             if (!isEmpty(data.secondsRemaining)) {
+                workStatus = 0;
                 secondsRemaining = data.secondsRemaining;
                 element.innerHTML = work_status_html.format({
                     imgName: '强开',
                     text: null,
-                }) + cancel_immediate_html;
+                })/* + cancel_immediate_html*/;
                 //倒计时
-                setInterval("time_down()", 1000);
+                time_down_switch = true;
+                return 0;
             }
         }
+        element.innerHTML = "     <div class=\"weui-panel__bd my-center\">\n" +
+            "\n" +
+            "                                <div aria-hidden=\"true\" class=\"weui-media-box__hd\">\n" +
+            "                                    <img class=\"weui-media-box__thumb\" src=\"img/停止.png\" alt=\"\">\n" +
+            "                                </div>\n" +
+            "                                <div aria-hidden=\"true\" id=\"js_p1m1_bd\" class=\"weui-media-box__bd\">\n" +
+            "                                    <strong class=\"weui-media-box__title\">设备状态获取中...</strong>\n" +
+            "                                    <p class=\"weui-media-box__desc\"></p>\n" +
+            "                                </div>\n" +
+            "                            </div>";
+        return -1;
+    }
+
+    function getPlanList(deviceId) {
+        for (let i = 1; i < 7; i++) {
+            httpGet("api/v1/control/device-params?deviceId=" + deviceId + "&id=" + i);
+        }
+        httpGet("api/v1/device-config/plan-list?deviceId=" + deviceId);
     }
 
     $(function () {
         getDeviceStatus();
+        getWorkStatus();
         getDevice();
-        setInterval("getDeviceStatus()", 10000);
+        setInterval("getDeviceStatus()", 8000);
+        setInterval("getWorkStatus()", 4000);
+        setInterval("time_down()", 1000);
+
+        setTimeout(function () {
+            getPlanList(deviceId);
+        }, 50);
     });
 </script>
 <script type="text/javascript" class="half-screen-dialog js_show">
@@ -434,23 +566,42 @@
         params.relays = [document.getElementById("ch2").checked ? "on" : "off"
             , document.getElementById("ch3").checked ? "on" : "off"
             , document.getElementById("ch4").checked ? "on" : "off"];
-        params.onTime = $("#on_time").val();
-        params.onDelay = $("#on_delay").val();
-        params.offDelay = $("#off_delay").val();
+        params.onTime = hhmmssToSecond(document.getElementById('on_time').innerText);
+        params.onDelay = hhmmssToSecond(document.getElementById('on_delay').innerText);
+        params.offDelay = hhmmssToSecond(document.getElementById('off_delay').innerText);
+        params.dragPumpEn = !!document.getElementById("dragEn").checked;
         conf.params = params;
         return conf;
     }
 
-    function immediateConfigClick() {
-        immediateConfig(getImmediateConfig())
+    function immediatePYConfigClick() {
+        let workStatus = getWorkStatus();
+        if (workStatus === 1) {
+            alert("当前工作于自动模式，不能执行此功能");
+            return;
+        }
+        let conf = getImmediateConfig();
+        conf.params.dragPumpEn = true;
+        immediateConfig(conf);
+    }
+
+    function immediatePWConfigClick() {
+        let workStatus = getWorkStatus();
+        if (workStatus === 1) {
+            alert("当前工作于自动模式，不能执行此功能");
+            return;
+        }
+        let conf = getImmediateConfig();
+        conf.params.dragPumpEn = false;
+        immediateConfig(conf);
     }
 
     function immediateConfig(immediateConfig) {
+        let susses_flag = false;
         openToast('infoToastPower');
         setTimeout(function () {
             let result = httpRequest("api/v1/control/immediate-device-params-conf/sync", "POST", immediateConfig);
             closeToast('infoToastPower');
-            let susses_flag = false;
             if (result.code === RES_OK && 'data' in result) {
                 if (result.data.result === 0) {
                     susses_flag = true;
@@ -463,6 +614,8 @@
                 toast('errorToastPower');
             }
         }, 500);
+
+        return susses_flag;
     }
 
     function cancelImmediate() {
@@ -474,14 +627,15 @@
         params.onDelay = 0;
         params.offDelay = 0;
         conf.params = params;
-        immediateConfig(conf)
+        let result = immediateConfig(conf);
+        if (result) {
+            secondsRemaining = -1;
+        }
     }
 
     $(function () {
         const $dialog4 = $('#js_dialog_4');
         const $dialogWrap4 = $('#dialogWrap4');
-
-
         $('.js_close').on('click', function () {
             const $jsDialogWrap = $(this).parents('.js_dialog_wrap');
             $jsDialogWrap.attr('aria-hidden', 'true').attr('aria-modal', 'false').removeAttr('tabindex');
@@ -491,7 +645,6 @@
                 $('#' + $jsDialogWrap.attr('ref')).trigger('focus');
             }, 300);
         });
-
         $('#showDialog4').on('click', function () {
             $dialogWrap4.attr('aria-hidden', 'false');
             $dialogWrap4.attr('aria-modal', 'true');
@@ -503,18 +656,65 @@
                 if (wrapBtn1.offsetHeight > 48) {
                     $dialog4.addClass('weui-half-screen-dialog_btn-wrap');
                 }
+                if (wrapBtn1_1.offsetHeight > 48) {
+                    $dialog4.addClass('weui-half-screen-dialog_btn-wrap');
+                }
                 wrapArea.style.visibility = 'visible';
             }, 100);
             setTimeout(function () {
                 $dialogWrap4.trigger('focus');
             }, 200)
         });
-
-
         const wrapBtn = document.getElementById('js_wrap_btn');
         const wrapBtn1 = document.getElementById('js_wrap_btn_1');
+        const wrapBtn1_1 = document.getElementById('js_wrap_btn_1_1');
         const wrapPage = document.getElementById('js_wrap_wrp');
         const wrapArea = document.getElementById('js_wrap_btn_area');
+
+        let time = createTimeList();
+        $('#on_time_pk').on('click', function () {
+            weui.picker(
+                // time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value)
+                        let dateV = stringToDate("2022-01-01 00:" + startTime);
+                        document.getElementById('on_time').innerText = formatDate(dateV, "HH:mm:ss");
+                    },
+                    title: '时长'
+                });
+        });
+
+        $('#on_delay_pk').on('click', function () {
+            weui.picker(
+                // time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value)
+                        let dateV = stringToDate("2022-01-01 00:" + startTime);
+                        document.getElementById('on_delay').innerText = formatDate(dateV, "HH:mm:ss");
+                    },
+                    title: '开延时'
+                });
+        });
+        $('#off_delay_pk').on('click', function () {
+            weui.picker(
+                // time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value)
+                        let dateV = stringToDate("2022-01-01 00:" + startTime);
+                        document.getElementById('off_delay').innerText = formatDate(dateV, "HH:mm:ss");
+                    },
+                    title: '关延时'
+                });
+        });
     });
 
 </script>

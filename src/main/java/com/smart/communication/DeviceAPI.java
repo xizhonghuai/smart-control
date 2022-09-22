@@ -34,7 +34,7 @@ public class DeviceAPI {
 
     public void sendCmd(String redId, Object cmd) {
         AbstractBootServer server = (AbstractBootServer) ServerUtils.getServer(serviceId);
-        if (server != null) {
+        if (server != null && cmd != null) {
             WriteMsgUtils.sendMsg(server.getManagedSessions(), cmd, redId);
             log.info(String.format("下发数据:{%s}->{%s}", redId, cmd));
         }

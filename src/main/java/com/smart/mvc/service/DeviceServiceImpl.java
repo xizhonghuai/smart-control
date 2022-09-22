@@ -115,14 +115,20 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             String workStatusKey = ConstantUnit.WORK_STATUS_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
             Object workStatus = cacheService.getValue(workStatusKey);
             deviceVO.setWorkStatus(workStatus == null ? null : workStatus.toString());
-
             String runModeKey = ConstantUnit.RUNNING_MODEL_DESCRIPTION_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
             Object runModeValue = cacheService.getValue(runModeKey);
-            deviceVO.setWorkStatus(runModeValue == null ? null : runModeValue.toString());
-
+            Object model = cacheService.getValue(ConstantUnit.SZ_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId()));
+            if (workStatus != null && model != null) {
+                if (!"stop".equals(workStatus.toString()))
+                    deviceVO.setWorkDescription(Objects.equals(model.toString(), "0") ? "自动模式" : "手动模式");
+                else deviceVO.setWorkDescription("停机");
+            } else deviceVO.setWorkDescription("状态获取中");
         }).collect(Collectors.toList());
     }
 
+    private String getWorkStatus(String status) {
+        return Objects.equals("stop", status) ? "停止" : "运行";
+    }
 
     public void addDevice(String deviceId) {
         List<Device> oldList = list(Utils.lambdaQuery(Device.class).in(Device::getDeviceId, deviceId));

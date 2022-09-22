@@ -11,6 +11,9 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class DeviceWorkStatusVO {
+    private Boolean ex;
+    private String status;
+    private String model;
     private Long secondsRemaining;
     private String planName;
     private String timeDesc;

@@ -149,11 +149,7 @@
                                  class="weui-tab__panel">
                                 <div class=" form_">
                                     <div class="weui-panel">
-
-
                                         <div id="js_py_html">
-
-
                                         </div>
                                         <div class="weui-panel__hd">
                                             <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
@@ -172,8 +168,8 @@
                                     <div class="weui-panel">
                                         <br>
                                         <div class="weui-panel__hd">
-
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                            <!--2022/8/23 暂时隐藏-->
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                                                 <img role="img" alt="" src="img/药泵开关.png"
                                                      style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">药泵开关</div>
@@ -182,34 +178,55 @@
                                                            type="checkbox">
                                                 </div>
                                             </label>
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch"  style="display: none">
                                                 <img role="img" alt="" src="img/速度.png"
                                                      style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">出药速度</div>
                                                 <div class="weui-cell__ft">
                                                     <input id="dragSpeed" class="weui-input weui-cell__ft"
-                                                           placeholder="百分比">
+                                                           placeholder="百分比" style="width: 100px">
                                                 </div>
                                             </label>
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
-                                                <img role="img" alt="" src="img/延时.png"
-                                                     style="height: 18px;"/>&nbsp;
+
+                                            <!---->
+                                            <label for="cb" id="dragOnDelay_pk"
+                                                   class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/延时.png" style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">药泵开延时</div>
                                                 <div class="weui-cell__ft">
-                                                    <input id="dragOnDelay" class="weui-input weui-cell__ft"
-                                                           placeholder="单位秒">
+                                                    <span id="dragOnDelay"></span>
                                                 </div>
                                             </label>
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
-                                                <img role="img" alt="" src="img/延时.png"
-                                                     style="height: 18px;"/>&nbsp;
+
+                                            <label for="cb" id="dragOffDelay_pk"
+                                                   class="weui-cell weui-cell_active weui-cell_switch">
+                                                <img role="img" alt="" src="img/延时.png" style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">药泵关延时</div>
                                                 <div class="weui-cell__ft">
-                                                    <input id="dragOffDelay" class="weui-input weui-cell__ft"
-                                                           placeholder="单位秒">
+                                                    <span id="dragOffDelay"></span>
                                                 </div>
                                             </label>
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+
+
+                                            <!--   <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                   <img role="img" alt="" src="img/延时.png"
+                                                        style="height: 18px;"/>&nbsp;
+                                                   <div class="weui-cell__bd" aria-hidden="true">药泵开延时</div>
+                                                   <div class="weui-cell__ft">
+                                                       <input id="dragOnDelay" class="weui-input weui-cell__ft"
+                                                              placeholder="单位秒" style="width: 100px">
+                                                   </div>
+                                               </label>
+                                               <label for="cb" class="weui-cell weui-cell_active weui-cell_switch">
+                                                   <img role="img" alt="" src="img/延时.png"
+                                                        style="height: 18px;"/>&nbsp;
+                                                   <div class="weui-cell__bd" aria-hidden="true">药泵关延时</div>
+                                                   <div class="weui-cell__ft">
+                                                       <input id="dragOffDelay" class="weui-input weui-cell__ft"
+                                                              placeholder="单位秒" style="width: 100px">
+                                                   </div>
+                                               </label>-->
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                                                 <img role="img" alt="" src="img/电磁阀.png"
                                                      style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">电磁阀2状态</div>
@@ -334,8 +351,11 @@
         $dragEn.prop("checked", false);
         $dragEn.attr("checked", false);
         $dragSpeed.val(null);
-        $dragOnDelay.val(null);
-        $dragOffDelay.val(null);
+        // $dragOnDelay.val(null);
+        // $dragOffDelay.val(null);
+        document.getElementById('dragOnDelay').innerText = null;
+        document.getElementById('dragOffDelay').innerText = null;
+
         $ch2.prop("checked", false);
         $ch2.attr("checked", false);
         $ch3.prop("checked", false);
@@ -360,8 +380,12 @@
         $dragEn.prop("checked", params.drag_pump.enable);
         $dragEn.attr("checked", params.drag_pump.enable);
         $dragSpeed.val(params.drag_pump.speed);
-        $dragOnDelay.val(params.drag_pump.on_delay);
-        $dragOffDelay.val(params.drag_pump.off_delay);
+        // $dragOnDelay.val(params.drag_pump.on_delay);
+        // $dragOffDelay.val(params.drag_pump.off_delay);
+
+        document.getElementById('dragOnDelay').innerText = secondToHHMMSS(params.drag_pump.on_delay);
+        document.getElementById('dragOffDelay').innerText = secondToHHMMSS(params.drag_pump.off_delay);
+
         let relays = params.relays;
         relays.forEach((item, index) => {
             let ch_index = index + 2;
@@ -459,8 +483,8 @@
         "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">开启时长</div>\n" +
         "                                                <div class=\"weui-cell__ft\">\n" +
         "                                                    <input id=\"pw_onTime_{timeId}\" onchange=\"setOnTimeValue(this.id,this.value)\"\n" +
-        "                                                           class=\"weui-input weui-cell__ft\"\n" +
-        "                                                           placeholder=\"输入开启时长，单位秒\" value='{onTime}'>\n" +
+        "                                                           class=\"weui-input weui-cell__ft\"  style=\"width: 100px\" \n" +
+        "                                                           placeholder=\"输入开启时长，单位秒\" value='{onTime}'> \n" +
         "                                                </div>\n" +
         "                                            </label>\n" +
         "                                            <label for=\"cb\" class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
@@ -469,10 +493,73 @@
         "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时长</div>\n" +
         "                                                <div class=\"weui-cell__ft\">\n" +
         "                                                    <input id=\"pw_offTime_{timeId}\" onchange=\"setOffTimeValue(this.id,this.value)\"\n" +
-        "                                                           class=\"weui-input weui-cell__ft\"\n" +
+        "                                                           class=\"weui-input weui-cell__ft\"   style=\"width: 100px\" \n" +
         "                                                           placeholder=\"输入关闭时长，单位秒\" value='{offTime}'>\n" +
         "                                                </div>\n" +
         "                                            </label>\n" +
+        "                                         <br></div>\n";
+
+    var pw_timer_html_template_v2 = "<div class=\"weui-panel__hd\" id='pw_panel_{timeId}'>\n" +
+        "                                            <label for=\"cb\" id=\"pw_startDatePicker_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/开始.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">启动时间</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"pw_startTime_{timeId}\">{startTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        "                                            <label for=\"cb\" id=\"pw_closeDatePicker_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/结束.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时间</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"pw_endTime_{timeId}\">{endTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+        //on_time
+        "                                            <label for=\"cb\" id=\"pw_onTime_pk_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">开启时长</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"pw_onTime_{timeId}\">{onTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+
+        //off_time
+        "                                            <label for=\"cb\" id=\"pw_offTime_pk_{timeId}\"\n" +
+        "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
+        "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时长</div>\n" +
+        "                                                <div class=\"weui-cell__ft\">\n" +
+        "                                                    <span id=\"pw_offTime_{timeId}\">{offTime}</span>\n" +
+        "                                                </div>\n" +
+        "                                            </label>\n" +
+
+        /*  "                                            <label for=\"cb\" class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+          "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
+          "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+          "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">开启时长</div>\n" +
+          "                                                <div class=\"weui-cell__ft\">\n" +
+          "                                                    <input id=\"pw_onTime_{timeId}\" onchange=\"setOnTimeValue(this.id,this.value)\"\n" +
+          "                                                           class=\"weui-input weui-cell__ft\"  style=\"width: 100px\" \n" +
+          "                                                           placeholder=\"输入开启时长，单位秒\" value='{onTime}'> \n" +
+          "                                                </div>\n" +
+          "                                            </label>\n" +
+          "                                            <label for=\"cb\" class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
+          "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
+          "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
+          "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时长</div>\n" +
+          "                                                <div class=\"weui-cell__ft\">\n" +
+          "                                                    <input id=\"pw_offTime_{timeId}\" onchange=\"setOffTimeValue(this.id,this.value)\"\n" +
+          "                                                           class=\"weui-input weui-cell__ft\"   style=\"width: 100px\" \n" +
+          "                                                           placeholder=\"输入关闭时长，单位秒\" value='{offTime}'>\n" +
+          "                                                </div>\n" +
+          "                                            </label>\n" +*/
         "                                         <br></div>\n";
 
     var py_timer_html_template = "<div class=\"weui-panel__hd\" id='py_panel_{timeId}'>\n" +
@@ -487,9 +574,9 @@
         "                                            </label>\n" +
         "                                            <label for=\"cb\" id=\"py_closeDatePicker_{timeId}\"\n" +
         "                                                   class=\"weui-cell weui-cell_active weui-cell_switch\">\n" +
-        "                                                <img role=\"img\" alt=\"\" src=\"img/结束.png\"\n" +
+        "                                                <img role=\"img\" alt=\"\" src=\"img/时长.png\"\n" +
         "                                                     style=\"height: 18px;\"/>&nbsp;\n" +
-        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">关闭时间</div>\n" +
+        "                                                <div class=\"weui-cell__bd\" aria-hidden=\"true\">持续时长</div>\n" +
         "                                                <div class=\"weui-cell__ft\">\n" +
         "                                                    <span id=\"py_endTime_{timeId}\">{endTime}</span>\n" +
         "                                                </div>\n" +
@@ -511,6 +598,43 @@
             seconds.push({label: i + '秒', value: i});
         }
         return {h: hours, m: mins, s: seconds};
+    }
+
+    function initSecondPickerComponent(time_id, key, js_picker_id, text_id, picker_title, process_func) {
+        let time = createTimeList();
+        $('#' + js_picker_id).on('click', function () {
+            weui.picker(
+                // time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value)
+                        let dateV = stringToDate("2022-01-01 00:" + startTime);
+                        document.getElementById(text_id).innerText = formatDate(dateV, "HH:mm:ss");
+                        if (process_func !== undefined) {
+                            process_func(time_id, key, result);
+                        }
+                    },
+                    title: picker_title
+                });
+        });
+
+    }
+
+    function setValue(time_id, key, value) {
+        let objs = getSessionStorage("pw_times");
+        if (objs == null) {
+            objs = [];
+        }
+        let obj = objs[time_id];
+        if (isEmpty(obj)) {
+            obj = {};
+        }
+
+        obj[key] = value[0] * 60 + value[1];
+        objs[time_id] = obj;
+        setSessionStorage("pw_times", objs);
     }
 
     function setOnTimeValue(dom_id, value) {
@@ -587,9 +711,12 @@
         let date1 = stringToDate("2022-01-01 " + obj.time);
         let date2 = stringToDate("2022-01-01 " + value);
         obj.duration = date2.getTime() / 1000 - date1.getTime() / 1000;
-        if (obj.repeat === 0) {
-            obj.on_time = parseInt(obj.duration * 0.8);
-            obj.off_time = parseInt(obj.duration - obj.duration * 0.8);
+        if (type === 'py') {
+            obj.duration = date2.getTime() / 1000 - stringToDate("2022-01-01 00:00:00").getTime() / 1000;
+        }
+        if (obj.mode === 1) {
+            obj.on_time = parseInt(obj.duration * 1);
+            obj.off_time = parseInt(obj.duration - obj.duration * 1);
         }
 
         objs[time_id] = obj;
@@ -642,7 +769,7 @@
     function renderPWTimer(time_list) {
         let pw_times = [];
         time_list.forEach(function (item) {
-            if (item.repeat === 1) {
+            if (item.mode === 0) {
                 pw_times.push(item);
             }
         });
@@ -652,12 +779,12 @@
             let duration = obj.duration;
             let date1 = stringToDate("2022-01-01 " + obj.time);
             let addSeconds = new Date(date1.setSeconds(date1.getSeconds() + duration));
-            let html = pw_timer_html_template.format({
+            let html = pw_timer_html_template_v2.format({
                 timeId: index,
                 startTime: obj.time,
                 endTime: formatDate(addSeconds, "HH:mm:ss"),
-                onTime: obj.on_time,
-                offTime: obj.off_time
+                onTime: secondToHHMMSS(obj.on_time),
+                offTime: secondToHHMMSS(obj.off_time)
             });
             let header = timer_header_template.format({type: 'pw', Id: index + 1, timeId: index});
             time_htmls = time_htmls + header + html;
@@ -665,13 +792,15 @@
         document.getElementById("js_pw_html").innerHTML = time_htmls;
         pw_times.forEach(function (item, index) {
             initTimePicker('pw_startDatePicker_' + index, 'pw_closeDatePicker_' + index);
+            initSecondPickerComponent(index, 'on_time', 'pw_onTime_pk_' + index, 'pw_onTime_' + index, '设置开启时长', setValue);
+            initSecondPickerComponent(index, 'off_time', 'pw_offTime_pk_' + index, 'pw_offTime_' + index, '设置关闭时长', setValue);
         });
     }
 
     function renderPYTimer(time_list) {
         let py_times = [];
         time_list.forEach(function (item) {
-            if (item.repeat === 0) {
+            if (item.mode === 1) {
                 py_times.push(item);
             }
         });
@@ -684,7 +813,8 @@
             let html = py_timer_html_template.format({
                 timeId: index,
                 startTime: obj.time,
-                endTime: formatDate(addSeconds, "HH:mm:ss"),
+                // endTime: formatDate(addSeconds, "HH:mm:ss"),
+                endTime: getDiffTimeStr(addSeconds, stringToDate("2022-01-01 " + obj.time))
             });
             let header = timer_header_template.format({type: 'py', Id: index + 1, timeId: index});
             time_htmls = time_htmls + header + html;
@@ -702,7 +832,7 @@
             duration: 500,
             on_time: 30,
             off_time: 10,
-            repeat: 1
+            mode: 0
         }
         let pw_objs = getSessionStorage('pw' + "_times");
         let py_objs = getSessionStorage('py' + "_times");
@@ -752,7 +882,7 @@
             duration: 500,
             on_time: 450,
             off_time: 50,
-            repeat: 0
+            mode: 1
         }
         let pw_objs = getSessionStorage('pw' + "_times");
         let py_objs = getSessionStorage('py' + "_times");
@@ -834,8 +964,8 @@
         params.dragPump = {
             "enable": document.getElementById("dragEn").checked,
             "speed": $("#dragSpeed").val(),
-            "onDelay": $("#dragOnDelay").val(),
-            "offDelay": $("#dragOffDelay").val()
+            "onDelay": hhmmssToSecond(document.getElementById('dragOnDelay').innerText),
+            "offDelay": hhmmssToSecond(document.getElementById('dragOffDelay').innerText)
         };
         let pw_objs = getSessionStorage("pw_times");
         let py_objs = getSessionStorage("py_times");
@@ -944,6 +1074,38 @@
                     title: '选择排除日期'
                 });
             }
+        });
+
+        //药泵
+        let time = createTimeList();
+        $('#dragOnDelay_pk').on('click', function () {
+            weui.picker(
+                // time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value)
+                        let dateV = stringToDate("2022-01-01 00:" + startTime);
+                        document.getElementById('dragOnDelay').innerText = formatDate(dateV, "HH:mm:ss");
+                    },
+                    title: '药泵开延时'
+                });
+        });
+        $('#dragOffDelay_pk').on('click', function () {
+            weui.picker(
+                // time.h,
+                time.m,
+                time.s
+                , {
+                    onConfirm: function (result) {
+                        let startTime = (result[0].value + ":" + result[1].value)
+                        let dateV = stringToDate("2022-01-01 00:" + startTime);
+                        document.getElementById('dragOffDelay').innerText = formatDate(dateV, "HH:mm:ss");
+
+                    },
+                    title: '药泵关延时'
+                });
         });
         queryConfig();
     });

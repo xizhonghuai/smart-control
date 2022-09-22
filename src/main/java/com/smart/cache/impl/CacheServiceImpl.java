@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
  */
 @Service
 @Primary
-@EnableScheduling
+//@EnableScheduling
 public class CacheServiceImpl implements SchedulingConfigurer, CacheService {
     private final static String CRON = "0 0/5 * * * ?";//每5分钟检查
-    private static final long invalidTime = 1000 * 60 * 300;//失效时间300分钟
+    private static final long invalidTime = 1000 * 60 * 500;//失效时间120分钟
     private final static Map<String, Object> cacheMap = new ConcurrentHashMap<>();
     private final static Map<Long, String> keyMap = new ConcurrentHashMap<>();
 

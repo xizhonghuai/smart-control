@@ -33,6 +33,9 @@ public class TimingMessage extends Message {
         private String state;//运行状态 （自动、常开、常关）
         @JSONField(name = "error_message")
         private String errorMessage; //异常信息
+
+        private String mode;//0自动1手动
+
     }
 
 }
