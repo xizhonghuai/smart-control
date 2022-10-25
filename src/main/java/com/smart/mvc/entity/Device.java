@@ -55,5 +55,7 @@ public class Device implements Serializable {
 
     private String description;
 
+    private String region;
+
 
 }

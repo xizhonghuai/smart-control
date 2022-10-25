@@ -18,6 +18,6 @@ public class ShareDeviceVO {
     private String toAccountName;
     private String deviceId;
     private Long deviceTableId;
-    private Long deviceName;
+    private String deviceName;
     private int netStatus;
 }

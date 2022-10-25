@@ -9,6 +9,11 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.smart.config.AuthContext;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
@@ -22,9 +27,11 @@ public class Utils {
     public static String getDate() {
         return DateUtil.format(new Date(), "yyyy-MM-dd");
     }
+
     public static String getDateV2() {
         return DateUtil.format(new Date(), "yy-MM-dd");
     }
+
     public static String getDateTime() {
         return DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
     }
@@ -67,6 +74,7 @@ public class Utils {
         BeanUtil.setProperty(t, "updatedDate", new Date());
     }
 
+
     public static class SyncResult<T> {
         private volatile int breakFlag = 0;
         private long timeOut = 10000L;
@@ -106,6 +114,31 @@ public class Utils {
             }
             return result;
         }
+    }
+
+    public static Date fromLocalDateTime(LocalDateTime localDateTime) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime zdt = localDateTime.atZone(zoneId);
+        return Date.from(zdt.toInstant());
+    }
+    public static long getWorkerIdByIP(int bits)  {
+        int shift = 64 - bits;
+        try {
+            InetAddress address = InetAddress.getLocalHost();
+            long ip = IpUtils.ipV4ToLong(address.getHostAddress());
+            long workerId = (ip << shift) >>> shift;
+            return workerId;
+        } catch (UnknownHostException e) {
+          //  LOGGER.error("Generate unique id exception. ", e);
+         throw new RuntimeException(e);
+        }
+
+    }
+
+    public static void main(String[] args) {
+
+
+        System.out.println(getWorkerIdByIP(16));
 
     }
 

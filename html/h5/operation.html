@@ -224,20 +224,20 @@
                     </label>
 
                     <label for="cb" id="on_delay_pk"
-                           class="weui-cell weui-cell_active weui-cell_switch">
+                           class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                         <img role="img" alt="" src="img/延时.png" style="height: 18px;"/>&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">药泵开延时</div>
                         <div class="weui-cell__ft">
-                            <span id="on_delay">00:00:01</span>
+                            <span id="on_delay">00:00:00</span>
                         </div>
                     </label>
 
                     <label for="cb" id="off_delay_pk"
-                           class="weui-cell weui-cell_active weui-cell_switch">
+                           class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
                         <img role="img" alt="" src="img/延时.png" style="height: 18px;"/>&nbsp;
                         <div class="weui-cell__bd" aria-hidden="true">药泵关延时</div>
                         <div class="weui-cell__ft">
-                            <span id="off_delay">00:00:01</span>
+                            <span id="off_delay">00:00:00</span>
                         </div>
                     </label>
 
@@ -548,8 +548,8 @@
         getDeviceStatus();
         getWorkStatus();
         getDevice();
-        setInterval("getDeviceStatus()", 8000);
-        setInterval("getWorkStatus()", 4000);
+        setInterval("getDeviceStatus()", 7000);
+        setInterval("getWorkStatus()", 3000);
         setInterval("time_down()", 1000);
 
         setTimeout(function () {

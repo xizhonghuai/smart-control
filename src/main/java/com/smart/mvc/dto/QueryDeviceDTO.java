@@ -15,4 +15,5 @@ public class QueryDeviceDTO {
     private String name;
     private String imei;
     private Integer netStatus;
+    private String partition;
 }

@@ -89,6 +89,7 @@ public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, Share
         return true;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteShare(DeleteShareDTO deleteAddShareDTO) {
         if (deleteAddShareDTO.getDeviceId() == null || deleteAddShareDTO.getAccountId() == null) {
             throw new RuntimeException("参数错误");
@@ -107,7 +108,7 @@ public class ShareDeviceServiceImpl extends ServiceImpl<ShareDeviceMapper, Share
         if (ids.isEmpty()) {
             return;
         }
-        if (!ids.contains(deviceId)) {
+        if (ids.contains(deviceId)) {
             throw new RuntimeException("没有权限操作共享设备");
         }
     }

@@ -2,7 +2,7 @@ package com.smart.mvc.vo;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author: xizhonghuai
@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 @Data
 public class MessageCenterVO {
     private Long id;
-    private LocalDateTime createdDate;
-    private String fromAccountId;
+    private Date createdDate;
+    private Long fromAccountId;
     private String fromAccountName;
-    private String toAccountId;
+    private Long toAccountId;
     private String toAccountName;
     private String message;
     private Integer readFlag;

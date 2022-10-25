@@ -80,4 +80,16 @@ public class DeviceController {
     public RestResponse<List<DeviceBaseInfoVO>> listDeviceBaseInfo(DeviceBaseInfoDTO dto) {
         return RestResponse.success(deviceService.listDeviceBaseInfo(dto));
     }
+
+    @GetMapping("list-region")
+    @ApiOperation("我的设备分区信息")
+    public RestResponse<List<String>> listRegion() {
+        return RestResponse.success(deviceService.listRegion());
+    }
+
+    @GetMapping("list-region-integral")
+    @ApiOperation("我的设备分区信息")
+    public RestResponse<List<String>> listRegionIntegral() {
+        return RestResponse.success(deviceService.listRegionIntegral());
+    }
 }

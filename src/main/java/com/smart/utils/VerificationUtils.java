@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.smart.config.SpringUtil;
+import com.smart.domain.message.s2c.ParamsConfMessage;
 import com.smart.mvc.service.DeviceConfigService;
 import com.smart.mvc.vo.ConfPlanVO;
 
@@ -17,6 +18,16 @@ import java.util.stream.Collectors;
  * @create: 2022-09-08 17:34
  **/
 public class VerificationUtils {
+
+    public static void planTimeCheck(List<ParamsConfMessage.Time> timeList){
+        if (CollectionUtil.isEmpty(timeList)){
+            return;
+        }
+        long count = timeList.stream().filter(t -> t.getDuration() <= 0).count();
+        if (count>0){
+            throw new RuntimeException("定时器关闭时间应大于开启时间");
+        }
+    }
 
     public static void planDateCheck(String deviceId, DateTime startDate, DateTime endDate, Integer planId) {
         DeviceConfigService deviceConfigService = SpringUtil.getObject(DeviceConfigService.class);

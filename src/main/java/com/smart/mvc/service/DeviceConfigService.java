@@ -38,6 +38,10 @@ public class DeviceConfigService {
             if (value != null) {
                 value.process();
                 confPlanVOS.add(value);
+                Object planName = cacheService.getValue(String.format("%s,%s,planName", deviceId, i));
+                if (planName != null) {
+                    value.setName(planName.toString());
+                }
                 if (value.getStatus()) {
                     cacheService.setValue(ConstantUnit.RUNNING_MODEL_DESCRIPTION_CACHE_KEY_FUNCTION.apply(deviceId)
                             , value.getName());
@@ -71,6 +75,7 @@ public class DeviceConfigService {
             ConfPlanVO confPlanVO = (ConfPlanVO) value;
             confPlanVO.setName(dto.getName());
             cacheService.setValue(key, confPlanVO);
+            cacheService.setValueForever(String.format("%s,%s,planName", dto.getDeviceId(), dto.getPlanId()), dto.getName());
         }
         return true;
     }

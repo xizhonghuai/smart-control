@@ -53,7 +53,7 @@ function getSearchStringV2(key, url) {
 }
 
 /*net*/
-// const API_URL = "http://127.0.0.1:8000/"
+ //const API_URL = "http://127.0.0.1:8000/"
 const API_URL = "http://8.131.57.109:8000/"
 const RES_OK = 20000;
 const RES_ERROR = 40000;

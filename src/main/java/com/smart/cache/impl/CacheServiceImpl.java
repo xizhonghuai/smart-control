@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Primary
-//@EnableScheduling
+@EnableScheduling
 public class CacheServiceImpl implements SchedulingConfigurer, CacheService {
     private final static String CRON = "0 0/5 * * * ?";//每5分钟检查
     private static final long invalidTime = 1000 * 60 * 500;//失效时间120分钟
@@ -37,6 +38,13 @@ public class CacheServiceImpl implements SchedulingConfigurer, CacheService {
         if (key != null && value != null) {
             getCacheMap().put(key, value);
             putKey(key);
+        }
+    }
+
+    @Override
+    public void setValueForever(String key, Object value) {
+        if (key != null && value != null) {
+            getCacheMap().put(key, value);
         }
     }
 
@@ -80,10 +88,13 @@ public class CacheServiceImpl implements SchedulingConfigurer, CacheService {
     }
 
     private void putKey(String key) {
-        if (!keyMap.containsValue(key)) {
-            keyMap.put(System.currentTimeMillis(), key);
+        List<Long> timeKey = keyMap.entrySet().stream().filter(v -> Objects.equals(key, v.getValue())).map(Map.Entry::getKey).collect(Collectors.toList());
+        for (Long t : timeKey) {
+            keyMap.remove(t);
         }
+        keyMap.put(System.currentTimeMillis(), key);
     }
+
 
     private void invalid() {
         long currentTimeMillis = System.currentTimeMillis();

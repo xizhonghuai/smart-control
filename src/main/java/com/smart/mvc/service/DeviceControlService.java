@@ -84,6 +84,7 @@ public class DeviceControlService {
                 , DateUtil.parse(paramsConfMessage.getParams().getStartDate(), "yyyy-MM-dd")
                 , DateUtil.parse(paramsConfMessage.getParams().getEndDate(), "yyyy-MM-dd")
                 , id);
+        VerificationUtils.planTimeCheck(paramsConfMessage.getParams().getTimeList());
         paramsConfMessage.process();
         deviceAPI.sendCmd(deviceId, paramsConfMessage);
         commandPoolService.add(deviceId, paramsConfMessage);
@@ -242,8 +243,20 @@ public class DeviceControlService {
     public TimingMessage deviceData(String deviceId) {
         checkDevice(deviceId);
         Message message = deviceMessage(deviceId, MessageUtil.getMessageCode(TimingMessage.class));
+        TimingMessage timingMessage = (TimingMessage) message;
 //        cacheService.invalid(String.format("%s,%s", deviceId, MessageUtil.getMessageCode(TimingMessage.class)));
-        return (TimingMessage) message;
+        String key = ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(deviceId);
+        Object value = cacheService.getValue(key);
+        if (value != null && timingMessage != null) {
+            if (value.toString().equals("低水位告警，请检查水位！")) {
+                timingMessage.getParams().setWaterLevel(0);
+            }
+            if (value.toString().equals("水位已恢复正常")) {
+                timingMessage.getParams().setWaterLevel(1);
+            }
+        }
+
+        return timingMessage;
     }
 
 

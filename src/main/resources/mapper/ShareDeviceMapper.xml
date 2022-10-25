@@ -8,13 +8,14 @@
         , created_by, created_date, updated_by, updated_date, from_account_id, to_account_id, device_id
     </sql>
     <select id="shareList" resultType="com.smart.mvc.vo.ShareDeviceVO">
-        select d.name,
+        select d.name as deviceName,
                d.id as device_table_id,
                d.device_id,
                sd.to_account_id,
-               a.name,
+               a.name as toAccountName,
                sd.from_account_id,
                sd.created_by,
+               sd.created_date,
                sd.id
         from share_device sd
                  left join device d on sd.device_id = d.id

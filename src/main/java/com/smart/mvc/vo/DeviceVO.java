@@ -19,4 +19,5 @@ public class DeviceVO {
     private int isShare;
     private String workStatus;
     private String workDescription;
+    private String partition;
 }

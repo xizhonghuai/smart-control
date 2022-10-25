@@ -12,6 +12,7 @@ import com.smart.domain.message.s2c.ParamsConfMessage;
 import com.smart.domain.message.s2c.RegisterMessageAck;
 import com.smart.domain.message.s2c.TimingMessageAck;
 import com.smart.domain.message.s2c.WarningEventMessageAck;
+import com.smart.mvc.entity.Device;
 import com.smart.mvc.service.CommandPoolService;
 import com.smart.mvc.service.DeviceServiceImpl;
 import com.smart.mvc.service.MessageCenterServiceImpl;
@@ -50,7 +51,7 @@ public class MessageProcess {
             RegisterMessage registerMessage = (RegisterMessage) messageObject;
             String deviceId = registerMessage.getDeviceId();
             iotSession.setDeviceId(deviceId);
-            deviceService.addDevice(deviceId);
+            deviceService.regDevice(deviceId);
             //ack
             RegisterMessageAck registerMessageAck = new RegisterMessageAck();
             registerMessageAck.setDeviceId(deviceId);
@@ -123,7 +124,11 @@ public class MessageProcess {
 //            String msg = warningEventMessage.getParams().getMsg();
             String msg = warningEventMessage.getWarningMsg();
             cacheService.setValue(key, msg);
-            String dbWarningMsg = String.format("设备%s:\n%s", iotSession.getDeviceId(), msg);
+            Device device = deviceService.getOne(Utils.queryWrapper(new Device().setDeviceId(iotSession.getDeviceId())));
+            String dbWarningMsg = String.format("设备%s: %s", device == null ? iotSession.getDeviceId() : device.getName(), msg);
+            if (Objects.equals(warningEventMessage.getParams().getEventId(), 2) || Objects.equals(warningEventMessage.getParams().getEventId(), 3)) {
+                cacheService.invalid(ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(iotSession.getDeviceId()));
+            }
             new Thread(() -> messageCenterService.sendDeviceWarningMessage(iotSession.getDeviceId(), dbWarningMsg)).start();
             WarningEventMessageAck warningEventMessageAck = new WarningEventMessageAck();
             warningEventMessageAck.setDeviceId(iotSession.getDeviceId());

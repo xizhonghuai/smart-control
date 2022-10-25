@@ -26,10 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -65,6 +63,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             throw new RuntimeException("该设备未注册");
         }
         device.setId(oldList.get(0).getId());
+        if (StrUtil.isBlank(device.getRegion())) {
+            device.setRegion("未分区");
+        }
         updateById(device);
         accountDeviceXrefService.bind(device.getId());
         return device.getId();
@@ -73,7 +74,17 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteDevice(Long id) {
-        accountDeviceXrefService.deviceAuthVerify(id, true);
+        List<Long> ids = shareDeviceService.shareToMe();
+        if (ids.contains(id)) {
+            List<ShareDevice> list = shareDeviceService.list(Utils.lambdaQuery(ShareDevice.class)
+                    .eq(ShareDevice::getToAccountId, AuthContext.get().getLoginUserId())
+                    .in(ShareDevice::getDeviceId, id));
+            if (!list.isEmpty()) {
+                shareDeviceService.removeByIds(list.stream().map(ShareDevice::getId).collect(Collectors.toList()));
+            }
+            return true;
+        }
+        accountDeviceXrefService.deviceAuthVerify(id);
         accountDeviceXrefService.unBind(id);
         removeDevice(id);
         return true;
@@ -98,15 +109,29 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
 
     public List<DeviceVO> list(QueryDeviceDTO queryDeviceDTO) {
+        String partition = queryDeviceDTO.getPartition();
+        queryDeviceDTO.setPartition(null);
         List<Device> list = list(Utils.queryWrapper(BeanUtil.toBean(queryDeviceDTO, Device.class)));
         List<Device> devices = accountDeviceXrefService.authFilter(list, true);
         List<DeviceVO> deviceVOS = BeanUtil.copyToList(devices, DeviceVO.class);
         List<ConnectProperty> connectProperties = deviceControlService.onlineDevice();
         List<String> olineRegIds = connectProperties.stream().map(ConnectProperty::getRegId).collect(Collectors.toList());
         List<Long> shareIds = accountDeviceXrefService.shareToMe();
+        BiFunction<DeviceVO, String, Boolean> filterFunction = (deviceVO, s) -> {
+            if (Objects.equals(queryDeviceDTO.getPartition(), "ALL")) {
+                return true;
+            }
+            if (Objects.equals(queryDeviceDTO.getPartition(), "共享设备")) {
+                return deviceVO.getIsShare() == 1;
+            }
+            return Objects.equals(deviceVO.getPartition(), s);
+        };
         return deviceVOS.stream().peek(deviceVO -> {
             deviceVO.setNetStatus(olineRegIds.contains(deviceVO.getDeviceId()) ? 1 : 0);
             deviceVO.setIsShare(shareIds.contains(deviceVO.getId()) ? 1 : 0);
+            if (deviceVO.getIsShare() == 1) {
+                deviceVO.setName(deviceVO.getName() + "(共享设备)");
+            }
 
             String key = ConstantUnit.WARNING_CACHE_KEY_FUNCTION.apply(deviceVO.getDeviceId());
             Object warningValue = cacheService.getValue(key);
@@ -123,19 +148,19 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
                     deviceVO.setWorkDescription(Objects.equals(model.toString(), "0") ? "自动模式" : "手动模式");
                 else deviceVO.setWorkDescription("停机");
             } else deviceVO.setWorkDescription("状态获取中");
-        }).collect(Collectors.toList());
+        }).filter(v -> StrUtil.isBlank(queryDeviceDTO.getPartition()) || filterFunction.apply(v, partition)).collect(Collectors.toList());
     }
 
     private String getWorkStatus(String status) {
         return Objects.equals("stop", status) ? "停止" : "运行";
     }
 
-    public void addDevice(String deviceId) {
+    public void regDevice(String deviceId) {
         List<Device> oldList = list(Utils.lambdaQuery(Device.class).in(Device::getDeviceId, deviceId));
         if (!oldList.isEmpty()) {
             return;
         }
-        Device device = new Device().setDeviceId(deviceId).setId(Utils.createSnowflakeId()).setName("未命名的设备").setCreatedBy(AuthContext.get().getLoginUserId()).setUpdatedBy(AuthContext.get().getLoginUserId());
+        Device device = new Device().setDeviceId(deviceId).setId(Utils.createSnowflakeId()).setRegion("未分区").setName("未命名的设备").setCreatedBy(AuthContext.get().getLoginUserId()).setUpdatedBy(AuthContext.get().getLoginUserId());
         save(device);
     }
 
@@ -227,5 +252,19 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         List<DeviceVO> list = list(new QueryDeviceDTO().setDeviceId(deviceId));
         return CollectionUtil.isEmpty(list) ? null : list.get(0);
 
+    }
+
+    public List<String> listRegion() {
+        List<Device> list = list();
+        List<Device> devices = accountDeviceXrefService.authFilter(list, false);
+        return devices.stream().map(Device::getRegion).distinct().collect(Collectors.toList());
+    }
+
+    public List<String> listRegionIntegral() {
+        List<String> partitions = new ArrayList<>();
+        partitions.add("ALL");
+        partitions.add("共享设备");
+        partitions.addAll(listRegion());
+        return partitions;
     }
 }

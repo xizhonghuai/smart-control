@@ -13,6 +13,8 @@ public interface CacheService {
 
     void setValue(String key, Object value);
 
+    void setValueForever(String key, Object value);
+
     <T> void setValues(String key, List<T> values);
 
     Object getValue(String key);

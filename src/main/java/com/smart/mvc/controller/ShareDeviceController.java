@@ -43,7 +43,7 @@ public class ShareDeviceController {
 
     @DeleteMapping("delete-share")
     @ApiOperation("删除共享")
-    public RestResponse<Boolean> deleteShare(@RequestBody DeleteShareDTO deleteAddShareDTO) {
+    public RestResponse<Boolean> deleteShare(DeleteShareDTO deleteAddShareDTO) {
         return RestResponse.success(shareDeviceService.deleteShare(deleteAddShareDTO));
     }
 

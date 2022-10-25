@@ -169,7 +169,8 @@
                                         <br>
                                         <div class="weui-panel__hd">
                                             <!--2022/8/23 暂时隐藏-->
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch"
+                                                   style="display: none">
                                                 <img role="img" alt="" src="img/药泵开关.png"
                                                      style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">药泵开关</div>
@@ -178,7 +179,8 @@
                                                            type="checkbox">
                                                 </div>
                                             </label>
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch"  style="display: none">
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch"
+                                                   style="display: none">
                                                 <img role="img" alt="" src="img/速度.png"
                                                      style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">出药速度</div>
@@ -226,7 +228,8 @@
                                                               placeholder="单位秒" style="width: 100px">
                                                    </div>
                                                </label>-->
-                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch" style="display: none">
+                                            <label for="cb" class="weui-cell weui-cell_active weui-cell_switch"
+                                                   style="display: none">
                                                 <img role="img" alt="" src="img/电磁阀.png"
                                                      style="height: 18px;"/>&nbsp;
                                                 <div class="weui-cell__bd" aria-hidden="true">电磁阀2状态</div>
@@ -619,7 +622,6 @@
                     title: picker_title
                 });
         });
-
     }
 
     function setValue(time_id, key, value) {
@@ -682,6 +684,7 @@
         let date1 = stringToDate("2022-01-01 " + value);
         let date2 = stringToDate("2022-01-01 " + document.getElementById(type + "_endTime_" + time_id).innerText);
         let duration = date2.getTime() / 1000 - date1.getTime() / 1000;
+
         let obj = objs[time_id];
         if (isEmpty(obj)) {
             obj = {};
@@ -830,8 +833,8 @@
         let obj = {
             time: formatDate(new Date()),
             duration: 500,
-            on_time: 30,
-            off_time: 10,
+            on_time: 300,
+            off_time: 200,
             mode: 0
         }
         let pw_objs = getSessionStorage('pw' + "_times");
@@ -879,9 +882,9 @@
     function addPYTimeHtml() {
         let obj = {
             time: formatDate(new Date()),
-            duration: 500,
-            on_time: 450,
-            off_time: 50,
+            duration: 60,
+            on_time: 60,
+            off_time: 0,
             mode: 1
         }
         let pw_objs = getSessionStorage('pw' + "_times");
