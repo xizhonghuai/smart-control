@@ -25,11 +25,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>net.xdevelop</groupId>
-            <artifactId>snowflake-uid</artifactId>
-            <version>1.0.0</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
